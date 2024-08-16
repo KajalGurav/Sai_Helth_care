@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewBag.Title = "QueAdd";
+}
+
+
+
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<section ng-controller="MindrayQuotationCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Add Mindray Quotation</b></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Quot Type:</label><label style="color:red;">*</label>
+                                <select name="QUOTATION_TYPE" class="form-control" ng-model="QUOTATION_TYPE" id="QUOTATION_TYPE" required>
+                                    <option value="">Select Quot Type </option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Service">Service</option>
+                                    <option value="SpareParts">SpareParts</option>
+                                </select>
+                                <span ng-show="(AddPayment.QUOTATION_TYPE.$invalid && (AddPayment.QUOTATION_TYPE.$touched || AddPayment.QUOTATION_TYPE.$dirty))">
+                                    <span class="error" ng-show="AddPayment.QUOTATION_TYPE.$error.required">Quot Type is required</span>
+                                </span>
+                            </div>
+
+                            <div class="form-group col-md-4" @*style="display:none;"*@>
+                                <label class="control-label"> Quotation Number:</label>@*<label style="color:red;">*</label>*@
+                                <input type="text" name="QUOTATION_NO" ng-model="QUOTATION_NO" class="form-control" readonly placeholder="Enter Quotation No." />
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Select Customer Name:</label><label style="color:red;">*</label>
+                                <select class="form-control" ng-model="CUSTOMER_ID" name="CUSTOMER_ID" id="CUSTOMER_ID" ng-change="GetFirmChange()" required>
+                                    <option value="">Select Customer Name</option>
+                                    <option ng-repeat="Customer in CustomerList" value="{{Customer.Customer_ID}}">{{Customer.CUSTOMER_NAME}}</option>
+                                </select>
+                                <span ng-show="(AddPayment.CUSTOMER_ID.$invalid && (AddPayment.CUSTOMER_ID.$touched || AddPayment.CUSTOMER_ID.$dirty))">
+                                    <span class="error" ng-show="AddPayment.CUSTOMER_ID.$error.required">Customer Name is required</span>
+                                </span>
+                            </div>
+
+                            <div class="form-group col-lg-3">
+                                <label class="control-label">Select Customer Firm Name :</label><label style="color:red;">*</label>
+                                <select name="FIRM_ID" id="FIRM_ID" class="form-control" ng-model="FIRM_ID" required>
+                                    <option value="">Select Firm Name</option>
+                                    <option ng-repeat="Customer in CustomerFirmList" value="{{Customer.F_ID}}">{{Customer.FIRM_NAME}}</option>
+                                </select>
+                                <span ng-show="(AddPayment.FIRM_ID.$invalid && (AddPayment.FIRM_ID.$touched || AddPayment.FIRM_ID.$dirty))">
+                                    <span class="error" ng-show="AddPayment.FIRM_ID.$error.required">Customer Firm Name is required</span>
+                                </span>
+                            </div>
+
+                            <div class="form-group col-md-4" @*style="display:none;"*@>
+                                <label class="control-label">Quotation Date:</label>@*<label style="color:red;">*</label>*@
+                                <input type="text" name="QUOTATION_DATE" ng-model="QUOTATION_DATE" readonly @*id="STARTING_DATE1"*@ class="form-control" placeholder="Quotation Date." />
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label class="control-label">PNDT Status:</label>
+                                <input type="text" name="PNDT_STATUS" ng-model="PNDT_STATUS" class="form-control" placeholder="Enter PNDT Status" />
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label class="control-label">PNDT No.:</label>
+                                <input type="text" name="PNDT_NO" id="PNDT_NO" ng-model="PNDT_NO" ng-pattern="/^[ A-Za-z0-9_@('@')./#&+-]*$/" maxlength="100" class="form-control" placeholder="Enter PNDT No" />
+                                <span ng-show="(AddPayment.PNDT_NO.$invalid && (AddPayment.PNDT_NO.$touched || AddPayment.PNDT_NO.$dirty))">
+                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.required">PNDT Number is required</span>
+                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.pattern">Invalid PNDT Number</span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Status:</label><label style="color:red;">*</label>
+                                <select name="STATUS" class="form-control" ng-model="STATUS" id="STATUS" required>
+                                    <option value="">Select Status </option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Done">Done</option>
+                                </select>
+                                <span ng-show="(AddPayment.STATUS.$invalid && (AddPayment.STATUS.$touched || AddPayment.STATUS.$dirty))">
+                                    <span class="error" ng-show="AddPayment.STATUS.$error.required">Status is required</span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">P.O Date:</label>@*<label style="color:red;">*</label>*@
+                                <input type="date" id="PO_DATE" name="PO_DATE" ng-model="PO_DATE" class="form-control" placeholder="Enter P.O Date" @*required*@ />
+                                <span ng-show="(AddPayment.PO_DATE.$invalid && (AddPayment.PO_DATE.$touched || AddPayment.PO_DATE.$dirty))">
+                                    <span class="error" ng-show="AddPayment.PO_DATE.$error.required">P.O Date is required</span>
+                                    <span class="error" ng-show="AddPayment.PO_DATE.$error.date">P.O Date is invalid</span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Payment Term(%):</label><label style="color:red;">*</label>
+                                <input type="number" step="0.01" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseFloat(this.value)>this.max){ this.value =this.max; return false; }" ng-pattern="/^[0-9]{1,3}(?:\.[0-9]{1,2})?$/" name="PAYMENT_TERM" ng-model="PAYMENT_TERM" id="PAYMENT_TERM" class="form-control" placeholder="Enter Payment Term" required />
+                                <span ng-show="(AddPayment.PAYMENT_TERM.$invalid && (AddPayment.PAYMENT_TERM.$touched || AddPayment.PAYMENT_TERM.$dirty))">
+                                    <span class="error" ng-show="AddPayment.PAYMENT_TERM.$error.required">Payment Term(%) is required</span>
+                                    <span class="error" ng-show="AddPayment.PAYMENT_TERM.$error.number">Payment Term(%) is invalid</span>
+                                    <span class="error" ng-show="AddPayment.PAYMENT_TERM.$error.pattern">Payment Term(%) is invalid</span>
+                                </span>
+                            </div>
+                            @*<div class="form-group col-md-4">
+                <label class="control-label">Competent Authorities(AERB/PNDT):</label><label style="color:red;">*</label>
+                <select name="AERB_OR_PNDT" class="form-control" ng-model="AERB_OR_PNDT" id="AERB_OR_PNDT" required>
+                    <option value="">Select Competent Authorities</option>
+                    <option value="AERB">AERB</option>
+                    <option value="PNDT">PNDT</option>
+                    <option value="AERB/PNDT">AERB/PNDT</option>
+                </select>
+                <span ng-show="(AddPayment.AERB_OR_PNDT.$invalid && (AddPayment.AERB_OR_PNDT.$touched || AddPayment.AERB_OR_PNDT.$dirty))">
+                    <span class="error" ng-show="AddPayment.AERB_OR_PNDT.$error.required">Competent Authorities(AERB/PNDT) is required</span>
+                </span>
+            </div>*@
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Select Company Bank Details(to print on Quotation):<label style="color:red;">*</label></label>
+                                <select id="BANK_ID" class="form-control" name="BANK_ID" ng-model="BANK_ID"
+                                        ng-options="Bank.B_ID as Bank.BANK_AND_ACCNO for Bank in CompanyBankList"
+                                        ng-selected="Bank.B_ID == BANK_ID" required>
+                                    <option value="">Select Bank Details</option>
+                                </select>
+                                <span ng-show="(AddPayment.BANK_ID.$invalid && (AddPayment.BANK_ID.$touched || AddPayment.BANK_ID.$dirty))">
+                                    <span class="error" ng-show="AddPayment.BANK_ID.$error.required">Company Bank Details are required</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+
+                            <label class="control-label">Note:</label>
+                            <textarea class="form-control" ng-model="NOTE" id="NOTE" name="NOTE" placeholder="Enter Note"></textarea>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <div class="form-group col-md-12">
+                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddAdmin()" value="Add Quotation" />
+                            <input type="button" value="Clear" ng-click="Clearall()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/MindrayQuotation.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#STARTING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#STARTING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STARTING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STARTING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#STARTING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#ENDING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#ENDING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#ENDING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#ENDING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#ENDING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+}

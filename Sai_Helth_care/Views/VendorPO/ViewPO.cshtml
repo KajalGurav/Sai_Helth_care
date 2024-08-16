@@ -1,0 +1,2026 @@
+﻿
+@{
+    ViewBag.Title = "ViewPO";
+}
+
+<style>
+    .catStyle_Desc {
+        color: black;
+        cursor: pointer;
+        font-size: 15px;
+        border: 1px solid green;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .catStyle_active_Desc {
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: 1px solid green;
+        border-radius: 5px;
+    }
+    .wrapper.overflow {
+        overflow-y: scroll;
+        display: inline-block;
+    }
+</style>
+<style type="text/css" media="print">
+    .noprint {
+        display: none;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid;
+    }
+
+    ul.no-bullets {
+        list-style-type: none;
+        margin: 1px;
+        padding: 5px;
+        align-content: center;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<div class="page-content fade-in-up" ng-controller="VendorPOViewCtrl">
+    <input type="hidden" id="tempCustId" />
+
+    <div class="ibox">
+        <div class="ibox-body">
+            <div class="card">
+                <div class="col-lg-1">
+                    <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color:green;color:white"><span class="fa fa-arrow-left"></span></a>
+                </div>
+                <div class="card-body">
+                    <div style="overflow-y:auto">
+                        <table class="table table-striped table-bordered table-hover" id="example-table1" cellspacing="0" width="100%">
+                            <thead style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; ">
+                                <tr>
+                                    <th>PO Number</th>
+                                    <th>PO Date</th>
+                                    <th>Supplier Firm</th>
+                                    <th>Contact Person</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color:black;">
+                                <tr >
+                                    <td>{{VendorPODetailsList.VPO_NUMBER}}</td>
+                                    <td>{{VendorPODetailsList.VPO_DATE}}</td>
+                                    <td>{{VendorPODetailsList.VENDOR_NAME}}</td>
+                                    <td>{{VendorPODetailsList.OWNER_NAME}}</td>
+                                    <td>{{VendorPODetailsList.STATUS}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div style="overflow: auto; white-space: nowrap; padding:15px 0px;">
+                            <center>
+                                <span>
+                                    <span class="catmenu_button_Desc catStyle_active_Desc" id="1_catId_Desc" ng-click="OnCategoryClick('1')" style="padding:5px; margin:5px;font-size:12px;"><b>Vendor Product</b></span>
+                                </span>
+
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="card-body" id="Demoexample_1">
+                <div class="ibox-body" style="height:700px; overflow-y:auto;">
+                    <div class="col-lg-12" style="margin-bottom:15px;">
+                        <div class="row">
+                            <div id="example-table2" data-myval="5" class="table-responsive col-lg-6" style="background-color: white; height: 340px; overflow-y: scroll;">
+
+                                <table class="table table-striped table-bordered table-hover " id="example-table3" cellspacing="0">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Product Detail</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <input style="width:150PX" id="searchInTb" class="form-control" type="text" placeholder="Search Product" />
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;">
+                                        <tr ng-repeat="Product in ProductList">
+                                            <td>{{Product.PRODUCT_NAME}}</td>
+                                            @*<td>{{Product.P_ID}}</td>*@
+                                            <td>
+                                                <a href="" title="Add" ng-click="Getspare(Product)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Add </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive col-lg-6" style="background-color: white; height: 340px; overflow-y: scroll;">
+                                <table class="table table-striped table-bordered table-hover " id="example-table4" cellspacing="0" width="50%">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr><td colspan="8"><strong>*Note: If main product is removed all spare parts and std accessories will be removed</strong></td></tr>
+                                    </thead>
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Product Name</th>
+                                            <th>Is With Warranty</th>
+                                            <th>Warranty Qty</th>
+                                            <th>Warranty Price</th>
+                                            <th>Product Qty</th>
+                                            <th>Product Price</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;" ng-repeat="P in VendorPOProductList">
+
+                                        <tr>
+                                            <td>{{$index+1}}</td>
+                                            <td>{{P.PRODUCT_NAME}}</td>
+                                            <td>{{P.WITH_WARRANTY}}</td>
+                                            <td>{{P.WARRANTY_QTY}}</td>
+                                            <td>{{P.WARRANTY_PRICE}}</td>
+                                            <td>{{P.QUANTITY}}</td>
+                                            <td>{{P.PRICE}}</td>
+                                            <td>
+                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+
+                                        <tr ng-if="CUSTOMER_TYPE_ID===1 && P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'ACC_TYPE_ID' : 1} | filter: {'VPO_P_ID' : P.VPO_P_ID} |filter:search:strict">
+                                            <td colspan="7"><b>Std Acc:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b> Price:</b>{{Acc.PART_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.PART_QTY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="CUSTOMER_TYPE_ID===1 && P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'ACC_TYPE_ID' : 2} | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                            <td colspan="7"><b>Spare Part:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b> Price:</b>{{Acc.PART_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.PART_QTY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="CUSTOMER_TYPE_ID===5 && P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'ACC_TYPE_ID' : 3} | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                            <td colspan="7"><b>Probe:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b> Price:</b>{{Acc.PART_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.PART_QTY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="CUSTOMER_TYPE_ID===3 && P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'ACC_TYPE_ID' : 4} | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                            <td colspan="7"><b>Main System:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b> Price:</b>{{Acc.PART_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.PART_QTY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="CUSTOMER_TYPE_ID===3 && P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'ACC_TYPE_ID' : 5} | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                            <td colspan="7"><b>Attachment:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b> Price:</b>{{Acc.PART_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.PART_QTY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="CUSTOMER_TYPE_ID===3 && P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'ACC_TYPE_ID' : 6} | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                            <td colspan="7"><b>Tool:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b> Price:</b>{{Acc.PART_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.PART_QTY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 " style="margin-bottom:10px">
+                        <div class="row">
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label">Total Amount:</label>
+                                <input type="text" name="AMOUNT" ng-model="TOTAL_AMOUNT" class="form-control" readonly
+                                       placeholder="Total Amount" value="0" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="control-label">Inc. All Taxes:</label>
+                                <label style="color:red;">*</label>
+                                <select ng-model="IAT_ID" id="IAT_ID" name="IAT_ID" class="form-control"
+                                        ng-options="IAT.IAT_ID as IAT.IAT_NAME for IAT in IncludingAllTaxesList"
+                                        ng-selected="IAT.IAT_ID == IAT_ID" ng-change="OnIncTaxChange()" required>
+                                    <option value="">Select</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="control-label">GST:</label><label style="color:red;">*</label>
+
+                                <select ng-model="GSTP_ID" id="GSTP_ID" name="GSTP_ID" class="form-control"
+                                        ng-options="gst.GSTP_ID as gst.GST_PERC for gst in GSTPercentageList"
+                                        ng-selected="gst.GSTP_ID == GSTP_ID" ng-change="CalculateTaxAmount()">
+                                    <option value="">NA</option>
+
+                                </select>
+
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Tax Amount:</label>
+                                <input type="text" name="TAX_AMOUNT" class="form-control" ng-model="TAX_AMOUNT" readonly placeholder="Tax Amount" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Amount Inc. Tax:</label>
+                                <input type="text" name="AMOUNT_INC_TAX" class="form-control" ng-model="AMOUNT_INC_TAX" readonly placeholder="Amount Inc. Tax" />
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Terms & Conditions:</label>
+                                <textarea ng-model="TERMS_AND_CONDITIONS" id="TERMS_AND_CONDITIONS" class="form-control" type="text" placeholder="Enter Terms & Conditions"></textarea>
+
+                            </div>
+
+                        </div>
+                        <div class="flex-row" style="margin-left: 45%; margin-right: 45%; margin-top: 11px; display: flex; ">
+                            <div class="flex-col" style="flex: 1; margin-right: 20px;">
+                                <input id="SaveVendorPO" class="form-control" type="button" value="Save" style="background-color:green;color:black" ng-click="SavePODetails()" />
+                            </div>
+                            <div class="flex-col" style="flex: 1;">
+                                <input id="PrintVendorPO" class="form-control" type="button" value="Print" style="background-color:aquamarine;color:black" ng-click="numTowords()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="AddProductAccessories">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:gray; color: white; padding: 10px; ">
+                            <h4 class="modal-title">
+                                <b> Add Product Accessories </b>
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <div class="col-12">
+                                            <div class="row">
+
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">Quantity:<label style="color:red;">*</label></label>
+
+                                                    <input id="prodQuant" class="form-control" type="number" name="PRODUCT_QUANTITY" ng-model="PRODUCT_QUANTITY" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" required />
+                                                    <span ng-show="(AddPayment.PRODUCT_QUANTITY.$invalid && (AddPayment.PRODUCT_QUANTITY.$touched || AddPayment.PRODUCT_QUANTITY.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.required">Quantity is required</span>
+                                                        <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.number">Please enter a valid Quantity</span>
+                                                    </span>
+                                                </div>
+
+                                                <div class="form-group col-md-4">
+                                                    <label class="control-label">Product Price:<label style="color:red;">*</label></label>
+                                                    <input id="prodPrice" class="form-control" type="number" name="PRODUCT_PRICE" ng-model="PRODUCT_PRICE" min="0" ng-pattern="/^\d+(\.\d{1,2})?$/" ng-change="formatPrice()" required />
+                                                    <span ng-show="(AddPayment.PRODUCT_PRICE.$invalid && (AddPayment.PRODUCT_PRICE.$touched || AddPayment.PRODUCT_PRICE.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.PRODUCT_PRICE.$error.required">Product Price is required</span>
+                                                        <span class="error" ng-show="AddPayment.PRODUCT_PRICE.$error.number">Please enter valid Product Price</span>
+                                                        <span class="error" ng-show="AddPayment.PRODUCT_PRICE.$error.pattern">Only two decimal places are allowed</span>
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label class="control-label">Is With Warranty:</label><label style="color:red;">*</label>
+
+                                                    <select ng-model="IS_WITH_WARRANTY" id="IS_WITH_WARRANTY" name="IS_WITH_WARRANTY" class="form-control" required>
+                                                        <option value="">Select</option>
+                                                        <option value=1>Yes</option>
+                                                        <option value=0>No</option>
+                                                    </select>
+                                                    <span ng-show="(AddPayment.IS_WITH_WARRANTY.$invalid && (AddPayment.IS_WITH_WARRANTY.$touched || AddPayment.IS_WITH_WARRANTY.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.IS_WITH_WARRANTY.$error.required">Is With Warranty is required</span>
+                                                        <span class="error" ng-show="AddPayment.IS_WITH_WARRANTY.$error.number">Please Select  Is With Warranty</span>
+                                                    </span>
+                                                </div>
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">Warranty Quantity:<label style="color:red;">*</label></label>
+
+                                                    <input id="warrantyQuant" class="form-control" type="number" name="WARRANTY_QTY" ng-model="WARRANTY_QTY" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" required />
+                                                    <span ng-show="(AddPayment.WARRANTY_QTY.$invalid && (AddPayment.WARRANTY_QTY.$touched || AddPayment.WARRANTY_QTY.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.WARRANTY_QTY.$error.required">Warranty Quantity is required</span>
+                                                        <span class="error" ng-show="AddPayment.WARRANTY_QTY.$error.number">Please enter a valid Warranty Quantity</span>
+                                                    </span>
+                                                </div>
+
+                                                <div class="form-group col-md-4">
+                                                    <label class="control-label">Warranty Price:<label style="color:red;">*</label></label>
+
+                                                    <input id="warrantyPrice" class="form-control" type="number" name="WARRANTY_PRICE" ng-model="WARRANTY_PRICE" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" required />
+                                                    <span ng-show="(AddPayment.WARRANTY_PRICE.$invalid && (AddPayment.WARRANTY_PRICE.$touched || AddPayment.WARRANTY_PRICE.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.WARRANTY_PRICE.$error.required">Warranty Price is required</span>
+                                                        <span class="error" ng-show="AddPayment.WARRANTY_PRICE.$error.number">Please enter valid Warranty Price</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <table ng-show="CUSTOMER_TYPE_ID===1" class="table table-bordered" id="AccTable1" cellspacing="0" style="font-size: 0.9rem;color:black;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox1" type="checkbox" value="false" onclick="CheckALLStdAcc()" />
+                                                    </th>
+                                                    <th>Std Accessories</th>
+                                                    <th style="width:100px;">Qty</th>
+                                                    <th style="width:150px;">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        <input id="searchStdAcc" class="form-control" type="text" placeholder="Search" />
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="std in ProductAccessoriesSparePartList | filter: {'ACC_TYPE_ID' : 1}">
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="StdAcc" value="{{std.ACC_ID}}" ng-model="STD_ACC_ID" type="checkbox" />
+                                                    </td>
+
+                                                    <td>{{std.ACCESSORY_NAME}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{std.ACC_ID}}" id="Q{{std.ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td><input class="form-control priceid" type="number" name="PART_PRICE{{std.ACC_ID}}" id="PART_PRICE{{std.ACC_ID}}" value="0" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                        <table ng-show="CUSTOMER_TYPE_ID===1" class="table table-bordered" id="AccTable2" cellspacing="0" style="font-size: 0.9rem;color:black;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox2" type="checkbox" value="false" onclick="CheckALLSpareParts()" />
+                                                    </th>
+                                                    <th>Spare Parts</th>
+                                                    <th style="width:100px;">Qty</th>
+                                                    <th style="width:150px;">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        <input id="searchSparePart" class="form-control" type="text" placeholder="Search" />
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="sp in ProductAccessoriesSparePartList | filter: {'ACC_TYPE_ID' : 2}">
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="SpareParts" value="{{sp.ACC_ID}}" ng-model="SPARE_PART_ID" type="checkbox" />
+                                                    </td>
+
+                                                    <td>{{sp.ACCESSORY_NAME}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{sp.ACC_ID}}" id="Q{{sp.ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td><input class="form-control priceid" type="number" name="PART_PRICE{{sp.ACC_ID}}" id="PART_PRICE{{sp.ACC_ID}}" value="0" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table ng-show="CUSTOMER_TYPE_ID===5" class="table table-bordered" id="AccTable3" cellspacing="0" style="font-size: 0.9rem;color:black;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox3" type="checkbox" value="false" onclick="CheckALLProbes()" />
+                                                    </th>
+                                                    <th>Probes</th>
+                                                    <th style="width:100px;">Qty</th>
+                                                    <th style="width:150px;">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        <input id="searchProbe" class="form-control" type="text" placeholder="Search" />
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="probe in ProductAccessoriesSparePartList | filter: {'ACC_TYPE_ID' : 3}">
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="MainSystem" value="{{probe.ACC_ID}}" ng-model="MAIN_SYSTEM_ID" type="checkbox" />
+                                                    </td>
+
+                                                    <td>{{probe.ACCESSORY_NAME}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{probe.ACC_ID}}" id="Q{{probe.ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td><input class="form-control priceid" type="number" name="PART_PRICE{{probe.ACC_ID}}" id="PART_PRICE{{probe.ACC_ID}}" value="0" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table ng-show="CUSTOMER_TYPE_ID===3" class="table table-bordered" id="AccTable4" cellspacing="0" style="font-size: 0.9rem;color:black;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox4" type="checkbox" value="false" onclick="CheckALLMainSystem()" />
+                                                    </th>
+                                                    <th>Main System</th>
+                                                    <th>Acc. Code</th>
+                                                    <th style="width:100px;">Qty</th>
+                                                    <th style="width:150px;">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        <input id="searchMainSystem" class="form-control" type="text" placeholder="Search" />
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="ms in ProductAccessoriesSparePartList | filter: {'ACC_TYPE_ID' : 4}">
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="MainSystem" value="{{ms.ACC_ID}}" ng-model="MAIN_SYSTEM_ID" type="checkbox" />
+                                                    </td>
+
+                                                    <td>{{ms.ACCESSORY_NAME}}</td>
+                                                    <td>{{ms.ACCESSORY_CODE}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{ms.ACC_ID}}" id="Q{{ms.ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td><input class="form-control priceid" type="number" name="PART_PRICE{{ms.ACC_ID}}" id="PART_PRICE{{ms.ACC_ID}}" value="0" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table ng-show="CUSTOMER_TYPE_ID===3" class="table table-bordered" id="AccTable5" cellspacing="0" style="font-size: 0.9rem;color:black;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox5" type="checkbox" value="false" onclick="CheckALLAttachments()" />
+                                                    </th>
+                                                    <th>Attachments</th>
+                                                    <th>Acc. Code</th>
+                                                    <th style="width:100px;">Qty</th>
+                                                    <th style="width:150px;">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        <input id="searchAttachment" class="form-control" type="text" placeholder="Search" />
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="attachment in ProductAccessoriesSparePartList | filter: {'ACC_TYPE_ID' : 5}">
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="Attachments" value="{{attachment.ACC_ID}}" ng-model="ATTACHMENTS_ID" type="checkbox" />
+                                                    </td>
+                                                    <td>{{attachment.ACCESSORY_NAME}}</td>
+                                                    <td>{{attachment.ACCESSORY_CODE}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{attachment.ACC_ID}}" id="Q{{attachment.ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td><input class="form-control priceid" type="number" name="PART_PRICE{{attachment.ACC_ID}}" id="PART_PRICE{{attachment.ACC_ID}}" value="0" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table ng-show="CUSTOMER_TYPE_ID===3" class="table table-bordered" id="AccTable6" cellspacing="0" style="font-size: 0.9rem;color:black;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox6" type="checkbox" value="false" onclick="CheckALLTools()" />
+                                                    </th>
+                                                    <th>Tools</th>
+                                                    <th>Acc. Code</th>
+                                                    <th style="width:100px;">Qty</th>
+                                                    <th style="width:150px;">Price</th>
+
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        <input id="searchTool" class="form-control" type="text" placeholder="Search" />
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="tools in ProductAccessoriesSparePartList | filter: {'ACC_TYPE_ID' : 6}">
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="Tools" value="{{tools.ACC_ID}}" ng-model="TOOLS_ID" type="checkbox" />
+                                                    </td>
+                                                    <td>{{tools.ACCESSORY_NAME}}</td>
+                                                    <td>{{tools.ACCESSORY_CODE}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{tools.ACC_ID}}" id="Q{{tools.ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td><input class="form-control priceid" type="number" name="PART_PRICE{{tools.ACC_ID}}" id="PART_PRICE{{tools.ACC_ID}}" value="0" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="form-group col-md-12">
+                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddProduct()" value="Add Product" />
+                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" @*data-dismiss="modal"*@ />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="VendorPO">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintVendorPODetails">
+                                    <div>
+                                        <style>
+                                            @@page {
+                                                size: auto;
+                                                margin-bottom: 80px;
+                                            }
+                                            
+                                        </style>
+                                        <div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===1" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===5" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMindrayHeader.png"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===3" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMedtronicHeader.png"
+                                                     alt="SAI IMAGING LOGO">
+                                            </div>
+                                            <div style="font-size: 25px; width:100%; text-align:center; margin-top:15px; ">
+                                                <b style="border-bottom: 2px solid #000;">PURCHASE ORDER</b>
+                                            </div>
+                                            <div style="
+        justify-content: center;">
+                                                <table style=" padding: 10px 10px; width: 100%; border: none;">
+
+                                                    <tbody>
+                                                        <tr valign="top">
+                                                            <td style="font-size: 14px; color: #000; ">
+                                                                <table width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align: right; width: 100%; padding-right: 85px;">
+                                                                                <b>Date:</b>
+                                                                                {{VendorPODetailsList.VPO_DATE}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: right;">
+                                                                                <b>
+                                                                                    PO.
+                                                                                    No.:
+                                                                                </b> {{VendorPODetailsList.VPO_NUMBER}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-weight: 600; font-size: 18px;">
+                                                                                To,
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-size: 20px; width:40%">
+                                                                                <b>{{VendorPODetailsList.VENDOR_NAME}}</b>
+                                                                                <br>
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    {{VendorPODetailsList.ADDRESS}} - {{VendorPODetailsList.ZIP_CODE}} <br />{{VendorPODetailsList.CITY_NAME}}
+                                                                                </p>
+
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    <b ng-show="VendorPODetailsList.GST_NO">GSTIN No:</b>
+                                                                                    {{VendorPODetailsList.GST_NO}}
+                                                                                </p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div style="margin-bottom: 0px; font-size: 20px; margin-top: 30px;">
+                                                                                    <b>
+                                                                                        Sub:
+                                                                                        Purchase Order for
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===1">
+                                                                                            <span ng-repeat="P in VendorPOProductList | unique:'M_NAME' ">
+                                                                                                {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}}<span ng-if="$index+1 < VendorPOProductList.length - 1">,</span>
+                                                                                            </span>.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===5">
+                                                                                            Mindray Machines.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===3">
+                                                                                            Medtronic Machines.
+                                                                                        </span>
+
+                                                                                    </b>
+                                                                                    <br />
+                                                                                    <br />
+                                                                                    <p style="text-align: left;">Dear Sir,</p>
+                                                                                    <p style="text-align: left;">
+                                                                                        With reference to our discussion with <b>{{VendorPODetailsList.OWNER_NAME}}</b> we are glad to confirm the purchase order for
+                                                                                        following Part.
+                                                                                    </p>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <table style="width:100%; border:0px solid black;
+            border-collapse: collapse;
+            padding-left: 2%;
+            padding-right: 2%;">
+
+                                                    <tr>
+                                                        <td >
+                                                            <div ng-repeat="P in VendorPOProductList" style="width: 100%; border-collapse: collapse;">
+                                                                <table style="width: 100%; border-collapse: collapse; border: 2px solid black !important;">
+                                                                    <tbody>
+                                                                        <tr ng-if="$index+1 === 1">
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%;">
+                                                                                <p style="margin: 0; font-size:16px"><strong>Sr. No</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Particular</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Qty.</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 15%;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Rate</strong></p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%; ">
+                                                                                <P style=" font-size: 16px"><STRong>{{$index+1}}</STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: left;">
+
+                                                                                <p style=" font-size: 16px">
+                                                                                    {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}}
+                                                                                    <span ng-if="P.VendorPOProductAccessoriesList.length > 0 && P.PRICE > 0">
+                                                                                        With Std. Accessories
+                                                                                    </span>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.PRICE === 0">&nbsp;</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.PART_TAXABLE_VALUE > 0">{{P.QUANTITY}}</P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.PRICE > 0">{{P.PART_TAXABLE_VALUE}}/-</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.PART_TAXABLE_VALUE === 0">&nbsp;</P>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr ng-if="P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%;">
+                                                                                <P style="margin: 0; font-size: 16px"><STRong></STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; text-align: left; padding-left: 5px; padding-right: 5px; text-align: left; ">
+
+                                                                                <p style="margin: 0; font-size: 16px">
+
+                                                                                    {{Acc.ACCESSORY_NAME}}
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style="margin: 0; font-size: 16px">
+
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE > 0">{{Acc.PART_QTY}}</span>
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE === 0">&nbsp;</span>
+                                                                                </P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style="margin: 0; font-size: 16px">
+                                                                                    <span ng-if="Acc.PRICE === 0">&nbsp;</span>
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE > 0">{{Acc.PART_TAXABLE_VALUE}}/-</span>
+                                                                                </P>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr ng-if="P.IS_WITH_WARRANTY === 1">
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%; ">
+                                                                                <P style=" font-size: 16px"><STRong></STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: left;">
+
+                                                                                <p style=" font-size: 16px">
+                                                                                    {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}} Main Unit Warranty
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_PRICE === 0">&nbsp;</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_TAXABLE_VALUE > 0">{{P.WARRANTY_QTY}}</P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_PRICE > 0">{{P.WARRANTY_TAXABLE_VALUE}}/-</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_TAXABLE_VALUE === 0">&nbsp;</P>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            @*<div style="width: 100%; border-collapse: collapse;">
+                                            <table style="width: 100%; border-collapse: collapse;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="3" valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right;">
+                                                            TOTAL
+                                                        </td>
+                                                        <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: left; width: 15%;">
+                                                            {{ACTUAL_AMOUNT}}/-
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>*@
+                                                        </td>
+                                                    </tr>
+
+                                                </table>
+
+                                                <table style="width:100%;
+        border-collapse: collapse;
+        padding-left: 2%;
+        padding-right: 2%;">
+                                                    <tr>
+                                                        <td>
+                                                            <div style="color:#000; font-size:18px; margin-top:10px;">The Total cost of the system F.O.R Destination <strong>will be Rs.{{AMOUNT_INC_TAX}}/- (Rupees {{amtInwords}}).</strong></div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <h2 style="margin-bottom: 10px; margin-top: 30px; text-decoration: underline; font-size: 20px;">
+                                                                <b>
+                                                                    Terms
+                                                                    & Conditions:
+                                                                </b>
+                                                            </h2>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td valign="top" style="
+                border-collapse: collapse;
+                padding-left: 2%;
+                padding-right: 2%;
+                ">
+                                                            @*<p style="margin: 4px 0;">{{VendorPODetailsList.INC_EXC_TAX}} GST @('@') {{VendorPODetailsList.GST}}%.</p>*@
+                                                            <p style="margin: 4px 0; font-size:18px"><span id="TERMS"></span></p>
+                                                        </td>
+
+                                                    </tr>
+
+                                                </table>
+                                                <br />
+                                                <br />
+                                                <table style="width: 100%; font-size:20px">
+
+                                                    <tr>
+                                                        <td colspan="2" style="
+                    border-collapse: collapse;
+                    padding: 0;">
+                                                            <p>Please acknowledge the receipt of our order and prioritize the early delivery of the system.</p>
+                                                            <p style="margin-bottom: 90px;">Thank You.</p>
+                                                            <img ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5" src="~/Images/signture-stamp-img.jpg" style="width:250px; height:120px; max-width:100%; padding-top: 0px" />
+                                                            <img ng-if="CUSTOMER_TYPE_ID===3" src="~/Images/Sai-ImagingServices-stamp.png" style="width: 250px; height: 120px; max-width: 100%; padding-top: 0px" />
+                                                            <p>Yours Sincerely,</p>
+                                                            @*<h4 style="margin: 0;"><b>{{COMPANY_DETAILS[0].COMPANY_NAME}}</b></h4>*@
+                                                            <h4 style="margin: 0;"><b>Sai Medical Services</b></h4>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div style="page-break-after: always;">&nbsp;</div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===1" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===5" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMindrayHeader.png"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===3" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMedtronicHeader.png"
+                                                     alt="SAI IMAGING LOGO">
+                                            </div>
+                                            <div class="container">
+                                                <table style=" padding: 10px 10px; width: 100%; border: none;">
+
+                                                    <tbody>
+                                                        <tr valign="top">
+                                                            <td style="font-size: 14px; color: #000; ">
+                                                                <table width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align: right; width: 100%; padding-right: 83px;">
+                                                                                <b>Date:</b>
+                                                                                {{VendorPODetailsList.VPO_DATE}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: right;">
+                                                                                <b>
+                                                                                    PO.
+                                                                                    No.:
+                                                                                </b> {{VendorPODetailsList.VPO_NUMBER}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-weight: 600; font-size: 18px;">
+                                                                                To,
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-size: 20px; width:40%">
+                                                                                <b>{{VendorPODetailsList.VENDOR_NAME}}</b>
+                                                                                <br>
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    {{VendorPODetailsList.ADDRESS}} - {{VendorPODetailsList.ZIP_CODE}} <br />{{VendorPODetailsList.CITY_NAME}}
+                                                                                </p>
+
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    <b>GSTIN No:</b>
+                                                                                    {{VendorPODetailsList.GST_NO}}
+                                                                                </p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div style="margin-bottom: 0px; font-size: 20px; margin-top: 30px; ">
+                                                                                    <b>
+                                                                                        Sub:
+                                                                                        Purchase Order for
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===1">
+                                                                                            <span ng-repeat="P in VendorPOProductList | unique:'M_NAME' ">
+                                                                                                {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}}<span ng-if="$index+1 < VendorPOProductList.length - 1">,</span>
+                                                                                            </span>.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===5">
+                                                                                            Mindray Machines.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===3">
+                                                                                            Medtronic Machines.
+                                                                                        </span>
+
+                                                                                    </b>
+                                                                                    <br />
+                                                                                    <div style="color:#000; font-size:20px; line-height:20px; margin-top:10px;">
+                                                                                        <p style="text-align: left;">Dear Sir,</p>
+                                                                                        <p>Please find below the Billing and Shipping address:  </p>
+
+                                                                                    </div>
+
+
+
+
+
+                                                                                    <div style=" width: 40%">
+                                                                                        <table style="width:100%; margin-top:10px; padding-top:10px;">
+                                                                                            <tbody>
+
+                                                                                                <tr>
+                                                                                                    <td colspan="1" style="text-align: left; font-size: 20px; font-weight: 600; line-height: 24px;">
+                                                                                                        Billing Address:
+                                                                                                        <br>Sai Medical Services <br> {{COMPANY_DETAILS[0].COMPANY_REG_ADDRESS}} - {{COMPANY_DETAILS[0].ZIP_CODE}}.<br> GSTIN: {{COMPANY_DETAILS[0].GST_NO}}
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td colspan="1">&nbsp;</td>
+                                                                                                </tr>
+
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+
+                                                                                    <div style=" width: 40%">
+                                                                                        <table style="width:100%; margin-top:10px; padding-top:10px;">
+                                                                                            <tbody>
+                                                                                                <tr>
+                                                                                                    <td colspan="1" style="text-align: left; font-size: 20px; font-weight: 600; line-height:24px; width:30% ">
+                                                                                                        Shipping Address:
+                                                                                                        <br>Sai Medical Services <br> {{COMPANY_DETAILS[0].COMPANY_COR_ADDRESS}}.
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td colspan="1">&nbsp;</td>
+                                                                                                </tr>
+
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+
+                                                                                    <div>
+                                                                                        <p style="color:#000; font-size:18px; margin-bottom:0px; margin-top: 8px;">Thanking You,</p>
+                                                                                        <img ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5" src="~/Images/signture-stamp-img.jpg" style="width:250px; height:120px; max-width:100%;" />
+                                                                                        <img ng-if="CUSTOMER_TYPE_ID===3" src="~/Images/Sai-ImagingServices-stamp.png" style="width:250px; height:120px; max-width:100%;" />
+                                                                                    </div>
+                                                                                    <div style="margin:40px 0;"></div>
+
+                                                                                    <div>
+                                                                                        <p style="color:#000; font-size:18px; margin-bottom:0px;">Yours Sincerely,</p>
+                                                                                        @*<h6 style="font-weight: 600; font-size:20px; margin-top: 0px; margin-bottom: 0;">Sai Medical Services</h6>*@
+                                                                                        <h4 style="margin: 0;"><b>Sai Medical Services</b></h4>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div style="position: fixed; width: 100%; bottom: 0px; margin-top:80px; text-align: center; padding-top: 50px;" ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                            <h5 style="color: #145da0; margin: 200px 0 0 4px;">
+                                                Admi. Office: {{COMPANY_DETAILS[0].COMPANY_REG_ADDRESS}} - {{COMPANY_DETAILS[0].ZIP_CODE}}.
+
+
+                                            </h5>
+                                        </div>
+                                        <div style="position: fixed; width: 100%; bottom: 0px; margin-top: 80px; text-align: center; padding-top: 50px; " ng-if="CUSTOMER_TYPE_ID===3">
+                                            <h5 style="color: #145da0; margin: 200px 0 0 4px;">
+                                                Admi. Office: Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.
+
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintVendorPODetails')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="VendorPOMindray">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintVendorPOMindrayDetails">
+                                    <div>
+                                        <style>
+                                            @@page {
+                                                size: auto;
+                                                margin-bottom: 80px;
+                                            }
+                                        </style>
+                                        <div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===1" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===5" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMindrayHeader.png"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===3" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMedtronicHeader.png"
+                                                     alt="SAI IMAGING LOGO">
+                                            </div>
+                                            <div style="font-size: 25px; width:100%; text-align:center; margin-top:15px;">
+                                                <b style="border-bottom: 2px solid #000;">PURCHASE ORDER</b>
+                                            </div>
+                                            <div style="
+        justify-content: center;">
+                                                <table style=" padding: 10px 10px; width: 100%; border: none;">
+
+                                                    <tbody>
+                                                        <tr valign="top">
+                                                            <td style="font-size: 14px; color: #000; ">
+                                                                <table width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align: right; width: 100%; padding-right: 85px;">
+                                                                                <b>Date:</b>
+                                                                                {{VendorPODetailsList.VPO_DATE}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: right;">
+                                                                                <b>
+                                                                                    PO.
+                                                                                    No.:
+                                                                                </b> {{VendorPODetailsList.VPO_NUMBER}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-weight: 600; font-size: 18px;">
+                                                                                To,
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-size: 20px; width:40%">
+                                                                                <b>{{VendorPODetailsList.VENDOR_NAME}}</b>
+                                                                                <br>
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    {{VendorPODetailsList.ADDRESS}} - {{VendorPODetailsList.ZIP_CODE}} <br />{{VendorPODetailsList.CITY_NAME}}
+                                                                                </p>
+
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    <b>GSTIN No:</b>
+                                                                                    {{VendorPODetailsList.GST_NO}}
+                                                                                </p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div style="margin-bottom: 0px; font-size: 20px; margin-top: 30px;">
+                                                                                    <b>
+                                                                                        Sub:
+                                                                                        Purchase Order for
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===1">
+                                                                                            <span ng-repeat="P in VendorPOProductList | unique:'M_NAME' ">
+                                                                                                {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}}<span ng-if="$index+1 < VendorPOProductList.length - 1">,</span>
+                                                                                            </span>.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===5">
+                                                                                            Mindray Machines.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===3">
+                                                                                            Medtronic Machines.
+                                                                                        </span>
+
+                                                                                    </b>
+                                                                                    <br />
+                                                                                    <br />
+                                                                                    <p style="text-align: left;">Dear Sir,</p>
+                                                                                    <p style="text-align: left;">
+                                                                                        With reference to our discussion with <b>{{VendorPODetailsList.OWNER_NAME}}</b> we are glad to confirm the purchase order for
+                                                                                        following Part.
+                                                                                    </p>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <table style="width:100%; border:1px solid black;
+            border-collapse: collapse;
+            padding-left: 2%;
+            padding-right: 2%;">
+
+                                                    <tr>
+                                                        <td>
+                                                            <div ng-repeat="P in VendorPOProductList" style="width: 100%; border-collapse: collapse;">
+                                                                <table style="width: 100%; border-collapse: collapse;">
+                                                                    <tbody>
+                                                                        <tr ng-if="$index+1 === 1">
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%;">
+                                                                                <p style="margin: 0; font-size:16px"><strong>Sr. No</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Particular</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Qty.</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 15%;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Rate</strong></p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%; ">
+                                                                                <P style=" font-size: 16px"><STRong>{{$index+1}}</STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: left;">
+
+                                                                                <p style=" font-size: 16px">
+                                                                                    {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}}
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.PRICE === 0">&nbsp;</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.PART_TAXABLE_VALUE > 0">{{P.QUANTITY}}</P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.PRICE > 0">{{P.PART_TAXABLE_VALUE}}/-</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.PART_TAXABLE_VALUE === 0">&nbsp;</P>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr ng-if="P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%;">
+                                                                                <P style="margin: 0; font-size: 16px"><STRong></STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; text-align: left; padding-left: 5px; padding-right: 5px; text-align: left; ">
+
+                                                                                <p style="margin: 0; font-size: 16px">
+
+                                                                                    {{Acc.ACCESSORY_NAME}}
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style="margin: 0; font-size: 16px">
+
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE > 0">{{Acc.PART_QTY}}</span>
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE === 0">&nbsp;</span>
+                                                                                </P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style="margin: 0; font-size: 16px">
+                                                                                    <span ng-if="Acc.PRICE === 0">&nbsp;</span>
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE > 0">{{Acc.PART_TAXABLE_VALUE}}/-</span>
+                                                                                </P>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr ng-if="P.IS_WITH_WARRANTY === 1">
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%; ">
+                                                                                <P style=" font-size: 16px"><STRong></STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: left;">
+
+                                                                                <p style=" font-size: 16px">
+                                                                                    {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}} Main Unit Warranty
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_PRICE === 0">&nbsp;</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_TAXABLE_VALUE > 0">{{P.WARRANTY_QTY}}</P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_PRICE > 0">{{P.WARRANTY_TAXABLE_VALUE}}/-</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_TAXABLE_VALUE === 0">&nbsp;</P>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div style="width: 100%; border-collapse: collapse;">
+                                                                <table style="width: 100%; border-collapse: collapse;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td colspan="3" valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right;">
+                                                                                <p style="font-size: 16px">TOTAL</p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <p style="font-size: 16px ">{{AMOUNT_INC_TAX}}/-</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </table>
+
+                                                <table style="width:100%;
+        border-collapse: collapse;
+        padding-left: 2%;
+        padding-right: 2%;">
+                                                    @*<tr>
+                                                        <td>
+                                                            <div style="color:#000; font-size:18px; margin-top:10px;">The Total cost of the system F.O.R Destination <strong>will be Rs.{{AMOUNT_INC_TAX}}/- (Rupees {{amtInwords}}).</strong></div>
+                                                        </td>
+                                                    </tr>*@
+                                                    <tr>
+                                                        <td>
+                                                            <h2 style="margin-bottom: 10px; margin-top: 30px; text-decoration: underline; font-size: 20px;">
+                                                                <b>
+                                                                    Terms
+                                                                    & Conditions:
+                                                                </b>
+                                                            </h2>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td valign="top" style="
+                border-collapse: collapse;
+                padding-left: 2%;
+                padding-right: 2%;
+                ">
+                                                            @*<p style="margin: 4px 0;">{{VendorPODetailsList.INC_EXC_TAX}} GST @('@') {{VendorPODetailsList.GST}}%.</p>*@
+                                                            <p style="margin: 4px 0; font-size: 18px; "><span id="TERMS1"></span></p>
+                                                        </td>
+
+                                                    </tr>
+
+                                                </table>
+                                                <br />
+                                                <br />
+                                                <table style="width: 100%; font-size: 20px;">
+
+                                                    <tr>
+                                                        <td colspan="2" style="
+                    border-collapse: collapse;
+                    padding: 0;">
+                                                            <p>Please acknowledge the receipt of our order and prioritize the early delivery of the system.</p>
+                                                            <p style="margin-bottom: 90px;">Thank You.</p>
+                                                            <img ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5" src="~/Images/signture-stamp-img.jpg" style="width:250px; height:120px; max-width:100%;" />
+                                                            <img ng-if="CUSTOMER_TYPE_ID===3" src="~/Images/Sai-ImagingServices-stamp.png" style="width:250px; height:120px; max-width:100%;" />
+                                                            <p>Yours Sincerely,</p>
+                                                            <h4 style="margin: 0;"><b>Sai Medical Services</b></h4>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" style="
+                    border-collapse: collapse;
+                    padding: 0;">
+                                                            <div style="margin-top: 30px;">
+                                                                <p>Please find below the Billing and Shipping address: </p>
+                                                                <table style="width: 100%;">
+                                                                    <tr>
+                                                                        <td style="width:50%"><b style="width: 40%">Billing Address:</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">Shipping Address:</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_NAME}}</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_NAME}}</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===3">
+                                                                        <td style="width:50%"><b style="width: 40%">SAI IMAGING HEALTHCARE PVT. LTD.</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">SAI IMAGING HEALTHCARE PVT. LTD.</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_REG_ADDRESS}} - {{COMPANY_DETAILS[0].ZIP_CODE}}</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_COR_ADDRESS}}</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===3">
+                                                                        <td style="width:50%"><b style="width: 40%">Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                                                        <td style="width:50%"><b style="width: 40%"ng-show="COMPANY_DETAILS[0].GST_NO">GSTIN: {{COMPANY_DETAILS[0].GST_NO}}</b></td>
+
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===3">
+                                                                        <td style="width:50%"><b style="width: 40%"ng-show="COMPANY_DETAILS[0].GST_NO">GSTIN: {{COMPANY_DETAILS[0].GST_NO}}</b></td>
+
+                                                                    </tr>
+                                                                </table>
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div style="position: fixed; width: 100%; bottom: 0px; margin-top: 80px; text-align: center; padding-top: 50px;" ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                            <h5 style="color: #145da0; margin: 200px 0 0 4px;">
+                                                Admi. Office: {{COMPANY_DETAILS[0].COMPANY_REG_ADDRESS}} - {{COMPANY_DETAILS[0].ZIP_CODE}}.
+                                            </h5>
+                                        </div>
+                                        <div style="position: fixed; width: 100%; bottom: 0px; margin-top: 80px; text-align: center; padding-top: 50px; " ng-if="CUSTOMER_TYPE_ID===3">
+                                            <h5 style="color: #145da0; margin: 200px 0 0 4px;">
+                                                Admi. Office: Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.
+
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintVendorPOMindrayDetails')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="VendorPOMedtronic">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintVendorPOMedtronicDetails">
+                                    <div>
+                                        <style>
+                                            @@page {
+                                                size: auto;
+                                                margin-bottom: 30px;
+                                            }
+                                        </style>
+                                        <div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===1" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===5" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMindrayHeader.png"
+                                                     alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div ng-if="CUSTOMER_TYPE_ID===3" style="display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 600px;"
+                                                     src="~/Images/Quotation/HeaderImages/SaiHealthCareMedtronicHeader.png"
+                                                     alt="SAI IMAGING LOGO">
+                                            </div>
+                                            <div style="font-size: 25px; width:100%; text-align:center; margin-top:15px">
+                                                <b style="border-bottom: 2px solid #000;">PURCHASE ORDER</b>
+                                            </div>
+                                            <div style="
+        justify-content: center;">
+                                                <table style=" padding: 10px 10px; width: 100%; border: none;">
+
+                                                    <tbody>
+                                                        <tr valign="top">
+                                                            <td style="font-size: 14px; color: #000; ">
+                                                                <table width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align: right; width: 100%; padding-right: 85px;">
+                                                                                <b>Date:</b>
+                                                                                {{VendorPODetailsList.VPO_DATE}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: right;">
+                                                                                <b>
+                                                                                    PO.
+                                                                                    No.:
+                                                                                </b> {{VendorPODetailsList.VPO_NUMBER}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-weight: 600; font-size: 18px;">
+                                                                                To,
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align: left; font-size: 20px; width: 40%">
+                                                                                <b>{{VendorPODetailsList.VENDOR_NAME}}</b>
+                                                                                <br>
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    {{VendorPODetailsList.ADDRESS}} - {{VendorPODetailsList.ZIP_CODE}} <br />{{VendorPODetailsList.CITY_NAME}}
+                                                                                </p>
+
+                                                                                <p style="margin: 0px; width: 40%">
+                                                                                    <b>GSTIN No:</b>
+                                                                                    {{VendorPODetailsList.GST_NO}}
+                                                                                </p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div style="margin-bottom: 0px; font-size: 20px; margin-top: 30px;">
+                                                                                    <b>
+                                                                                        Sub:
+                                                                                        Purchase Order for
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===1">
+                                                                                            <span ng-repeat="P in VendorPOProductList | unique:'M_NAME' ">
+                                                                                                {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}}<span ng-if="$index+1 < VendorPOProductList.length - 1">,</span>
+                                                                                            </span>.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===5">
+                                                                                            Mindray Machines.
+                                                                                        </span>
+                                                                                        <span ng-if="CUSTOMER_TYPE_ID===3">
+                                                                                            Medtronic Machines.
+                                                                                        </span>
+
+                                                                                    </b>
+                                                                                    <br />
+                                                                                    <br />
+                                                                                    <p style="text-align: left;">Dear Sir,</p>
+                                                                                    <p style="text-align: left;">
+                                                                                        With reference to our discussion with <b>{{VendorPODetailsList.OWNER_NAME}}</b> we are glad to confirm the purchase order for
+                                                                                        following Part.
+                                                                                    </p>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <table style="width:100%; border:1px solid black;
+            border-collapse: collapse;
+            padding-left: 2%;
+            padding-right: 2%;">
+
+                                                    <tr>
+                                                        <td>
+                                                            <div ng-repeat="P in VendorPOProductList" style="width: 100%; border-collapse: collapse;">
+                                                                <table style="width: 100%; border-collapse: collapse;">
+                                                                    <tbody>
+                                                                        <tr ng-if="$index+1 === 1">
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%;">
+                                                                                <p style="margin: 0; font-size:16px"><strong>Sr. No</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Particular</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Qty.</strong></p>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 15%;">
+                                                                                <p style="margin: 0; font-size: 16px"><strong>Rate</strong></p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%; ">
+                                                                                <P style=" font-size: 16px"><STRong>{{$index+1}}</STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: left;">
+
+                                                                                <p style=" font-size: 16px">
+                                                                                    {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}}
+                                                                                    
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.PRICE === 0">&nbsp;</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.PART_TAXABLE_VALUE > 0">{{P.QUANTITY}}</P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.PRICE > 0">{{P.PART_TAXABLE_VALUE}}/-</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.PART_TAXABLE_VALUE === 0">&nbsp;</P>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr ng-if="P.VendorPOProductAccessoriesList.length>0" ng-repeat="Acc in P.VendorPOProductAccessoriesList | filter: {'VPO_P_ID' : P.VPO_P_ID}  |filter:search:strict">
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%;">
+                                                                                <P style="margin: 0; font-size: 16px"><STRong></STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; text-align: left; padding-left: 5px; padding-right: 5px; text-align: left; ">
+
+                                                                                <p style="margin: 0; font-size: 16px">
+
+                                                                                    {{Acc.ACCESSORY_NAME}}
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style="margin: 0; font-size: 16px">
+
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE > 0">{{Acc.PART_QTY}}</span>
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE === 0">&nbsp;</span>
+                                                                                </P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style="margin: 0; font-size: 16px">
+                                                                                    <span ng-if="Acc.PRICE === 0">&nbsp;</span>
+                                                                                    <span ng-if="Acc.PART_TAXABLE_VALUE > 0">{{Acc.PART_TAXABLE_VALUE}}/-</span>
+                                                                                </P>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr ng-if="P.IS_WITH_WARRANTY === 1">
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 8%; ">
+                                                                                <P style=" font-size: 16px"><STRong></STRong></P>
+                                                                            </td>
+                                                                            <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: left;">
+
+                                                                                <p style=" font-size: 16px">
+                                                                                    {{P.M_NAME}} {{P.PRODUCT_NAME}} {{P.CAT_NAME}} Main Unit Warranty
+                                                                                </p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: center; width: 12%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_PRICE === 0">&nbsp;</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_TAXABLE_VALUE > 0">{{P.WARRANTY_QTY}}</P>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_PRICE > 0">{{P.WARRANTY_TAXABLE_VALUE}}/-</P>
+                                                                                <P style=" font-size: 16px" ng-if="P.WARRANTY_TAXABLE_VALUE === 0">&nbsp;</P>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div style="width: 100%; border-collapse: collapse;">
+                                                                <table style="width: 100%; border-collapse: collapse;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td colspan="3" valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right;">
+                                                                                <p style=" font-size: 16px">TOTAL</p>
+                                                                            </td>
+                                                                            <td valign="top" style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px; text-align: right; width: 15%;">
+                                                                                @*{{ACTUAL_AMOUNT}}/-*@
+                                                                                <p style=" font-size: 16px">{{AMOUNT_INC_TAX}}/-</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </table>
+
+                                                <table style="width:100%;
+        border-collapse: collapse;
+        padding-left: 2%;
+        padding-right: 2%;">
+                                                    <tr>
+                                                        <td>
+                                                            <div style="color: #000; font-size: 20px; margin-top: 10px;">The Total cost of the system F.O.R Destination <strong>will be Rs.{{AMOUNT_INC_TAX}}/- (Rupees {{amtInwords}}).</strong></div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <h2 style="margin-bottom: 10px; margin-top: 30px; text-decoration: underline; font-size: 20px;">
+                                                                <b>
+                                                                    Terms
+                                                                    & Conditions:
+                                                                </b>
+                                                            </h2>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td valign="top" style="
+                border-collapse: collapse;
+                padding-left: 2%;
+                padding-right: 2%;
+                ">
+                                                            @*<p style="margin: 4px 0;">{{VendorPODetailsList.INC_EXC_TAX}} GST @('@') {{VendorPODetailsList.GST}}%.</p>*@
+                                                            <p style="margin: 4px 0; font-size: 18px; "><span id="TERMS2"></span></p>
+                                                        </td>
+
+                                                    </tr>
+
+                                                </table>
+                                                <br />
+                                                <br />
+                                                <table style="width: 100%; font-size: 20px;">
+
+                                                    <tr>
+                                                        <td colspan="2" style="
+                    border-collapse: collapse;
+                    padding: 0;">
+                                                            <p>Please acknowledge the receipt of our order and prioritize the early delivery of the system.</p>
+                                                            <p style="margin-bottom: 90px;">Thank You.</p>
+                                                            <img ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5" src="~/Images/signture-stamp-img.jpg" style="width:250px; height:120px; max-width:100%;" />
+                                                            <img ng-if="CUSTOMER_TYPE_ID===3" src="~/Images/Sai-ImagingServices-stamp.png" style="width:250px; height:120px; max-width:100%;" />
+                                                            <p>Yours Sincerely,</p>
+                                                            @*<h4 style="margin: 0;"><b>{{COMPANY_DETAILS[0].COMPANY_NAME}}</b></h4>*@
+                                                            <h4 style="margin: 0;"><b>SAI IMAGING HEALTHCARE PVT. LTD.</b></h4>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" style="
+                    border-collapse: collapse;
+                    padding: 0;">
+                                                            <div style="margin-top: 30px;">
+                                                                <p>Please find below the Billing and Shipping address: </p>
+                                                                <table style="width: 100%;">
+                                                                    <tr>
+                                                                        <td style="width:50%"><b style="width: 40%">Billing Address:</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">Shipping Address:</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_NAME}}</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_NAME}}</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===3">
+                                                                        <td style="width:50%"><b style="width: 40%">SAI IMAGING HEALTHCARE PVT. LTD.</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">SAI IMAGING HEALTHCARE PVT. LTD.</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_REG_ADDRESS}} - {{COMPANY_DETAILS[0].ZIP_CODE}}</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">{{COMPANY_DETAILS[0].COMPANY_COR_ADDRESS}}</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===3">
+                                                                        <td style="width:50%"><b style="width: 40%">Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.</b></td>
+                                                                        <td style="width:50%"><b style="width: 40%">Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.</b></td>
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                                                        <td style="width:50%"><b style="width: 40%">GSTIN: {{COMPANY_DETAILS[0].GST_NO}}</b></td>
+
+                                                                    </tr>
+                                                                    <tr ng-if="CUSTOMER_TYPE_ID===3">
+                                                                        <td style="width:50%"><b style="width: 40%">GSTIN: {{COMPANY_DETAILS[0].GST_NO}}</b></td>
+
+                                                                    </tr>
+                                                                </table>
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div style="position: fixed; width: 100%; bottom: 0px; margin-top: 80px; text-align: center; padding-top: 50px;" ng-if="CUSTOMER_TYPE_ID===1 || CUSTOMER_TYPE_ID===5">
+                                            <h5 style="color: #145da0; margin: 200px 0 0 4px;">
+                                                Admi. Office: {{COMPANY_DETAILS[0].COMPANY_REG_ADDRESS}} - {{COMPANY_DETAILS[0].ZIP_CODE}}.
+                                            </h5>
+                                        </div>
+                                        <div style="position: fixed; width: 100%; bottom: 0px; margin-top: 80px; text-align: center; padding-top: 50px; " ng-if="CUSTOMER_TYPE_ID===3">
+                                            <h5 style="color: #145da0; margin: 200px 0 0 4px;">
+                                                Admi. Office: Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.
+
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintVendorPOMedtronicDetails')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts{
+
+    <script src="~/AngularJs/VendorPOView.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>*@
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    <script>
+        // Write on keyup event of keyword input element
+        $("#searchInTb").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#example-table3 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+        $("#searchStdAcc").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable1 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+        $("#searchSparePart").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable2 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+        $("#searchProbe").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable3 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+        $("#searchMainSystem").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable4 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+        $("#searchAttachment").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable5 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+        $("#searchTool").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable6 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+    </script>
+
+    <script>
+        function CheckALLStdAcc() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox1").change(function () {
+                if (this.checked) {
+                    $(".StdAcc").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".StdAcc").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".StdAcc").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".StdAcc").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox1").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox1").prop("checked", false);
+                }
+            });
+        }
+        function CheckALLSpareParts() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox2").change(function () {
+                if (this.checked) {
+                    $(".SpareParts").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".SpareParts").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".SpareParts").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".SpareParts").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox2").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox2").prop("checked", false);
+                }
+            });
+        }
+        function CheckALLProbes() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox3").change(function () {
+                if (this.checked) {
+                    $(".Probes").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".Probes").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".Probes").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".Probes").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox3").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox3").prop("checked", false);
+                }
+            });
+        }
+        function CheckALLMainSystem() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox4").change(function () {
+                if (this.checked) {
+                    $(".MainSystem").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".MainSystem").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".MainSystem").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".MainSystem").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox4").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox4").prop("checked", false);
+                }
+            });
+        }
+        function CheckALLAttachments() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox5").change(function () {
+                if (this.checked) {
+                    $(".Attachments").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".Attachments").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".Attachments").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".Attachments").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox5").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox5").prop("checked", false);
+                }
+            });
+        }
+        function CheckALLTools() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox6").change(function () {
+                if (this.checked) {
+                    $(".Tools").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".Tools").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".Tools").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".Tools").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox6").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox6").prop("checked", false);
+                }
+            });
+        }
+
+    </script>
+
+}

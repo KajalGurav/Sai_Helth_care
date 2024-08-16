@@ -1,0 +1,196 @@
+﻿
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 0;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<link href="~/dist/css/Imagestylesheet.css" rel="stylesheet" />
+<link href="~/dist/css/Paging.css" rel="stylesheet" />
+
+<section ng-controller="AdminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Monthly Attendance Report</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:right">
+                                <button type="button" class="btn btn-sm pull-left" ng-click="exportToExcel()" style="background-color: green; color: white" data-toggle="modal" data-target="#Comp_add">Export</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+
+                            <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                    ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList1"
+                                    ng-selected="emp.EMP_ID == EMP_ID" >
+                                <option value="">Select Employee</option>
+                            </select>
+
+                        </div>
+
+                        <div class="col-lg-3">
+                            <input type="text" class="form-control" ng-model="STARTING_DATE1" id="STARTING_DATE1" autocomplete="off" placeholder="Select From Date" />
+                        </div>
+                        <div class="col-lg-3">
+                            <input type="text" class="form-control" ng-model="ENDING_DATE1" id="ENDING_DATE1" autocomplete="off" placeholder="Select To Date" />
+                        </div>
+                        @*<div class="col-lg-3" style="text-align:center">
+                                <input type="text" id="STARTING_DATE1" name="Zip Code" class="form-control" placeholder="From Date" />
+
+                            </div>
+                            <div class="col-lg-3" style="text-align:center">
+                                <input type="text" id="ENDING_DATE1" name="Zip Code" class="form-control" placeholder="To Date" />
+
+                            </div>*@
+                        @*<div class="col-lg-3" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" data-target="#Comp_add">Get Data</button>
+
+                            </div>*@
+
+                        <div class="col-lg-2">
+                            <input type="button" class="form-control btn btn-success" ng-click="getdate()" value="Get Data" />
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" @*id="dvData"*@ ng-show="EmployeeList.length>0" style="font-size: 0.8rem;margin-top:10PX;">
+                            <thead>
+                                <tr style="background-color:green; color: white;">
+                                    <th><b>Sr.No.</b></th>
+                                    <th ng-repeat="report in EmployeeList[0].DATE_VALUEList">{{report.DATE}}</th>
+                                    <th><b>Present Day</b></th>
+                                    <th><b>Absent Day</b></th>
+                                    <th><b>Total Day</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in EmployeeList">
+                                    <td>{{$index+1}}</td>
+                                    @*<td>{{admin.EMPLOYEE_NAME}}</td>*@
+                                    <td ng-repeat="report in EmployeeList[$index].DATE_VALUEList">{{report.DATE_VALUE}}</td>
+                                    <td style="background-color:lightgreen">{{admin.TOTAL_PRESENT}}</td>
+                                    <td style="background-color: lightcoral">{{admin.TOTAL_ABSENT}}</td>
+                                    <td style="background-color: lightblue">{{admin.TOTAL_ABSENT + admin.TOTAL_PRESENT}}</td>
+
+
+                                    <!--<td>-->
+                                    @*<a data-toggle="modal" data-target="#myModal" style="color:red">Pending</a>*@
+                                    <!--<a data-toggle="modal" data-target="#viewModal" style="background-color:green;color:white;padding:3px;">View</a>
+
+                                    </td>-->
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    @*<script src="~/AngularJs/Customermaster.js"></script>*@
+
+    <script src="~/AngularJs/MonthlyAttendance.js"></script>
+
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    @*<script>
+        $(function () {
+            const formatDate = (date) => {
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            };
+
+            // Get the current date
+            const currentDate = new Date();
+
+            // Get the start date of the current month
+            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+            // Format the results
+            const formattedStartDate = formatDate(startDate);
+            const formattedCurrentDate = formatDate(currentDate);
+
+            // Set the values using jQuery
+            $(document).ready(function () {
+                $("#STARTING_DATE1").val(formattedStartDate);
+                $("#ENDING_DATE1").val(formattedCurrentDate);
+            });
+
+        });
+       
+    </script>*@
+    <script>
+        $(function () {
+            $("#STARTING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#STARTING_DATE1").datepicker("option", "dateFormat", "mm/dd/yy");
+            $("#STARTING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STARTING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#STARTING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#ENDING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#ENDING_DATE1").datepicker("option", "dateFormat", "mm/dd/yy");
+            $("#ENDING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#ENDING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#ENDING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+}
+

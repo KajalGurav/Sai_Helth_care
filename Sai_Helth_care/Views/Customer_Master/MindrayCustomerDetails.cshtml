@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewBag.Title = "MindrayCustomerDetails";
+}
+
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Mindray Customer Master</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" data-target="#Emp_add">Add Customer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Customer" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Customer Name</th>
+                                    <th>Place</th>
+                                    <th>Firm Name</th>
+                                    <th>Address</th>
+                                    <th>Contact No. </th>
+                                    <th>Mobile No. </th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>01</td>
+                                    <th>
+                                        <a href="~/Customer_Master/CustomerDetails"> MANOJ RATHOD </a>
+                                    </th>
+                                    <td>AHEMADNAGAR</td>
+                                    <td>MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</td>
+                                    <td>BEHIND ZOPADI CANTEEN SAVEDI</td>
+                                    <td>8945616167</td>
+                                    <td>8945616167</td>
+                                    <td> <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a> </td>
+                                </tr>
+                                <tr>
+                                    <td>02</td>
+                                    <th>
+                                        <a href="~/Customer_Master/CustomerDetails"> MANOJ KUMAR </a>
+                                    </th>
+                                    <td>AHEMADNAGAR</td>
+                                    <td>MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</td>
+                                    <td>BEHIND ZOPADI CANTEEN SAVEDI</td>
+                                    <td>8945616167</td>
+                                    <td>8945616167</td>
+                                    <td> <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal fade" id="Emp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ Add Customer </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Customer Name:</label><label style="color:red;">*</label>
+                                                <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Enter Customer Name" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Firm Name/Hospital Name:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Author Name" class="form-control" minlength="1" maxlength="6" placeholder="Enter Firm Name" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contact No.:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Contact No" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Alternate Contact No.:</label>
+                                                <input type="number" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Alter Contact No" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Email Id:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Email" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Alternate Email Id:</label>
+                                                <input type="text" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter ALternate Email" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Billing Address:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Author Name" class="form-control" minlength="1" maxlength="6" placeholder="Enter Billing Address" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Shipping Address:</label>
+                                                <input type="text" name="Author Name" class="form-control" minlength="1" maxlength="6" placeholder="Enter Shipping Address" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">State:</label><label style="color:red;">*</label>
+                                                <select class="form-control">
+                                                    <option>Select Sate</option>
+                                                    <option>Maharashtra</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">City:</label><label style="color:red;">*</label>
+                                                <select class="form-control">
+                                                    <option>Select City</option>
+                                                    <option value="">Mumbai</option>
+                                                    <option value="">Pune</option>
+                                                    <option value="">Nashik</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Zip Code:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Zip Code" class="form-control" minlength="1" maxlength="6" placeholder="Enter Zip Code" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Firm Address:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Author Name" class="form-control" placeholder="Enter Firm Address" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Degree Of Customer:</label>
+                                                <input type="text" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Degree Of Customer" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PAN Card No:</label>
+                                                <input type="number" name="Service" class="form-control" minlength="1" maxlength="6" placeholder="Enter PAN No" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">GST No.:</label>
+                                                <input type="number" name="Service" class="form-control" minlength="1" maxlength="6" placeholder="Enter GST No" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Tin No:</label>
+                                                <input type="text" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Tin No." required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PNDT No:</label>
+                                                <input type="text" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter PNDT No." required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PNDT Validity:</label>
+                                                <input type="text" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Validity In Date" required />
+                                            </div>
+
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Upload PNDT Certificate:</label>@*<label style="color:red;">*</label>*@
+                                                <input type="file" name="Service" class="form-control" minlength="1" maxlength="6" placeholder="Select Document" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Upload PAN Certificate:</label> @*<label style="color:red;">*</label>*@
+                                                <input type="file" name="Service" class="form-control" minlength="1" maxlength="6" placeholder="Select Document" required />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Customer" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+

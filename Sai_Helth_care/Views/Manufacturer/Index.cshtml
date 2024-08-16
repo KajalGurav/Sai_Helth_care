@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section ng-controller="ManufacturerCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Product Manufacturer</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()">Add Manufacturer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Manufacturer" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Category Name</th>
+                                    <th>Manufacturer Name</th>
+                                    <th>Status</th>
+                                    <th>Reg. Date</th>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="Cat in ManufacturerList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{Cat.CAT_NAME}}</td>
+                                    <td>{{Cat.M_NAME}}</td>
+                                    <td><a href="" ng-confirm-click="Do you want to change status ?" confirmed-click="ChangeStatus(Cat)"><b ng-style="Cat.STATUS=='Active'?{'color':'green'}:{'color':'red'}">{{Cat.STATUS}}</b></a></td>
+                                    <td>{{Cat.REG_DATE}}</td>
+                                    <td>
+                                        <a data-toggle="modal" ng-click="getForUpdate(Cat)" title="Update" class="btn btn-xs btn-success">Edit </a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="6" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal" id="Admin_Addupdate">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ Add Manufacturer </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Select Category:</label><label style="color:red;">*</label>
+                                                <select ng-model="CAT_ID" id="CAT_ID" class="form-control">
+                                                    <option value="">Select Category</option>
+                                                    <option ng-repeat="Category in CategoryList" value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Manufacturer Name:</label><label style="color:red;">*</label>
+                                                <input type="text" name="M_NAME" ng-model="M_NAME" class="form-control" maxlength="50" placeholder="Enter Manufacturer Name" required />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-sm" style="background-color:green;font-size:14px;color:white" ng-disabled="K1.$invalid" ng-click="AddAdmin()">{{Admin_Action}}</button>
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <script src="~/AngularJs/Manufacturer.js"></script>
+}
+

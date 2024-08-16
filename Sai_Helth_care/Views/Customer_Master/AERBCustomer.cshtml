@@ -1,0 +1,260 @@
+﻿
+@{
+    ViewBag.Title = "AERBCustomer";
+}
+
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>AERB Customer Master</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" data-target="#Emp_add">Add Customer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Customer" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No</th>
+                                    <th>Customer Name</th>
+                                    <th>Place</th>
+                                    <th>Firm Name</th>
+                                    <th>Address</th>
+                                    <th>Mobile No</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>01</td>
+                                    <th>
+                                        <a href="~/Customer_Master/AERBCustomerDetails">MANOJ RATHOD</a>
+                                    </th>
+                                    <td>AHEMADNAGAR</td>
+                                    <td>MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</td>
+                                    <td>BEHIND ZOPADI CANTEEN SAVEDI</td>
+                                    <td>8945616167</td>
+                                    <td> <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a> </td>
+                                </tr>
+                                <tr>
+                                    <td>01</td>
+                                    <th>
+                                        <a href="~/Customer_Master/AERBCustomerDetails">MANOJ KUMAR</a>
+                                    </th>
+                                    <td>AHEMADNAGAR</td>
+                                    <td>MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</td>
+                                    <td>BEHIND ZOPADI CANTEEN SAVEDI</td>
+                                    <td>8945616167</td>
+                                    <td> <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal fade" id="Emp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+                                <h4 class="modal-title"><b> Add Customer </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Customer Name:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Enter Customer Name" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Mobile No.:</label><label style="color:red;">*</label>
+                                                    <input type="number" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Mobile No" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Contact No.:</label><label style="color:red;">*</label>
+                                                    <input type="number" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Contact No" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Email Id:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="Contact No" class="form-control" minlength="1" maxlength="6" placeholder="Enter Email Id" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Firm Name:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="Author Name" class="form-control" minlength="1" maxlength="6" placeholder="Enter Firm Name" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Address:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="Author Name" class="form-control" placeholder="Enter Address" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Zip Code:</label><label style="color:red;">*</label>
+                                                    <input type="number" name="Zip Code" class="form-control" minlength="1" maxlength="6" placeholder="Enter Zip Code" required />
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Unit:</label><label style="color:red;">*</label>
+                                                    <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                        <option value="">Select Unit </option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Add Equipment:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Enter Equipment" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Elora User Id:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Enter Email id" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Elora Password:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Enter Email id" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Alternate Email Id:</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Enter Email id" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">No Of TLD:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Enter TLD" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Document Status:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Document Status" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Registration Status:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Registration Status" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Report Status:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Report Status" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Total Amount:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Total Amount" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Balance Payment:</label><label style="color:red;">*</label>
+                                                    <input type="text" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Balance Paymentt" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Cheque No:</label><label style="color:red;">*</label>
+                                                    <input type="number" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="Cheque No." required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">QA Done By:</label><label style="color:red;">*</label>
+                                                    <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                        <option value="">Select Unit </option>
+                                                        <option value="Prasad Deshmukh">Prasad Deshmukh</option>
+                                                        <option value="Prasad Sunil Sahane">Prasad Sunil Sahane</option>
+                                                        <option value="Akash Agale">Akash Agale</option>
+                                                        <option value="Sagar Tandle">Sagar Tandle</option>
+                                                        <option value="Rutuja Gawale">Rutuja Gawale</option>
+                                                        <option value="Nanasaheb Kajale">Nanasaheb Kajale</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">QA Done On Date:</label><label style="color:red;">*</label>
+                                                    <input type="date" name="AMOUNT" class="form-control" minlength="1" maxlength="6" @*placeholder="QA Sale Person."*@ required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">QA Sale Person:</label><label style="color:red;">*</label>
+                                                    <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                        <option value="">Select Unit </option>
+                                                        <option value="Prasad Deshmukh">Prasad Deshmukh</option>
+                                                        <option value="Prasad Sunil Sahane">Prasad Sunil Sahane</option>
+                                                        <option value="Akash Agale">Akash Agale</option>
+                                                        <option value="Sagar Tandle">Sagar Tandle</option>
+                                                        <option value="Rutuja Gawale">Rutuja Gawale</option>
+                                                        <option value="Nanasaheb Kajale">Nanasaheb Kajale</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">QA Due Date:</label><label style="color:red;">*</label>
+                                                    <input type="date" name="AMOUNT" class="form-control" minlength="1" maxlength="6" @*placeholder="QA Person Commisson."*@ required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">QA Person Commisson:</label><label style="color:red;">*</label>
+                                                    <input type="number" name="AMOUNT" class="form-control" minlength="1" maxlength="6" placeholder="QA Person Commisson." required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Uplod Document:</label>@*<label style="color:red;">*</label>*@
+                                                    <input type="file" name="Service" class="form-control" minlength="1" maxlength="6" placeholder="Select Document" required />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Comment:</label><label style="color:red;">*</label>
+                                                    <textarea class="form-control" placeholder="Enter Comments.."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Customer" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/Customermaster.js"></script>
+}
+

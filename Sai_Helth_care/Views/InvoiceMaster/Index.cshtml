@@ -1,0 +1,452 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@*<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>*@
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section ng-controller="InvoiceCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Invoice Master</b></h3>
+                            </div>
+
+                            <div ng-hide="CUSTOMER_TYPE=='Medtronic'" class="col-lg-2" style="text-align:center">
+                                <a href="~/InvoiceMaster/InvoiceAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId=0&InvoiceId=0" class="btn btn-sm pull-left" style="background-color: green; color: white" ng-click="DeleteExistingRecord('Regular')">Add Invoice</a>
+                            </div>
+                            <div ng-show="CUSTOMER_TYPE=='Medtronic'" class="col-lg-2" style="text-align:center">
+                                <a href="~/InvoiceMaster/MedtronicInvoiceAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId=0&InvoiceId=0" class="btn btn-sm pull-left" style="background-color: green; color: white" ng-click="DeleteExistingRecord('Medtronic')">Add Invoice</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Invoice" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Invoice No.</th>
+                                    <th>Invoice Date</th>
+                                    <th>Customer Name</th>
+                                    <th ng-hide="CUSTOMER_TYPE==='Medtronic'">Product Name</th>
+                                    <th>Model No/Name</th>
+                                    <th>Invoice For</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in InvoiceList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{admin.INVOICE_NUMBER}}</td>
+                                    <td>{{admin.INVOICE_DATE}}</td>
+                                    <td>{{admin.CUSTOMER_NAME}}</td>
+                                    <td ng-hide="CUSTOMER_TYPE==='Medtronic'">{{admin.CAT_NAME}}</td>
+                                    <td>{{admin.PRODUCT_NAME}}</td>
+                                    <td>{{admin.InvoiceFor}}</td>
+                                    <td>
+                                        <a ng-hide="CUSTOMER_TYPE=='Medtronic'" href="~/InvoiceMaster/InvoiceAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.Customer_ID}}&InvoiceId={{admin.INVOICE_ID}}" class="btn btn-sm pull-left" style="background-color: green; color: white">Edit</a>
+                                        <a ng-show="CUSTOMER_TYPE=='Medtronic'" href="~/InvoiceMaster/MedtronicInvoiceAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.Customer_ID}}&InvoiceId={{admin.INVOICE_ID}}" class="btn btn-sm pull-left" style="background-color: green; color: white">Edit</a>
+                                    </td>
+                                </tr>
+
+                                <tr ng-if="CUSTOMER_TYPE!=='Medtronic' && (!pager.pages.length)">
+                                    <td colspan="7" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                                <tr ng-if="CUSTOMER_TYPE==='Medtronic' && (!pager.pages.length)">
+                                    <td colspan="6" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Emp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ Add Daily Challan </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddDeliveryChallan" ng-submit="AddDeliveryChallan(AddDeliveryChallan.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">DC Number:</label><label style="color:red;">*</label>
+                                                <input type="text" name="DC_Number" ng-model="DC_Number" class="form-control" readonly placeholder="DC Number" />
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Select Customer:</label><label style="color:red;">*</label>
+                                                <select ng-model="Customer_ID" id="Customer_ID" name="Customer_ID" class="form-control"
+                                                        ng-options="cust.Customer_ID as cust.CUSTOMER_NAME for cust in AllCustomerList"
+                                                        ng-selected="cust.Customer_ID == Customer_ID"
+                                                        ng-change="OnCustomerChange()" required>
+                                                    <option value="">Select Customer</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.Customer_ID.$invalid
+                                                      && (AddDeliveryChallan.Customer_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.Customer_ID.$error.required">
+                                                        Customer is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                                                <select ng-model="F_ID" id="F_ID" name="F_ID" class="form-control"
+                                                        ng-options="firm.F_ID as firm.FIRM_NAME for firm in CustomerFirmList"
+                                                        ng-selected="firm.F_ID == F_ID" required>
+                                                    <option value="">Select Customer Firm</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.F_ID.$invalid
+                                                      && (AddDeliveryChallan.F_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.F_ID.$error.required">
+                                                        Customer Firm is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DC Date:</label>@*<label style="color:red;">*</label>*@
+                                                <input type="text" id="DC_DATE" name="DC_DATE"
+                                                       ng-model="DC_DATE" class="form-control"
+                                                       placeholder="Enter DC Date" @*required*@ />
+                                                <span ng-show="(AddDeliveryChallan.DC_DATE.$invalid && (AddDeliveryChallan.DC_DATE.$touched || AddDeliveryChallan.DC_DATE.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.DC_DATE.$error.required">DC Date is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Product Category: </label><label style="color:red;">*</label>
+                                                <select ng-model="CAT_ID" id="CAT_ID" name="CAT_ID" class="form-control"
+                                                        ng-options="cat.CAT_ID as cat.CAT_NAME for cat in CategoryList"
+                                                        ng-selected="cat.CAT_ID == CAT_ID"
+                                                        ng-change="OnCategoryChange()"
+                                                        required>
+                                                    <option value="">Select Product Category</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.CAT_ID.$invalid
+                                                      && (AddDeliveryChallan.CAT_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.CAT_ID.$error.required">
+                                                        Product category is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Manufacturer: </label><label style="color:red;">*</label>
+                                                <select ng-model="M_ID" id="M_ID" name="M_ID" class="form-control"
+                                                        ng-options="mfg.M_ID as mfg.M_NAME for mfg in ManufacturerList"
+                                                        ng-selected="mfg.M_ID == M_ID"
+                                                        ng-change="OnManufacturerChange()"
+                                                        required>
+                                                    <option value="">Select Manufacturer</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.M_ID.$invalid
+                                                      && (AddDeliveryChallan.M_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.M_ID.$error.required">
+                                                        Manufacturer is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Product Name/Model:</label><label style="color:red;">*</label>
+                                                <select ng-model="P_ID" id="P_ID" name="P_ID" class="form-control"
+                                                        ng-options="prod.P_ID as prod.PRODUCT_NAME for prod in ProductList"
+                                                        ng-selected="prod.P_ID == P_ID" required>
+                                                    <option value="">Select Product Name/Model</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.P_ID.$invalid
+                                                      && (AddDeliveryChallan.P_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.P_ID.$error.required">
+                                                        Product name/model is required
+                                                    </span>
+                                                </span>
+                                            </div>
+
+
+
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                                <input type="text" name="DC_QTY" ng-model="DC_QTY" class="form-control" minlength="1" maxlength="6"
+                                                       placeholder="Enter Qty" required />
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Price:</label><label style="color:red;">*</label>
+                                                <input type="text" name="DC_PRICE" ng-model="DC_PRICE" class="form-control" placeholder="Enter Price" required />
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label" style="color:white">.</label>
+                                                <button type="button" class="btn btn-sm pull-left form-control" style="background-color:peru; color: white">Calculate</button>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DC For Spare Part:</label><label style="color:red;">*</label>
+                                                <select name="IS_DCForSparePart" class="form-control" ng-model="IS_DCForSparePart">
+                                                    <option value="">Select</option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">DC For:</label>
+                                                <select name="DC_For" class="form-control" ng-model="DC_For">
+                                                    <option value="Accessories">Accessories</option>
+                                                    <option value="SpareParts">Spare Parts</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-3" ng-show="DC_For === 'Accessories'">
+                                                <label class="control-label">Accessories:</label><label style="color:red;">*</label>
+                                                <select ng-model="STD_ID" id="STD_ID" name="STD_ID" class="form-control"
+                                                        ng-options="accs.STD_ID as accs.STD_ACC_NAME for accs in AccessoriesList"
+                                                        ng-selected="accs.STD_ID == STD_ID" required>
+                                                    <option value="">Select Accessories</option>
+                                                </select>
+                                                <span ng-show="IsAccessoriesSelected == 'No'" style="color:red">Please select Accessories</span>
+                                            </div>
+                                            <div class="form-group col-md-3" ng-show="DC_For === 'SpareParts'">
+                                                <label class="control-label">Spare Parts:</label><label style="color:red;">*</label>
+                                                <select ng-model="SP_ID" id="SP_ID" name="SP_ID" class="form-control"
+                                                        ng-options="sparpart.SP_ID as sparpart.SPARE_PART for sparpart in SparePartList"
+                                                        ng-selected="sparpart.SP_ID == SP_ID" required>
+                                                    <option value="">Select Spare Parts</option>
+                                                </select>
+                                                <span ng-show="IsSparePartSelected == 'No'" style="color:red">Please select spare parts</span>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Quantity:</label>@*<label style="color:red;">*</label>*@
+                                                <input type="text" name="PART_QTY" ng-model="PART_QTY" class="form-control" minlength="1" maxlength="6"
+                                                       placeholder="Enter Qty" required />
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Price:</label>@*<label style="color:red;">*</label>*@
+                                                <input type="text" name="PART_PRICE" ng-model="PART_PRICE" class="form-control" placeholder="Enter Price" required />
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label" style="color:white">.</label>
+                                                <button type="button" class="btn btn-sm pull-left form-control"
+                                                        style="background-color:peru; color: white"
+                                                        ng-click="AddPartsButtonClicked()">
+                                                    Add Parts
+                                                </button>
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                                        <thead>
+                                                            <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                                <th style="width:20px;">No.</th>
+                                                                <th>Spare Parts/Accessories</th>
+                                                                <th style="width:100px; text-align:center">Price</th>
+                                                                <th style="width: 100px; text-align: center;">Quantity</th>
+                                                                <th style="width: 50px; text-align: center;">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="dcsa in DC_SparePartsAndAccessories">
+                                                                <td>{{$index+1}}</td>
+                                                                <td>{{dcsa.SP_ACCESSORIES_NAME}}</td>
+                                                                <td style="text-align: center">Rs.{{dcsa.PART_PRICE}}/-</td>
+                                                                <td style="text-align: center">{{dcsa.PART_QTY}}</td>
+                                                                <td>
+                                                                    <a class="btn btn-xs btn-danger" ng-click="Delete_DC_SparePartsAndAccessories(dcsa)">Remove</a>
+                                                                </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Total Amount:</label>
+                                                <input type="text" name="AMOUNT" class="form-control" readonly
+                                                       placeholder="Total Amount" required />
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">Inc. All Taxes:</label>
+                                                <label style="color:red;">*</label>
+                                                <select ng-model="IAT_ID" id="IAT_ID" name="IAT_ID" class="form-control"
+                                                        ng-options="IAT.IAT_ID as IAT.IAT_NAME for IAT in IncludingAllTaxesList"
+                                                        ng-selected="IAT.IAT_ID == IAT_ID" required>
+                                                    <option value="">Select</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.IAT_ID.$invalid
+                                                      && (AddDeliveryChallan.IAT_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.IAT_ID.$error.required">
+                                                        Product name/model is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label class="control-label">GST:</label><label style="color:red;">*</label>
+
+                                                <select ng-model="GSTP_ID" id="GSTP_ID" name="GSTP_ID" class="form-control"
+                                                        ng-options="gst.GSTP_ID as gst.GST_PERC for gst in GSTPercentageList"
+                                                        ng-selected="gst.GSTP_ID == GSTP_ID" required>
+                                                    <option value="">NA</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.GSTP_ID.$invalid
+                                                      && (AddDeliveryChallan.GSTP_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.GSTP_ID.$error.required">
+                                                        GST percentage is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Total Amount:</label>
+                                                <input type="text" name="AMOUNT" class="form-control" readonly placeholder="Total Amount" required />
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Amount Inc. Tax:</label>
+                                                <input type="text" name="AMOUNT" class="form-control" readonly placeholder="Amount Inc. Tax" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Material:</label>
+                                                <select ng-model="MATERIAL_ID" id="MATERIAL_ID" name="MATERIAL_ID" class="form-control"
+                                                        ng-options="mtrl.MATERIAL_ID as mtrl.MATERIAL_NAME for mtrl in MaterialList"
+                                                        ng-selected="mtrl.MATERIAL_ID == MATERIAL_ID" required>
+                                                    <option value="">Select Material</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.MATERIAL_ID.$invalid
+                                                      && (AddDeliveryChallan.MATERIAL_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.MATERIAL_ID.$error.required">
+                                                        Material is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DC Close Date:</label>
+                                                <input type="number" name="Service" class="form-control" readonly placeholder="Dc close Date" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DC Status:</label>
+                                                <select ng-model="DCS_ID" id="DCS_ID" name="DCS_ID" class="form-control"
+                                                        ng-options="dcs.DCS_ID as dcs.STATUS_NAME for dcs in DCStatusList"
+                                                        ng-selected="dcs.DCS_ID == DCS_ID" required>
+                                                    <option value="">Select DC Status</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.DCS_ID.$invalid
+                                                      && (AddDeliveryChallan.DCS_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.DCS_ID.$error.required">
+                                                        Material is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                          
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Engineer Name:</label>
+                                                <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                                        ng-selected="emp.EMP_ID == EMP_ID" required>
+                                                    <option value="">Select Engineer</option>
+                                                </select>
+                                                <span ng-show="(AddDeliveryChallan.EMP_ID.$invalid
+                                                      && (AddDeliveryChallan.EMP_ID.$dirty))">
+                                                    <span class="error" ng-show="AddDeliveryChallan.EMP_ID.$error.required">
+                                                        Engineer is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Comments:</label>
+                                                <textarea class="form-control" placeholder="Comments"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddDeliveryChallan.$invalid" ng-click="AddUpdateAccount()" value="Add Challan" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts
+{
+    <script src="~/AngularJs/InvoiceMaster.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+}

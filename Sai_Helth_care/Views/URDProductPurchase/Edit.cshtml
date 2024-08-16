@@ -1,0 +1,1075 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+}
+
+
+<style>
+    .catStyle_Desc {
+        color: orangered;
+        cursor: pointer;
+        font-size: 15px;
+        border: 1px solid #077F7B;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .catStyle_active_Desc {
+        color: white;
+        background-color: #077F7B;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: 1px solid #077F7B;
+        border-radius: 5px;
+    }
+</style>
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+<section class="content" ng-controller="UrdproductEditCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color:green;color:white"><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>URD Product Details (<span style="color:red">Letter Number : {{LETER_REF_NO}}</span>)</b></h3>
+                            </div>
+                            <div class="col-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12" style="overflow-y: auto;">
+                            <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%" style="font-size: 0.8rem; ">
+                                <thead style="color: white; background-color: gray;">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Customer Name</th>
+                                        <th>Contact No</th>
+                                        <th>Alt Contact No</th>
+                                        <th>Firm Name</th>
+                                        <th>Firm Address</th>
+                                        <th>Product</th>
+                                        <th>Model</th>
+                                        <th>P.N.D.T. Certificate No	</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="Urdproduct in URdproducDetailstList">
+                                        <td>{{$index+1}}</td>
+                                        <td>{{Urdproduct.CUSTOMER_NAME}}</td>
+                                        <td>{{Urdproduct.CONTACT_NO}}</td>
+                                        <td>{{Urdproduct.ALTERNATE_CONTACT_NO}}</td>
+                                        <td>{{Urdproduct.FIRM_NAME}}</td>
+                                        <td>{{Urdproduct.FIRM_ADDRESS}}</td>
+                                        <td>{{Urdproduct.CAT_NAME}}</td>
+                                        <td>{{Urdproduct.PRODUCT_NAME}}</td>
+                                        <td>{{Urdproduct.PNDT_CIRTIFICATE_NO}}</td>
+                                        <td><b style="color:forestgreen">{{Urdproduct.URD_STATUS}}</b></td>
+                                        @*<td>{{Urdproduct.REG_DATE}}</td>*@
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="card">
+
+                                <div class="card-body" id="Demoexample_0">
+                                    <div class="col-lg-12 " style="margin-bottom:10px">
+                                        <form name="URDEdit" ng-submit="URDEdit(URDEdit.$valid)" data-toggle="validator" role="form">
+                                            <div class="row" style="margin-bottom:15px;">
+
+                                                <div class="col-lg-3">
+                                                    <label class="control-label">Letter Ref.No :</label>
+                                                    <input class="form-control" type="text" ng-model="LETER_REF_NO" readonly placeholder="Enter Letter Ref.No" />
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <label class="control-label">Letter Date:</label><label style="color:red;">*</label>
+                                                    <input class="form-control" type="text" id="LETTER_DATE" ng-model="LETTER_DATE" placeholder="Enter Letter Date" />
+                                                </div>
+
+                                                @*<div class="form-group col-md-3">
+            <label class="control-label">Enter Customer Type:</label><label style="color:red;">*</label>
+            <select class="form-control" ng-model="CUSTOMER_TYPE_ID" id="CUSTOMER_TYPE_ID" ng-change="TypeCustomerList()" required>
+                <option value="">Select Customer Type</option>
+                <option ng-repeat="Customer in CustomerTypeList" value="{{Customer.ID}}">{{Customer.CUSTOMER_TYPE}}</option>
+            </select>
+        </div>*@
+
+                                                <div class="form-group col-md-3">
+                                                    <label class="control-label">Enter Customer Type:</label><label style="color:red;">*</label>
+                                                    <select class="form-control" ng-model="CUSTOMER_TYPE_ID" id="CUSTOMER_TYPE_ID" ng-change="TypeCustomerList()"
+                                                            ng-options="Customer.ID as Customer.CUSTOMER_TYPE for Customer in CustomerTypeList"
+                                                            ng-selected="Customer.ID == CUSTOMER_TYPE_ID" required>
+                                                        <option value="">Select Customer Type</option>
+                                                        @*<option ng-repeat="Customer in CustomerList" ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-value="{{Customer.Customer_ID}}">{{Customer.CUSTOMER_NAME}}</option>*@
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-md-3">
+                                                    <label class="control-label">Enter Customer Name:</label><label style="color:red;">*</label>
+                                                    <select class="form-control" ng-model="CUSTOMER_ID" id="CUSTOMER_ID" ng-change="GetFirmChange()"
+                                                            ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in CustomerList"
+                                                            ng-selected="Customer.Customer_ID == CUSTOMER_ID" required>
+                                                        <option value="">Select Customer Name</option>
+                                                        @*<option ng-repeat="Customer in CustomerList" ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-value="{{Customer.Customer_ID}}">{{Customer.CUSTOMER_NAME}}</option>*@
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-lg-3">
+                                                    <label class="control-label">Select Customer Firm Name :</label><label style="color:red;">*</label>
+                                                    <select name="FIRM_ID" id="FIRM_ID" class="form-control" ng-model="FIRM_ID"
+                                                            ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in CustomerFirmList"
+                                                            ng-selected="Customer.F_ID == FIRM_ID" required>
+                                                        <option value="">Select Firm Name</option>
+                                                        @*<option ng-repeat="Customer in CustomerFirmList" ng-selected="Customer.F_ID == FIRM_ID" ng-value="{{Customer.F_ID}}">{{Customer.FIRM_NAME}}</option>*@
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <label class="control-label">URD Status:</label><label style="color:red;">*</label>
+                                                    <select class="form-control" ng-model="URD_STATUS" id="URD_STATUS" name="URD_STATUS" ng-change="URDStatusChange()" required>
+                                                        <option value="">Select URD Status</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Issue">Issue</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-lg-3">
+                                                    <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
+                                                    <select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()"
+                                                            ng-options="Category.CAT_ID as Category.CAT_NAME for Category in CategoryList"
+                                                            ng-selected="Category.CAT_ID == CAT_ID" required>
+                                                        <option value="">Select Product Category</option>
+                                                        @*<option ng-repeat="Category in CategoryList" ng-selected="Category.CAT_ID == CAT_ID" ng-value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>*@
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-lg-3">
+                                                    <label class="control-label">Select Manufacturer :</label><label style="color:red;">*</label>
+                                                    <select ng-model="M_ID" id="M_ID" class="form-control" ng-change="GetProductChange()"
+                                                            ng-options="Manufac.M_ID as Manufac.M_NAME for Manufac in ManufacturerList"
+                                                            ng-selected="Manufac.M_ID == M_ID">
+                                                        <option value="">Select Manufacturer</option>
+                                                        @*<option ng-repeat="Manufac in ManufacturerList" ng-selected="Manufac.M_ID == M_ID" ng-value="{{Manufac.M_ID}}">{{Manufac.M_NAME}}</option>*@
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-lg-3">
+                                                    <label class="control-label">Select Product/Model :</label><label style="color:red;">*</label>
+                                                    <select ng-model="P_ID" id="P_ID" class="form-control"
+                                                            ng-options="Product.P_ID as Product.PRODUCT_NAME for Product in ProductList"
+                                                            ng-selected="Product.P_ID == P_ID" required>
+                                                        <option value="">Select Product</option>
+                                                        @*<option ng-repeat="Product in ProductList" ng-selected="Product.P_ID == P_ID" ng-value="{{Product.P_ID}}">{{Product.PRODUCT_NAME}}</option>*@
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="form-group col-md-3">
+                                                            <label class="control-label">URD Product For:</label>
+                                                            <select name="INVOICE_For" class="form-control" ng-model="INVOICE_For">
+                                                                <option value="Accessories">Accessories</option>
+                                                                <option value="SpareParts">Spare Parts</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group col-md-3" ng-show="INVOICE_For === 'Accessories'">
+                                                            <label class="control-label">Accessories:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                                            <select ng-model="STD_ID" id="STD_ID" name="STD_ID" class="form-control"
+                                                                    ng-options="accs.STD_ID as accs.STD_ACC_NAME for accs in AccessoriesList"
+                                                                    ng-selected="accs.STD_ID == STD_ID" @*ng-required="IS_INVOICEForSparePart === 1"*@>
+                                                                <option value="">Select Accessories</option>
+                                                                @*<option ng-repeat="state in AllCustomerList" value="{{accs.STD_ID}}">{{accs.STD_ACC_NAME}}</option>*@
+                                                            </select>
+                                                            <span ng-show="IsAccessoriesSelected == 'No'" style="color:red">Please select Accessories</span>
+                                                        </div>
+                                                        <div class="form-group col-md-3" ng-show="INVOICE_For === 'SpareParts'">
+                                                            <label class="control-label">Spare Parts:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                                            <select ng-model="SP_ID" id="SP_ID" name="SP_ID" class="form-control"
+                                                                    ng-options="sparpart.SP_ID as sparpart.SPARE_PART for sparpart in SparePartList"
+                                                                    ng-selected="sparpart.SP_ID == SP_ID" @*ng-required="IS_INVOICEForSparePart === 1"*@>
+                                                                <option value="">Select Spare Parts</option>
+                                                                @*<option ng-repeat="state in AllCustomerList" value="{{sparpart.SP_ID}}">{{sparpart.SPARE_PART}}</option>*@
+                                                            </select>
+                                                            <span ng-show="IsSparePartSelected == 'No'" style="color:red">Please select spare parts</span>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                                            <input class="form-control" type="number" id="QUANTITY" ng-model="QUANTITY" placeholder="Enter Quantity" />
+                                                        </div>
+
+                                                        <div class="form-group col-md-2">
+                                                            <label class="control-label" style="color:white">.</label>
+                                                            <button type="button" class="btn btn-sm pull-left form-control"
+                                                                    style="background-color:peru; color: white"
+                                                                    ng-click="AddPartsButtonClicked()">
+                                                                Add Parts
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                                            <thead>
+                                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                                    <th style="width:20px;">No.</th>
+                                                                    <th>Product Name</th>
+                                                                    <th>Spare Parts/Accessories</th>
+                                                                    <th style="width: 100px; text-align: center;">Quantity</th>
+                                                                    <th style="width: 50px; text-align: center;">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="dcsa in IM_SparePartsAndAccessories">
+                                                                    <td>{{$index+1}}</td>
+                                                                    <td>{{dcsa.PRODUCT_NAME}}</td>
+                                                                    <td>{{dcsa.STD_ACC_NAME}}</td>
+                                                                    <td style="text-align: center">{{dcsa.QUANTITY}}</td>
+                                                                    <td style="text-align: center; width:10%">
+                                                                        <a class="btn btn-xs btn-danger" ng-click="Delete_IM_SparePartsAndAccessories(dcsa)">Remove</a>
+                                                                    </td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="row" style="margin:0px; padding:0px;">
+                                                        <div class="form-group col-md-10" style="color:red; "> Serial No selection for Spare Parts / Accessories is mandatory* </div>
+                                                        <div class="form-group col-md-2">
+                                                            <button type="button" ng-click="CalculateAmountSparePart()" class="btn btn-sm pull-left form-control" style="background-color:peru; color: white">Calculate</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <label class="control-label">Serial No:</label><label style="color:red;">*</label>
+                                                    <input class="form-control" ng-model="SERIAL_NO" type="text" placeholder="Enter Serial No" required />
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <label class="control-label">MRC No:</label>
+                                                    <input class="form-control" ng-model="MRC_NO" type="text" placeholder="Enter MRC No" />
+                                                </div>
+
+                                                <div class="col-lg-3" style="margin-top:0px">
+                                                    <label class="control-label">P.N.D.T Certificate No :</label>
+                                                    <input class="form-control" value="{{CustomerPndtList[0].PNDT_NO}}" ng-model="PNDT_CIRTIFICATE_NO" @*ng-model="PNDT_CIRTIFICATE_NO"*@ type="text" readonly placeholder="Enter P.N.D.T Certificate No" />
+                                                </div>
+
+                                                <div class="col-lg-3" style="margin-top:0px">
+                                                    <label class="control-label">Validity Date:</label>
+                                                    <input class="form-control" value="{{CustomerPndtList[0].PNDT_VALIDITY}}" id="PNDT_VALIDITY" ng-model="PNDT_VALIDITY" type="text" readonly placeholder="Enter Validity Date" />
+                                                </div>
+                                                @*<div class="col-lg-6">
+            <label class="control-label">P.N.D.T. Cell:</label><label style="color:red;">*</label>
+            <input class="form-control" ng-model="PNDT_CELL" type="text" placeholder="Enter P.N.D.T. Cell" required />
+        </div>*@
+
+                                                <div ng-show="URD_STATUS === 'Issue'" class="col-lg-5" style="margin-top:0px">
+                                                    <label class="control-label">Gov. Permitted U.R.D ref. No:</label><label style="color:red;">*</label>
+                                                    <input class="form-control" ng-model="GOV_PERMITED_URD_REF_NO" type="text" placeholder="Enter Gov. Permited U.R.D ref. No" ng-required="URD_STATUS === 'Issue'" />
+                                                </div>
+                                                <div ng-show="URD_STATUS === 'Issue'" class="col-lg-4" style="margin-top:0px">
+                                                    <label class="control-label">Select Engineer Name:</label><label style="color:red;">*</label>
+                                                    <select class="form-control" ng-model="EMP_ENG_ID" id="EMP_ENG_ID" ng-required="URD_STATUS === 'Issue'"
+                                                            ng-options="Employee.EMP_ID as Employee.EMP_NAME for Employee in EmployeeEngList"
+                                                            ng-selected="Employee.EMP_ID == EMP_ENG_ID">
+                                                        <option value="">Select Engineer Name</option>
+                                                        @*<option  ng-repeat="Employee in EmployeeEngList" ng-selected="Employee.EMP_ID==EMP_ENG_ID" value="{{Employee.EMP_ID}}">{{Employee.EMP_NAME}}</option>*@
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6" style="margin-top:0px">
+                                                    <label class="control-label">Company P.N.D.T Certificate No :</label>
+                                                    <input class="form-control" ng-model="COMPANY_PNDT_NO" type="text" readonly placeholder="Enter Company P.N.D.T Certificate No" />
+                                                </div>
+
+
+                                                <div ng-show="URD_STATUS === 'Issue'" class="col-md-6" style="margin-top:0px">
+                                                    <label class="control-label">Letter Receive Date:</label><label style="color:red;">*</label>
+                                                    <input type="text" id="LETTER_RECIVED_DATE" name="LETTER_RECIVED_DATE" ng-model="LETTER_RECIVED_DATE" class="form-control" placeholder="Enter Receive Date" />
+                                                </div>
+
+                                                <div ng-show="URD_STATUS === 'Issue'" class="col-md-6" style="margin-top:0px">
+                                                    <label class="control-label">Accessorie Details :</label><label style="color:red;">*</label>
+                                                    <textarea class="form-control" ng-model="ACCESSORIES_DETAILS" ng-required="URD_STATUS === 'Issue'" placeholder="Enter Accessorie Details"></textarea>
+                                                </div>
+
+                                                <div ng-show="URD_STATUS === 'Issue'" class="col-md-6" style="margin-top:0px">
+                                                    <label class="control-label">Upload Govt. Permission Letter :</label><label style="color:red;">*</label>
+                                                    <input class="form-control" ng-model="UPLOD_GOV_PERMISSION_LATER" type="file" accept="image/jpg, image/jpeg, image/png, application/pdf" id="Profile_photo" />
+                                                </div>
+                                                <div class="col-md-6" style="margin-top:0px">
+                                                    <label class="control-label">Supplier Address :</label><label style="color:red;">*</label>
+                                                    <textarea class="form-control" ng-model="FIRM_ADDRESS" readonly placeholder="Supplier Address"></textarea>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div>
+
+                                                        <label class="control-label">P.N.D.T. Cell:</label><label style="color:red;">*</label>
+                                                        <textarea class="form-control" ng-model="PNDT_CELL" id="PNDT_CELL" name="PNDT_CELL" placeholder="Enter P.N.D.T. Cell"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div>
+                                        <div class="row">
+                                            <input type="button" class="btn btn-sm" style="margin-top:10px;background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="URDEdit.$invalid" ng-click="UpdateAdmin()" value="Update" />
+                                            <input type="button" class="btn btn-sm" style="margin-top:10px;background-color:red; color: white; font-size: 14px;margin-left:20px" ng-click="PurchaseConfirmation()" value="Purchase Confirmation" @*data-target="#PurchaseConfirmation" data-toggle="modal"*@ />
+                                            <input type="button" class="btn btn-sm" style="margin-top:10px;background-color: orangered; color: white; font-size: 14px;margin-left: 20px" ng-click="EquipReceiveLetter()" value="Equip Receive Letter" @*data-target="#EquipReceiveLetter" data-toggle="modal"*@ />
+                                            <input type="button" class="btn btn-sm" style="margin-top:10px;background-color:#004050; color: white; font-size: 14px;margin-left:20px" ng-click="CustomerSaleLetter()" value="Customer Sale Letter" @*data-target="#CustomerSaleLetter" data-toggle="modal"*@ />
+                                            <input type="button" class="btn btn-sm" style="margin-top:10px;background-color:blue; color: white; font-size: 14px;margin-left:20px" ng-click="DownloadDoc(UPLOD_GOV_PERMISSION_LATER,'UPLOD_GOV_PERMISSION_LATER')" value="Download Gov. Permission Letter" />
+                                            <input type="button" class="btn btn-sm" style="margin-top:10px;background-color:blue; color: white; font-size: 14px; margin-left: 20px" ng-click="DownloadDoc(UPLOAD_PNDT_CERTIFICATE,'UPLOAD_PNDT_CERTIFICATE')" value="Download Supplier PNDT Certificate " />
+                                            <input type="button" class="btn btn-sm" style="margin-top:10px;background-color:blue; color: white; font-size: 14px; margin-left: 20px" ng-click="DownloadDoc(COMPANY_PNDT_CERTIFICATE,'COMPANY_PNDT_CERTIFICATE')" value="Download Company PNDT Certificate " />
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                                <div class="modal fade" id="PurchaseConfirmation">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <div id="PrintSection" style="width:100%; font-size:13px;">
+                                                    <div style="width:100%; font-size:13px;">
+                                                        <div class="container" style="border: 2px solid #000;">
+                                                            <div id="PrintPurchaseConfirmation">
+                                                                <style>
+
+                                                                    .page-header, .page-header-space {
+                                                                        height: 200px;
+                                                                    }
+
+                                                                    .page-footer, .page-footer-space {
+                                                                        height: 50px;
+                                                                    }
+
+                                                                    .page-footer {
+                                                                        position: absolute;
+                                                                        bottom: 0;
+                                                                        width: 100%;
+                                                                    }
+
+
+                                                                    .page {
+                                                                        page-break-after: always;
+                                                                        padding-bottom: 55px;
+                                                                    }
+
+                                                                    @@page {
+                                                                        margin: 5mm
+                                                                    }
+
+                                                                    @@media print {
+                                                                        .page-header {
+                                                                            position: fixed;
+                                                                            top: 0mm;
+                                                                            width: 100%;
+                                                                            height: 220px;
+                                                                        }
+
+                                                                        .page-footer {
+                                                                            position: fixed;
+                                                                            bottom: 0mm;
+                                                                            width: 100%;
+                                                                        }
+
+                                                                        thead {
+                                                                            display: table-header-group;
+                                                                        }
+
+                                                                        tfoot {
+                                                                            display: table-footer-group;
+                                                                        }
+
+                                                                        body {
+                                                                            margin: 0;
+                                                                        }
+                                                                    }
+                                                                </style>
+                                                                <div class="page-header" style="text-align: center">
+                                                                    <div class="header-section">
+                                                                        <div class="table-responsive">
+                                                                            <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td valign="top">
+                                                                                            <div class="header-section" style="object-fit:contain;">
+                                                                                                <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                                            </div>
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="page-footer" style="text-align: center">
+                                                                    <span style="font-size: 13px; text-align: center; margin-top: 50px; color: #175292; font-weight: bold;">
+                                                                        {{cbd[0].COMPANY_REG_ADDRESS}}
+                                                                    </span>
+                                                                </div>
+
+                                                                <table>
+
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <!--place holder for the fixed-position header-->
+                                                                                <div class="page-header-space"></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </thead>
+
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div style="color: black !important; font-size: 15px;">
+
+                                                                                    <span style="margin-left: auto; text-align: end; margin-bottom: 15px; margin-top: 15px; display: block;">
+                                                                                        <b><small style="font-size: 15px;">Date: {{LETTER_DATE}}</small></b>
+                                                                                    </span>
+                                                                                    <p>
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">
+                                                                                                <span style="text-align:start; margin: 0; line-height: 15px;">To,</span>
+                                                                                            </small>
+                                                                                        </b>
+                                                                                        @*<br />
+                                                                                            <b>
+                                                                                                     <small style="font-size: 15px;">
+                                                                                                         <span style="text-align:start; margin: 0; line-height: 26px;">
+                                                                                                             The
+                                                                                                             Appropriate Authority,
+                                                                                                         </span>
+                                                                                                     </small>
+                                                                                                 </b>
+                                                                                                 <br />
+                                                                                                 <b>
+                                                                                                     <small style="font-size: 15px;">
+                                                                                                         <span style="text-align:start; margin: 0; line-height: 26px;">
+                                                                                                             Medical
+                                                                                                             Officer of Health
+                                                                                                         </span>
+                                                                                                     </small>
+                                                                                                 </b>
+                                                                                                 <br />
+                                                                                                 <b>
+                                                                                                     <small style="font-size: 15px;">
+                                                                                                         <span style="text-align: start; margin: 0; line-height: 26px; width: 100%; padding-right: 70%">
+                                                                                                             {{PNDT_CELL}}
+                                                                                                         </span>
+                                                                                                     </small>
+                                                                                                 </b>*@
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">
+                                                                                                <span id="PNDT_CELL1" style="text-align: start; margin: 0; line-height: 26px; width: 100%; padding-right: 70%">
+
+                                                                                                </span>
+                                                                                            </small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    @*<br />*@
+                                                                                <p style="text-align: center; margin: 0;">
+                                                                                    <b>
+                                                                                        <small style="font-size: 15px;">Subject:</small>
+                                                                                    </b>  Regarding Confirmation of Old {{CAT_NAME}} Purchase.
+                                                                                </p>
+                                                                                    <br />
+                                                                                    <p style="margin: 0;"> Dear Sir/Madam,</p>
+                                                                                    <p style="line-height: 26px;">
+                                                                                        &nbsp;&nbsp;&nbsp;&nbsp;We are from
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">M/s. {{COMPANYNAME}}</small>
+                                                                                        </b> Authorized
+                                                                                        vendor of {{CAT_NAME}}
+                                                                                        Holding Valid PC/PNDT Registration Certificate No. 
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;"> {{COMPANY_PNDT_NO}}.</small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    <p style="line-height: 26px;">
+                                                                                        We have finalized to purchase
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">{{M_NAME}} {{PRODUCT_NAME}} (Sr. No: {{SERIAL_NO}})</small>
+                                                                                        </b> <span ng-if="IS_US_MC == true">with all Probes </span> <span ng-if="IS_US_MC == false">with std accessories</span> in as and were condition from
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">
+                                                                                                {{CUSTOMER_NAME}}, {{FIRM_NAME}}, {{FIRM_ADDRESS}}.
+                                                                                            </small>
+                                                                                        </b>
+                                                                                        <b><small style="font-size: 15px;"> Holding PNDT No. {{PNDT_CIRTIFICATE_NO}}, Valid:{{VALIDITY_DATE}}.</small></b>
+                                                                                    </p>
+                                                                                    @*<p style="line-height: 0px; margin-bottom: 30px;"></p>*@
+
+                                                                                    <p style="margin: 0;">Equipment details are as follows.</p>
+                                                                                    <p style="margin: 0; margin-bottom:5px;">
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">Model Description:{{M_NAME}} {{PRODUCT_NAME}}</small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    <p style="margin: 0; line-height: 6px;">
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">Sr. No: {{SERIAL_NO}}</small>
+                                                                                        </b>
+                                                                                    </p>
+
+                                                                                    <p style="margin: 20px 0 0 0;">
+                                                                                        Kindly grant us permission for Purchase.
+                                                                                    </p>
+                                                                                    <br />
+                                                                                    <p style="margin: 0;">Thank you</p>
+
+                                                                                    <p style="margin: 0; line-height: 15px; margin-bottom: 10px;">Yours sincerely,</p>
+                                                                                    <span style="page-break-inside:avoid;">
+                                                                                        <span style="line-height: 20px; margin-top: 15px; padding-top: 10px;  margin-bottom:0; font-size: 15px;">
+                                                                                            <span>
+                                                                                                <img src="{{cbd[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                            </span><br />
+                                                                                            <b>
+                                                                                                {{COMPANYNAME}}
+                                                                                            </b>
+                                                                                        </span>
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+
+                                                                    <tfoot>
+                                                                        <tr>
+                                                                            <td>
+
+                                                                                <div class="page-footer-space"></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tfoot>
+
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <div class="form-group col-md-12">
+                                                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="Print('PrintPurchaseConfirmation')" />
+                                                                    <input type="button" value="Cancel" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="EquipReceiveLetter">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <div id="PrintSection" style="width:100%; font-size:13px;">
+                                                    <div style="width:100%; font-size:13px;">
+                                                        <div class="container" style="border: 2px solid #000;">
+                                                            <div id="PrintEquipReceiveLetter">
+                                                                <style>
+
+                                                                    .page-header, .page-header-space {
+                                                                        height: 200px;
+                                                                    }
+
+                                                                    .page-footer, .page-footer-space {
+                                                                        height: 50px;
+                                                                    }
+
+                                                                    .page-footer {
+                                                                        position: absolute;
+                                                                        bottom: 0;
+                                                                        width: 100%;
+                                                                    }
+
+
+                                                                    .page {
+                                                                        page-break-after: always;
+                                                                        padding-bottom: 55px;
+                                                                    }
+
+                                                                    @@page {
+                                                                        margin: 5mm
+                                                                    }
+
+                                                                    @@media print {
+                                                                        .page-header {
+                                                                            position: fixed;
+                                                                            top: 0mm;
+                                                                            width: 100%;
+                                                                            height: 220px;
+                                                                        }
+
+                                                                        .page-footer {
+                                                                            position: fixed;
+                                                                            bottom: 0mm;
+                                                                            width: 100%;
+                                                                        }
+
+                                                                        thead {
+                                                                            display: table-header-group;
+                                                                        }
+
+                                                                        tfoot {
+                                                                            display: table-footer-group;
+                                                                        }
+
+                                                                        body {
+                                                                            margin: 0;
+                                                                        }
+                                                                    }
+                                                                </style>
+                                                                <div class="page-header" style="text-align: center">
+                                                                    <div class="header-section">
+                                                                        <div class="table-responsive">
+                                                                            <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td valign="top">
+                                                                                            <div class="header-section" style="object-fit:contain;">
+                                                                                                <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                                            </div>
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="page-footer" style="text-align: center">
+                                                                    <span style="font-size: 13px; text-align: center; margin-top: 50px; color: #175292; font-weight: bold;">
+                                                                        {{cbd[0].COMPANY_REG_ADDRESS}}
+                                                                    </span>
+                                                                </div>
+
+
+                                                                <table>
+
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <!--place holder for the fixed-position header-->
+                                                                                <div class="page-header-space"></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </thead>
+
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div style="color: black !important; font-size: 15px; ">
+
+                                                                                    <span style="margin-left:auto; text-align: end; margin-bottom: 15px; margin-top:5px; display: block;">
+                                                                                        @*<b><small style="font-size: 15px;">Date: {{LETTER_DATE}}</small></b>*@
+                                                                                        <b><small style="font-size: 15px;">Date: {{LETTER_RECIVED_DATE}}</small></b>
+                                                                                    </span>
+                                                                                    <p>
+                                                                                        <b style="text-align:start; margin: 0; line-height: 15px;">To,</b>
+                                                                                        @*<br />
+                                                                                            <b style="font-size: 15px;">
+                                                                                                Appropriate Authority
+                                                                                                PCPNDT,
+                                                                                            </b>
+                                                                                            <br />
+                                                                                            <span style="margin:0; line-height: 26px; width:100%; padding-right:70%">
+                                                                                                {{PNDT_CELL}}
+                                                                                            </span>*@
+                                                                                        <span id="PNDT_CELL2" style="margin:0; line-height: 26px; width:100%; padding-right:70%">
+
+                                                                                        </span>
+                                                                                        @*<br />*@
+                                                                                    </p>
+                                                                                    @*<p style="text-align:start; margin: 0; line-height: 15px;">To,</p>
+                                                                                        <p>
+                                                                                            <b>
+                                                                                                <small style="font-size: 15px;">
+                                                                                                    Appropriate Authority
+                                                                                                    PCPNDT,
+                                                                                                </small>
+                                                                                            </b>
+                                                                                        </p>
+                                                                                        <p style="margin:0; line-height: 26px; width:100%; padding-right:70%">
+                                                                                            {{PNDT_CELL}}
+                                                                                        </p>*@
+
+                                                                                <p style="text-align: center; margin: 0;">
+                                                                                    <b>
+                                                                                        <small style="font-size: 15px;">Subject:</small>
+                                                                                    </b> {{CAT_NAME}} Receipt Confirmation.
+                                                                                </p>
+                                                                                    <br />
+                                                                                    <p style="margin: 0; margin-bottom:15px;"> Respected Sir/Madam,</p>
+                                                                                    <p style="line-height: 26px;">
+                                                                                        &nbsp;&nbsp;&nbsp;&nbsp;We are from <b>
+                                                                                            <small style=" font-size: 15px;">M/s. {{COMPANYNAME}}</small>
+                                                                                        </b> Authorized
+                                                                                        Vendor of {{CAT_NAME}}
+                                                                                        Holding Valid PC/PNDT No. <b>
+                                                                                            <small style="font-size: 15px;">{{COMPANY_PNDT_NO}}.</small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    <p style="line-height: 26px;">
+                                                                                        We are here by confirm our Representative
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">Mr./Ms. {{EMP_NAME}}</small>
+                                                                                        </b> has received
+                                                                                        <b>
+                                                                                            <small style="font-size: 15px;">
+                                                                                                {{M_NAME}} {{PRODUCT_NAME}}&nbsp;
+                                                                                                {{CAT_NAME}}  <span ng-if="IS_US_MC == true"> With All Probes </span> <span ng-if="IS_US_MC == false"> With Std Accessories </span>
+                                                                                            </small>
+                                                                                        </b> in as
+                                                                                        and were Condition from <b>
+                                                                                            <small style="font-size: 15px;">
+                                                                                                {{CUSTOMER_NAME}}, {{FIRM_NAME}}, {{FIRM_ADDRESS}}.
+                                                                                                Holding PNDT Regi. No:
+                                                                                                {{PNDT_CIRTIFICATE_NO}}.&nbsp;Valid: {{VALIDITY_DATE}}. 
+                                                                                            </small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    <p style="margin: 0;">Equipment details are as follows.</p>
+                                                                                    <p style="margin: 0; margin-bottom:5px;">
+                                                                                        Model Description: <b>
+                                                                                            <small style="font-size: 15px;">{{M_NAME}} {{PRODUCT_NAME}} </small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    <p style="margin: 0; line-height: 15px;">
+                                                                                        Serial No: <b>
+                                                                                            <small style="font-size: 15px;">{{SERIAL_NO}}</small>
+                                                                                        </b>
+                                                                                    </p>
+
+                                                                                    <p style="margin: 20px 0 0 0;">
+                                                                                        Kindly update the information in your
+                                                                                        record.
+                                                                                    </p>
+                                                                                    <br />
+                                                                                    <p style="margin: 0;">Thank you</p>
+                                                                                    <p style="margin: 0; line-height: 15px; margin-bottom:10px;">Yours sincerely,</p>
+                                                                                    <span style="page-break-inside:avoid;">
+                                                                                        <span style="line-height:20px;margin-top: 15px;padding-top:10px;margin-bottom: 0; font-size: 15px;">
+                                                                                            <span>
+                                                                                                <img src="{{cbd[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                            </span><br />
+                                                                                            <b>
+                                                                                                {{COMPANYNAME}}
+                                                                                            </b>
+                                                                                        </span>
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+
+                                                                    <tfoot>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="page-footer-space"></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tfoot>
+
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <div class="form-group col-md-12">
+                                                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="Print('PrintEquipReceiveLetter')" />
+                                                                    <input type="button" value="Cancel" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="CustomerSaleLetter">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <div id="PrintSection" style="width:100%; font-size:13px;">
+                                                    <div style="width:100%; font-size:13px;">
+                                                        <div class="container" style="border: 2px solid #000;">
+                                                            <div id="PrintCustomerSaleLetter">
+                                                                <style>
+
+                                                                    .page-header, .page-header-space {
+                                                                        height: 250px;
+                                                                    }
+
+                                                                    .page {
+                                                                        page-break-after: always;
+                                                                        padding-bottom: 55px;
+                                                                    }
+
+                                                                    @@page {
+                                                                        margin: 10mm
+                                                                    }
+
+                                                                    @@media print {
+                                                                        .page-header {
+                                                                            position: fixed;
+                                                                            top: 0mm;
+                                                                            width: 100%;
+                                                                            height: 250px;
+                                                                        }
+
+                                                                        thead {
+                                                                            display: table-header-group;
+                                                                        }
+
+                                                                        body {
+                                                                            margin: 0;
+                                                                        }
+                                                                    }
+                                                                </style>
+                                                                <div class="page-header" style="text-align: center">
+                                                                    <div class="header-section">
+                                                                        <div class="table-responsive">
+                                                                            <table style="width: 100%; border:0px solid #000; margin: 0px 0;">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td valign="top">
+                                                                                            <div class="header-section" style="object-fit:contain;">
+
+                                                                                            </div>
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <table>
+
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="page-header-space"></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </thead>
+
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div style="color: black !important; font-size: 24px;">
+                                                                                    <p style="margin-left:auto; text-align: end; margin-bottom: 24px; display: block;">
+                                                                                        <b><small style="font-size: 24px;">Date: {{LETTER_DATE}}</small></b>
+                                                                                    </p>
+                                                                                    <p>
+                                                                                        <b>
+                                                                                            <small style="font-size: 24px;">
+                                                                                                <span style="text-align:start; margin: 0; line-height: 24px;">To,</span>
+                                                                                            </small>
+                                                                                        </b>
+                                                                                        @*<br />*@
+                                                                                        @*<b>
+                                                                                                <small style="font-size: 24px;">
+                                                                                                    <span style="text-align:start; margin: 0; line-height: 26px;">
+                                                                                                        The
+                                                                                                        Appropriate Authority,
+                                                                                                    </span>
+                                                                                                </small>
+                                                                                            </b>
+                                                                                            <br />
+                                                                                            <b>
+                                                                                                <small style="font-size: 24px;">
+                                                                                                    <span style="text-align:start; margin: 0; line-height: 26px;">
+                                                                                                        Medical
+                                                                                                        Officer of Health
+                                                                                                    </span>
+                                                                                                </small>
+                                                                                            </b>
+                                                                                            <br />
+                                                                                            <b>
+                                                                                                <small style="font-size: 24px;">
+                                                                                                    <span style="text-align: start; margin: 0; line-height: 26px; width: 100%; float: left; padding-right: 70%">
+                                                                                                        {{PNDT_CELL}}
+                                                                                                    </span>
+                                                                                                </small>
+
+                                                                                            </b>*@
+                                                                                        <b>
+                                                                                            <small style="font-size: 24px;">
+                                                                                                <span id="PNDT_CELL3" style="text-align: start; margin: 0; line-height: 26px; width: 100%; float: left; padding-right: 70%">
+
+                                                                                                </span>
+                                                                                            </small>
+
+                                                                                        </b>
+                                                                                        @*<br />*@
+                                                                                    </p>
+
+                                                                                    <p style="text-align: center; margin: 0;">
+                                                                                        <b>
+                                                                                            <small style="font-size: 24px;">Subject:</small>
+                                                                                        </b> Regarding Confirmation
+                                                                                        of Old {{CAT_NAME}} Sale.
+                                                                                    </p>
+                                                                                    <br />
+                                                                                    <p style="margin: 0;"> Respected Sir/Madam,</p>
+                                                                                    <p style="line-height: 26px;">
+                                                                                        &nbsp;&nbsp;&nbsp;&nbsp;We <b>
+                                                                                            <small style="font-size: 24px;">
+                                                                                                {{CUSTOMER_NAME}}, {{FIRM_NAME}}, {{FIRM_ADDRESS}}.
+                                                                                            </small>
+                                                                                        </b>
+                                                                                        here by to declare that we have sold our Old {{CAT_NAME}} {{M_NAME}} <b>{{PRODUCT_NAME}} </b><span ng-if="IS_US_MC == true"><b>With All Probes</b> </span> <span ng-if="IS_US_MC == false"><b>With Std Accessories</b></span>
+                                                                                        Holding a valid PC-PNDT Certificate No –
+                                                                                        {{PNDT_CIRTIFICATE_NO}},<b>
+                                                                                            <small style="font-size: 24px;">
+                                                                                                @*Valid {{VALIDITY_DATE}}*@ to {{COMPANYNAME}}, {{COMPANYREGADDRESS}}
+                                                                                            </small>
+                                                                                        </b>Holding a valid PC-PNDT Certificate No – <b>
+                                                                                            <small style="font-size: 24px;">{{COMPANY_PNDT_NO}} </small>
+                                                                                        </b>in as an were condition.
+                                                                                    </p>
+
+                                                                                    <p style="margin: 0;">Equipment details are as follows.</p>
+                                                                                    <p style="margin: 0; margin-bottom:5px;">
+                                                                                        Model Description: <b>
+                                                                                            <small style="font-size: 24px;">{{PRODUCT_NAME}}</small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    <p style="margin: 0; line-height: 15px;">
+                                                                                        Serial No: <b>
+                                                                                            <small style="font-size: 24px;">{{SERIAL_NO}}</small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                    @*<p style="line-height: 26px;">
+                                                                                                                                                                        The Serial No. & Model No. of equipment as follows.
+
+
+                                                                                                                                                                    </p>
+                                                                                                                                                                   <p style="line-height: 0px; margin-bottom: 24px;">
+                                                                                            <b>
+                                                                                                <small style=""> 1. {{PRODUCT_NAME}} (Sr. No: {{SERIAL_NO}})</small>
+                                                                                            </b>
+                                                                                        </p>*@
+                                                                                    <br />
+                                                                                    <p style="margin: 0;">Permission for sale of said equipment and valid PC-PNDT Certificate is attached.</p>
+
+                                                                                    <p style="margin: 0;">Attached:</p>
+
+                                                                                    <p style="margin: 0;">&nbsp;&nbsp;1)	Valid PC-PNDT Certificate.</p>
+                                                                                    <br />
+                                                                                    <p style="margin: 0; line-height: 26px;">Thanking You,</p>
+                                                                                    <br />
+                                                                                    <p style="margin: 0; margin-top:200px;">
+
+                                                                                        <b>
+                                                                                            <small style="font-size: 24px;">{{FIRM_NAME}}</small>
+                                                                                        </b>
+                                                                                    </p>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <div class="form-group col-md-12">
+                                                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="Print('PrintCustomerSaleLetter')" />
+                                                                    <input type="button" value="Cancel" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+
+    <script src="~/AngularJs/EditUrdProduct.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#LETTER_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#LETTER_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#LETTER_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#LETTER_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#LETTER_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#LETTER_RECIVED_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#LETTER_RECIVED_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#LETTER_RECIVED_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#LETTER_RECIVED_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#LETTER_RECIVED_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+        $(function () {
+
+
+            $("#STARTING_DATE").datepicker({ maxDate: 0 });
+        });
+
+        $(function () {
+
+            $("#ENDING_DATE").datepicker({ maxDate: 0 });
+        });
+    </script>
+
+
+}
+
+
+

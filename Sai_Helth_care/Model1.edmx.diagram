@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6ee8d88f14f44dbd8abb58dca761d376" Name="Diagram1" ZoomLevel="67">
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Add_Spare_Part" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_AdminMaster" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_AMC_CMC_Master" Width="1.5" PointX="3.75" PointY="47" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_AMC_MedtronicAccessories" Width="1.5" PointX="6" PointY="28.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Banner" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_CallPriorityType" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Category" Width="1.5" PointX="9.75" PointY="33.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_CHECKIN" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_CityMaster" Width="1.5" PointX="3.75" PointY="43.875" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Company_DocumentMaster" Width="1.5" PointX="13" PointY="5.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_CompanyBankMaster" Width="1.5" PointX="13" PointY="1.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_CompanyMaster" Width="1.5" PointX="10.75" PointY="1.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_ContractType" Width="1.5" PointX="2.75" PointY="4.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_CustomerMaster" Width="1.5" PointX="3.75" PointY="8" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_CustomerType" Width="1.5" PointX="1.5" PointY="12.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_DailyActivity" Width="1.5" PointX="6" PointY="24.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_DC_Accessories" Width="1.5" PointX="11.25" PointY="24.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_DC_SparePart" Width="1.5" PointX="14.25" PointY="24.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_DCStatus" Width="1.5" PointX="6.75" PointY="14.625" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_DeliveryChallan" Width="1.5" PointX="9" PointY="22.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_Department" Width="1.5" PointX="10.75" PointY="9.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_Designation" Width="1.5" PointX="8.75" PointY="12.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmployeeAdvancedSalary" Width="1.5" PointX="3" PointY="66.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmployeeLoan" Width="1.5" PointX="12.75" PointY="9.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_EmployeeMaster" Width="1.5" PointX="0.75" PointY="21.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmployeeSalaryIncrement" Width="1.5" PointX="3" PointY="63.625" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EXPENSES" Width="1.5" PointX="10.75" PointY="13.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_FirmMaster" Width="1.5" PointX="3.75" PointY="39.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_IncentiveMaster" Width="1.5" PointX="3" PointY="60.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_IncentiveScheme" Width="1.5" PointX="3" PointY="28.125" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_IncentiveServiceType" Width="1.5" PointX="0.75" PointY="38.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_IncentiveType" Width="1.5" PointX="0.75" PointY="31.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Leads" Width="1.5" PointX="12.75" PointY="13.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_Manufacturer" Width="1.5" PointX="9.75" PointY="30.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Material" Width="1.5" PointX="6.75" PointY="32.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_MedtronicAccessories" Width="1.5" PointX="3.75" PointY="55.125" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_MedtronicAccessoriesType" Width="1.5" PointX="1.5" PointY="56" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_MedtronicQuotationProductAccessories" Width="1.5" PointX="14.25" PointY="42.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_MindrayProduct" Width="1.5" PointX="5.75" PointY="5.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_MindrayQuotationMaster" Width="1.5" PointX="8" PointY="4.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_MindrayQuotationProductDetails" Width="1.5" PointX="14.75" PointY="13.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.tb_Notification" Width="1.5" PointX="15.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_PaymentReceiptMaster" Width="1.5" PointX="6" PointY="39.125" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_ProbeSpecificationsPart" Width="1.5" PointX="8" PointY="1.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_Product" Width="1.5" PointX="3.75" PointY="33.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_ProductType" Width="1.5" PointX="1.5" PointY="35.125" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_QuotationMaster" Width="1.5" PointX="12" PointY="28.625" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_QuotationProductDetails" Width="1.5" PointX="16.75" PointY="4.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_ServiceCall" Width="1.5" PointX="6" PointY="18.125" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_ServiceCallAssignHistory" Width="1.5" PointX="3" PointY="24.625" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_ServiceType" Width="1.5" PointX="0.75" PointY="15.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_SolutionBank" Width="1.5" PointX="3" PointY="20.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_SparePart" Width="1.5" PointX="12" PointY="20.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_StateMaster" Width="1.5" PointX="16.75" PointY="10.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_StatusMaster" Width="1.5" PointX="16.75" PointY="13.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_StdAccessoriesMaster" Width="1.5" PointX="9" PointY="17.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Test" Width="1.5" PointX="16.75" PointY="16.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_URDProduct" Width="1.5" PointX="18.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_VEHICAL" Width="1.5" PointX="18.75" PointY="6.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.Tb_VendorRegistration" Width="1.5" PointX="18.75" PointY="9.75" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_AMC_CM__CUSTO__7720AD13" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_AMC_CM__FIRM___7814D14C" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_AMC_Me__AMC_C__1F83A428" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_Tb_AMC_CMC_Master_Tb_Product" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_AMC_Me__EMP_I__216BEC9A" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_AMC_Me__MED_A__2077C861" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_Tb_QuotationMaster_TB_Category" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DailyA__CITY___43C1049E" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Compan__COMPA__00AA174D" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Compan__COMPA__7E8CC4B1" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_Custom__CUSTO__72E607DB" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Delive__Custo__4242D080" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_FirmMa__CUSTO__3E1D39E1" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_TB_ServiceCall_Tb_CustomerMaster" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_Tb_QuotationMaster_Tb_CustomerType" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DailyA__EMP_I__42CCE065" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Acc__DC_ID__573DED66" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Acc__Employee__592635D8" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Acc__STD_I__5832119F" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Spa__DC_ID__5090EFD7" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Spa__Employee__52793849" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Spa__SPARE__51851410" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Delive__DCS_I__451F3D2B" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Delive__EMP_I__46136164" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Delive__MATER__442B18F2" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Deliver__F_ID__46D27B73" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Deliver__P_ID__4336F4B9" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Employ__EMP_I__3296789C" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Employ__EMP_I__2AF556D4" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Incent__EMP_I__5AA469F6" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Servic__SERVI__59E54FE7" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Servic__SERVI__5AD97420" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Soluti__SERVI__6A1BB7B0" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Soluti__SOLUT__6B0FDBE9" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_TB_ServiceCall_Tb_EmployeeMaster" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_TB_ServiceCall_Tb_EmployeeMaster1" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_Paymen__FIRM___3CBF0154" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_TB_ServiceCall_Tb_FirmMaster" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Incent__INC_S__5303482E" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Incent__INC_S__5C8CB268" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Incent__INC_T__5B988E2F" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_Tb_QuotationMaster_Tb_Manufacturer" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Medtro__MED_A__15FA39EE" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Medtro__MED_A__7B4643B2" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Medtron__P_ID__7C3A67EB" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Medtron__Q_ID__150615B5" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_Mindra__MP_ID__6C6E1476" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_ProbeS__MP_ID__60083D91" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_Produc__PT_ID__3D7E1B63" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Solutio__P_ID__69279377" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_Tb_QuotationMaster_Tb_Product" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_TB_ServiceCall_Tb_Product" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_Tb_StdAccessoriesMaster_Tb_Product" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Servic__SERVI__58F12BAE" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_TB_ServiceCall_TB_ServiceCall" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_LeaveCategory" Width="1.5" PointX="14.375" PointY="19.875" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Servic__MED_A__764C846B" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__Tb_Payment__Q_ID__605D434C" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Leave" Width="1.5" PointX="16.625" PointY="23.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_LeaveStatusType" Width="1.5" PointX="14.375" PointY="28.375" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Leave__EMP_ID__058EC7FB" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Leave__LEAVE___0682EC34" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Leave__LEAVE___0777106D" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_AdminPermission" Width="1.5" PointX="19.375" PointY="15.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_DC_MedtronicAccessories" Width="1.5" PointX="11.25" PointY="38.875" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmployeeSalary" Width="1.5" PointX="22" PointY="18.5" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Invoice_Accessories" Width="1.5" PointX="22.25" PointY="25.875" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Invoice_MedtronicAccessories" Width="1.5" PointX="19.25" PointY="38.875" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Invoice_SparePart" Width="1.5" PointX="22.25" PointY="30.25" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_InvoiceMaster" Width="1.5" PointX="17" PointY="28" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__Custo__444B1483" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__Custo__453F38BC" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Med__DC_ID__6BCEF5F8" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Med__EMP_I__6DB73E6A" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_DC_Med__MED_A__6CC31A31" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Employ__EMP_L__14D10B8B" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Employ__EMP_I__13DCE752" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__EMP_I__46335CF5" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__EMP_I__4727812E" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__EMP_I__63C3BFDC" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__EMP_I__6A70BD6B" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__EMP_I__711DBAFA" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoice__F_ID__481BA567" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoice__F_ID__490FC9A0" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__INVOI__7211DF33" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__STD_I__7306036C" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__INVOI__6B64E1A4" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__MED_A__6C5905DD" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__INVOI__64B7E415" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoic__SP_ID__65AC084E" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoice__P_ID__4A03EDD9" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Invoice__P_ID__4AF81212" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Vendor_PO_AccessoriesAndSpareParts" Width="1.5" PointX="24.25" PointY="13.125" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Vendor_PO_Master" Width="1.5" PointX="22" PointY="12.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_Vendor_PO_Products" Width="1.5" PointX="25.25" PointY="21.75" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_VendorAccType" Width="1.5" PointX="22" PointY="8.875" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__COMPA__2F1AED73" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__ADMIN__300F11AC" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor___P_ID__35C7EB02" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__ACC_T__47E69B3D" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__VPO_I__46F27704" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__VPO_P__48DABF76" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__VENDO__2E26C93A" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__VPO_I__34D3C6C9" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Vendor__VENDO__4AC307E8" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmployeeTaskMaster" Width="1.5" PointX="3" PointY="70.375" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_PartType" Width="1.5" PointX="23" PointY="34.875" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_SparePartStock" Width="1.5" PointX="25.25" PointY="27.25" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_SpareP__ASSIG__10E07F16" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Employ__Emplo__6F00685E" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_SpareP__INVOI__11D4A34F" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_PartTy__PT_ID__7BE56230" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_SpareP__PART___12C8C788" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_SparePa__P_ID__13BCEBC1" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_ProductStockMaster" Width="1.5" PointX="28" PointY="20.625" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Produc__ASSIG__1AF3F935" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Produc__URD_S__18178C8A" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Produc__EMPLO__19FFD4FC" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Produc__INVOI__1BE81D6E" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Product__P_ID__1CDC41A7" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Produc__VENDO__190BB0C3" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK_TB_CityMaster_STATE_ID_FK" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_SpareP__P_STO__3F3159AB" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Soluti__SERVI__4E739D3B" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmployeeTask" Width="1.5" PointX="3" PointY="74.5" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Servic__BANK___53385258" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Employ__Emplo__1ABEEF0B" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmployeeTaskData" Width="1.5" PointX="5.25" PointY="81.625" />
+        <EntityTypeShape EntityType="DB_SaiHealthCareModel.TB_EmpTaskMaster" Width="1.5" PointX="3" PointY="83.5" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_EmpTas__Emplo__338A9CD5" />
+        <AssociationConnector Association="DB_SaiHealthCareModel.FK__TB_Employ__Emplo__3EFC4F81" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

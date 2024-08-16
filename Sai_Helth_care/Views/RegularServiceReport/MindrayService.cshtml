@@ -1,0 +1,1788 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SAI HEALTH CARE | Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="~/plugins/jqvmap/jqvmap.min.css">
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
+    <script src="~/ckeditor/ckeditor.js"></script>
+
+    <style>
+        [ng-cloak] {
+            display: none !important;
+        }
+
+        .table th {
+            text-align: center;
+        }
+
+        .table td {
+            text-align: left;
+        }
+    </style>
+
+    <title>Regular Service Report</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+
+<body ng-app="Sai_Helth_care">
+    <div ng-controller="RegularServiceCtrl">
+
+        <div id="PrintSection" class="wrapper"
+             style="width:100%; margin: 0 auto; font-size:13px;">
+            <div class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                <div class="container">
+                    <div id="PrintMain">
+                        <style>
+
+                            .content-area {
+                                color: #fff;
+                                background: #5d5d5d;
+                                padding-top: 20px;
+                                padding-bottom: 40px;
+                                border: 1px solid #000; /* Add border style */
+                            }
+
+                            .cover {
+                                object-fit: cover;
+                                width: 512px;
+                                height: 512px;
+                            }
+
+                            p {
+                                padding-left: 15px;
+                            }
+
+                            .page {
+                                page-break-after: always;
+                                padding-bottom: 55px;
+                            }
+
+                            @@page {
+                                margin: 5mm
+                            }
+
+                            @@media print {
+                                .page-header {
+                                    position: fixed;
+                                    top: 0mm;
+                                    width: 100%;
+                                    height: 200px;
+                                }
+
+                                .page-header,
+                                .page-header-space {
+                                    height: 220px;
+                                }
+
+                                thead {
+                                    display: table-header-group;
+                                }
+
+                                body {
+                                    margin: 0;
+                                }
+                                /* .content-area{
+                                        color: #fff;
+                            background: #5d5d5d;
+                            padding-top: 20px;
+                            padding-bottom: 40px;
+                                      } */
+                            }
+
+                            p {
+                                font-size: 18px;
+                            }
+
+                            @@media print {
+                                .content-area {
+                                    color: #000; /* Change text color for print mode if needed */
+                                    background: transparent; /* Make background transparent for print mode */
+                                }
+                            }
+                        </style>
+                        <div class="page-header" style="text-align: center">
+                            <div class="header-section">
+                                <div class="table-responsive">
+                                    <table style="width: 100%; margin: 0px 0;">
+                                        <tbody>
+                                            <tr>
+                                                <td valign="top">
+                                                    <div class="header-section"
+                                                         style="object-fit:contain;">
+                                                        @*<img style="max-height:200px; object-fit: contain;"
+                                                            src="logo.png">*@
+                                                        <img src="~/Images/RegularServiceLogo.png" style="max-height:200px; object-fit: contain;" />
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table cellspacing="0" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <div class="page-header-space"></div>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <table style="width: 100%; margin-bottom: 20px;"
+                                                   cellspacing="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="
+                                      vertical-align: baseline;
+                                      padding-left: 15.9px;">
+                                                        </td>
+                                                        <td style="width: 200px;
+                                      padding-left: 10px;
+                                    " colspan="1">
+                                                            <p class="s1" style="
+                                                  font-size: 16px;
+                                                  font-weight: 600;
+                                                  margin: 0;
+                                                  text-align: left; ">
+                                                                Ref. No: <b style="color:red;">{{ServiceReportID}}</b>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table style="width: 100%; margin-bottom: 20px;"
+                                                   cellspacing="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="
+                                      vertical-align: baseline;
+                                      padding-left: 15.9px;">
+                                                            <p class="s1" style="
+                                                        font-size: 16px;
+                                                        font-weight: 600;
+                                                        margin: 0;
+                                                        text-align: center;
+                                                    ">
+                                                                SERVICE REPORT
+                                                            </p>
+                                                        </td>
+                                                        <td style="width: 200px;
+                                      padding-left: 10px;
+                                    " colspan="1">
+                                                            <p class="s1" style="
+                                                  font-size: 16px;
+                                                  font-weight: 600;
+                                                  margin: 0;
+                                                  text-align: left; ">
+                                                                @*CRM No............................*@
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table style="width: 100%;" cellspacing="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="6" style="border-top-style: solid;
+                                          border-top-width: 1px;
+                                          border-left-style: solid;
+                                          border-left-width: 1px;
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          vertical-align: baseline;
+                                          padding-left: 15.9px;">
+                                                            <p class="s1" style="
+                                                            font-size: 16px;
+                                                            font-weight: 600;
+                                                            margin: 0;
+                                                        ">
+                                                                <b>SERVICE CATEGORY:</b> {{ServiceType}}
+                                                            </p>
+                                                        </td>
+                                                        <td style="width: 195px;
+                                          border-top-style: solid;
+                                          border-top-width: 1px;
+
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          border-right-style: solid;
+                                          border-right-width: 1px;padding-left: 10px;
+                                        ">
+                                                            <p class="s1" style="
+                                                      font-size: 16px;
+                                                      font-weight: 600;
+                                                      margin: 0; ">
+                                                                <b>DATE:</b> {{Date}}
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="
+                                border-left-style: solid;
+                                border-left-width: 1px;
+                                border-bottom-style: solid;
+                                border-bottom-width: 1px;
+                                border-right-style: solid;
+                                border-right-width: 1px;
+                                vertical-align: baseline;
+                                padding-left: 15.9px;" colspan="7">
+                                                            <div style="display: flex; padding: 10px 0;">
+                                                                <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                    <div ng-show="Breakdown=='Breakdown'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                                </div>
+
+                                                                <p class="s2" style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Breakdown</p>
+
+                                                                <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                    <div ng-show="Installation=='Installation'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                                </div>
+
+                                                                <p class="s2" style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Installation</p>
+
+                                                                <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                    <div ng-show="Upgrade=='Upgrade'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                                </div>
+
+                                                                <p class="s2" style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Upgrade</p>
+
+                                                                <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                    <div ng-show="FieldFaultCorrection=='Field fault correction'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                                </div>
+
+                                                                <p class="s2" style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Field Fault Correction</p>
+
+                                                                <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                    <div ng-show="CustomerVisit=='Customer Visit'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                                </div>
+
+                                                                <p class="s2" style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Customer Visit</p>
+
+                                                                <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                    <div ng-show="Others=='Others'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                                </div>
+
+                                                                <p class="s2" style="
+                                   font-size: 18px;
+                                   font-weight: 600;
+                                     margin: 0;
+                                     padding-left: 4px;">Others</p>
+
+                                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="
+                                border-left-style: solid;
+                                border-left-width: 1px;
+                                border-bottom-style: solid;
+                                border-bottom-width: 1px;
+                                border-right-style: solid;
+                                border-right-width: 1px;
+                                vertical-align: baseline;
+                                padding-left: 15.9px;" colspan="7">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                  font-size: 16px;
+                                  font-weight: 600;
+                                  margin: 0; "><b>CUSTOMER INFORMATION :</b> {{CustomerName}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" style="
+                                  border-left-style: solid;
+                                  border-left-width: 1px;
+                                  border-bottom-style: solid;
+                                  border-bottom-width: 1px;
+                                  border-right-style: solid;
+                                  border-right-width: 1px;
+                                  vertical-align: baseline;
+                                  padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                    font-size: 16px;
+                                    font-weight: 600;
+                                    margin: 0; "><b>Hospital/Diagnostic Center :</b> {{HospitalDiagnosticCenter}}</p>
+
+                                    </td>
+                                    <td style="
+
+                                  border-bottom-style: solid;
+                                  border-bottom-width: 1px;
+                                  border-right-style: solid;
+                                  border-right-width: 1px;
+                                  vertical-align: baseline;
+                                  padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    margin: 0; ">
+                                                <b>Zip/Postal Code :</b>
+                                                {{ZipPostalCode}}
+                                            </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" style="
+                                      border-left-style: solid;
+                                      border-left-width: 1px;
+                                      border-bottom-style: solid;
+                                      border-bottom-width: 1px;
+                                      border-right-style: solid;
+                                      border-right-width: 1px;
+                                      vertical-align: baseline;
+                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                        font-size: 18px;
+                                        font-weight: 600;
+                                        margin: 0; "><b>Address:</b> {{Address}}</p>
+                                    </td>
+                                    <td style="
+
+                                      border-bottom-style: solid;
+                                      border-bottom-width: 1px;
+                                      border-right-style: solid;
+                                      border-right-width: 1px;
+                                      vertical-align: baseline;
+                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                        font-size: 18px;
+                                        font-weight: 600;
+                                        margin: 0; "><b>City/State :</b></p>{{}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="
+                                          border-left-style: solid;
+                                          border-left-width: 1px;
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+
+                                          vertical-align: baseline;
+                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                            font-size: 18px;
+                                            font-weight: 600;
+                                            margin: 0; "><b>Department:</b> {{Department}}</p>
+                                    </td>
+                                    <td style="
+
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          border-right-style: solid;
+                                          border-right-width: 1px;
+                                          vertical-align: baseline;
+                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                            font-size: 18px;
+                                            font-weight: 600;
+                                            margin: 0; "><b>Contact Person:</b> {{ContactPerson}}</p>
+                                    </td>
+                                    <td style="
+
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          border-right-style: solid;
+                                          border-right-width: 1px;
+                                          vertical-align: baseline;
+                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                            font-size: 18px;
+                                            font-weight: 600;
+                                            margin: 0; "><b>Title :</b> {{Title}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="
+                                              border-left-style: solid;
+                                              border-left-width: 1px;
+                                              border-bottom-style: solid;
+                                              border-bottom-width: 1px;
+
+                                              vertical-align: baseline;
+                                              padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                                font-size: 18px;
+                                                font-weight: 600;
+                                                margin: 0; "><b>Telephone:</b> {{Telephone}}</p>
+                                    </td>
+                                    <td style="
+
+                                              border-bottom-style: solid;
+                                              border-bottom-width: 1px;
+                                              border-right-style: solid;
+                                              border-right-width: 1px;
+                                              vertical-align: baseline;
+                                              padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                                font-size: 18px;
+                                                font-weight: 600;
+                                                margin: 0; "><b>Mobile:</b> {{MobileNumber}}</p>
+                                    </td>
+                                    <td style="
+
+                                              border-bottom-style: solid;
+                                              border-bottom-width: 1px;
+                                              border-right-style: solid;
+                                              border-right-width: 1px;
+                                              vertical-align: baseline;
+                                              padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                                font-size: 18px;
+                                                font-weight: 600;
+                                                margin: 0; "><b>Email :</b> {{Email}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7" style="
+                                                  border-left-style: solid;
+                                                  border-left-width: 1px;
+                                                  border-bottom-style: solid;
+                                                  border-bottom-width: 1px;
+                                                  border-right-style: solid;
+                                                  border-right-width: 1px;
+
+                                                  vertical-align: baseline;
+                                                  padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                                    font-size: 18px;
+                                                    font-weight: 600;
+                                                    margin: 0; ">
+                                                <b>
+                                                    PRODUCT
+                                                    INFORMATION
+                                                </b>
+                                            </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="
+                                                      border-left-style: solid;
+                                                      border-left-width: 1px;
+                                                      border-bottom-style: solid;
+                                                      border-bottom-width: 1px;
+
+                                                      vertical-align: baseline;
+                                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                                        font-size: 18px;
+                                                        font-weight: 600;
+                                                        margin: 0; "><b>Model</b> </p>
+                                    </td>
+                                    <td style="
+                                                      border-left-style: solid;
+                                                      border-left-width: 1px;
+                                                      border-bottom-style: solid;
+                                                      border-bottom-width: 1px;
+                                                      border-right-style: solid;
+                                                      border-right-width: 1px;
+                                                      vertical-align: baseline;
+                                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                                        font-size: 18px;
+                                                        font-weight: 600;
+                                                        margin: 0; ">{{ModelName}}</p>
+                                    </td>
+                                    <td style="
+
+                                                      border-bottom-style: solid;
+                                                      border-bottom-width: 1px;
+
+                                                      vertical-align: baseline;
+                                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2" style="
+                                                        font-size: 18px;
+                                                        font-weight: 600;
+                                                        margin: 0; ">
+                                                <b>
+                                                    Serial
+                                                    Number
+                                                </b>
+                                            </p>
+                                    </td>
+                                    <td style="
+                                                      border-left-style: solid;
+                                                      border-left-width: 1px;
+                                                      border-bottom-style: solid;
+                                                      border-bottom-width: 1px;
+
+                                                      vertical-align: baseline;
+                                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                        font-size: 18px;
+                                                        margin: 0; ">{{SerialNumber}}</p>
+                                    </td>
+                                    <td style="
+                                                      border-left-style: solid;
+                                                      border-left-width: 1px;
+                                                      border-bottom-style: solid;
+                                                      border-bottom-width: 1px;
+
+                                                      vertical-align: baseline;
+                                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                        font-size: 18px;
+                                                        margin: 0; ">
+                                                <b>
+                                                    Software
+                                                    Version,
+                                                </b>
+                                            </p>
+                                    </td>
+                                    <td style="
+                                                      border-left-style: solid;
+                                                      border-left-width: 1px;
+                                                      border-bottom-style: solid;
+                                                      border-bottom-width: 1px;
+                                                      border-right-style: solid;
+                                                      border-right-width: 1px;
+
+                                                      vertical-align: baseline;
+                                                      padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                        font-size: 18px;
+                                                        margin: 0; ">{{SWVersion}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="
+                                                          border-left-style: solid;
+                                                          border-left-width: 1px;
+                                                          border-bottom-style: solid;
+                                                          border-bottom-width: 1px;
+
+                                                          vertical-align: baseline;
+                                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                            font-size: 18px;
+                                                            font-weight: 600;
+                                                            margin: 0; "></p>
+                                    </td>
+                                    <td colspan="4"
+                                        style="
+                                                          border-left-style: solid;
+                                                          border-left-width: 1px;
+                                                          border-bottom-style: solid;
+                                                          border-bottom-width: 1px;
+                                                          border-right-style: solid;
+                                                          border-right-width: 1px;
+                                                          vertical-align: baseline;
+                                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                            font-size: 18px;
+                                                            font-weight: 600;
+                                                            margin: 0; "></p>
+                                    </td>
+                                    <td style="
+
+                                                          border-bottom-style: solid;
+                                                          border-bottom-width: 1px;
+
+                                                          vertical-align: baseline;
+                                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                            font-size: 18px;
+                                                            margin: 0; "><b>Warranty</b></p>
+                                    </td>
+                                    <td style="
+                                                          border-left-style: solid;
+                                                          border-left-width: 1px;
+                                                          border-bottom-style: solid;
+                                                          border-bottom-width: 1px;
+                                                          border-right-style: solid;
+                                                          border-right-width: 1px;
+
+                                                          vertical-align: baseline;
+                                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="Warranty=='IN'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                          font-size: 18px;
+                                                          font-weight: 600;
+                                                            margin: 0; ">IN</p>
+
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="Warranty=='Out'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                          font-size: 18px;
+                                                          font-weight: 600;
+                                                            margin: 0; ">OUT</p>
+
+
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="Warranty=='CMS'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+
+                                            <p class="s2"
+                                               style="
+                                                          font-size: 18px;
+                                                          font-weight: 600;
+                                                            margin: 0; ">CMS</p>
+
+
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="Warranty=='AMC'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                          font-size: 18px;
+                                                          font-weight: 600;
+                                                            margin: 0; ">AMC</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="
+                                                                border-left-style: solid;
+                                                                border-left-width: 1px;
+                                                                border-bottom-style: solid;
+                                                                border-bottom-width: 1px;
+
+                                                                vertical-align: baseline;
+                                                                padding-left: 15.9px;">
+                                        <p class="s2"
+                                           style="
+                                                                    font-size: 18px;
+                                                                    font-weight: 600;
+                                                                    margin: 0; "><b>Accessories :</b></p>
+                                    </td>
+                                    <td colspan="4"
+                                        style="
+                                                                border-left-style: solid;
+                                                                border-left-width: 1px;
+                                                                border-bottom-style: solid;
+                                                                border-bottom-width: 1px;
+                                                                border-right-style: solid;
+                                                                border-right-width: 1px;
+                                                                vertical-align: baseline;
+                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                  font-size: 18px;
+                                                                  font-weight: 600;
+                                                                  margin: 0; "> {{Accessories}}</p>
+                                    </td>
+                                    <td style="
+
+                                                                border-bottom-style: solid;
+                                                                border-bottom-width: 1px;
+
+                                                                vertical-align: baseline;
+                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                  font-size: 18px;
+                                                                  margin: 0; ">
+                                                <b>
+                                                    Warranty
+                                                    Start
+                                                </b>
+                                            </p>
+                                    </td>
+                                    <td style="
+                                                                border-left-style: solid;
+                                                                border-left-width: 1px;
+                                                                border-bottom-style: solid;
+                                                                border-bottom-width: 1px;
+                                                                border-right-style: solid;
+                                                                border-right-width: 1px;
+
+                                                                vertical-align: baseline;
+                                                                padding-left: 15.9px;">
+                                        <p class="s2"
+                                           style="
+                                                                          font-size: 18px;
+                                                                          font-weight: 600;
+                                                                          margin: 0; ">{{WarrantyStartDate}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="
+                                                                    border-left-style: solid;
+                                                                    border-left-width: 1px;
+                                                                    border-bottom-style: solid;
+                                                                    border-bottom-width: 1px;
+
+                                                                    vertical-align: baseline;
+                                                                    padding-left: 15.9px;">
+                                        <p class="s2"
+                                           style="
+                                                                        font-size: 18px;
+                                                                        font-weight: 600;
+                                                                        margin: 0; "></p>
+                                    </td>
+                                    <td colspan="4"
+                                        style="
+                                                                    border-left-style: solid;
+                                                                    border-left-width: 1px;
+                                                                    border-bottom-style: solid;
+                                                                    border-bottom-width: 1px;
+                                                                    border-right-style: solid;
+                                                                    border-right-width: 1px;
+                                                                    vertical-align: baseline;
+                                                                    padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                      font-size: 18px;
+                                                                      font-weight: 600;
+                                                                      margin: 0; "></p>
+                                    </td>
+                                    <td style="
+
+                                                                    border-bottom-style: solid;
+                                                                    border-bottom-width: 1px;
+
+                                                                    vertical-align: baseline;
+                                                                    padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                      font-size: 18px;
+                                                                      margin: 0; ">
+                                                <b>
+                                                    Warranty
+                                                    End
+                                                </b>
+                                            </p>
+                                    </td>
+                                    <td style="
+                                                                    border-left-style: solid;
+                                                                    border-left-width: 1px;
+                                                                    border-bottom-style: solid;
+                                                                    border-bottom-width: 1px;
+                                                                    border-right-style: solid;
+                                                                    border-right-width: 1px;
+
+                                                                    vertical-align: baseline;
+                                                                    padding-left: 15.9px;">
+                                        <p class="s2"
+                                           style="
+                                                                              font-size: 18px;
+                                                                              font-weight: 600;
+                                                                              margin: 0; ">{{WarrantyEndDate}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"
+                                        style="
+                                                                              border-left-style: solid;
+                                                                              border-left-width: 1px;
+                                                                              border-bottom-style: solid;
+                                                                              border-bottom-width: 1px;
+                                                                              border-right-style: solid;
+                                                                              border-right-width: 1px;
+
+                                                                              vertical-align: baseline;
+                                                                              padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                font-size: 18px;
+                                                                                font-weight: 600;
+                                                                                margin: 0; ">
+                                                <b>
+                                                    SERVICE
+                                                    INFORMATION :
+                                                </b>{{ServiceInformation}}
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"
+                                        style="
+                                                                                border-left-style: solid;
+                                                                                border-left-width: 1px;
+                                                                                border-bottom-style: solid;
+                                                                                border-bottom-width: 1px;
+                                                                                border-right-style: solid;
+                                                                                border-right-width: 1px;
+
+                                                                                vertical-align: baseline;
+                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                  font-size: 18px;
+                                                                                  font-weight: 600;
+                                                                                  margin: 0; ">
+                                                <b>
+                                                    Malfunction
+                                                    Description :
+                                                </b>{{MalfunctionDescription}}
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"
+                                        style="
+                                                                                  border-left-style: solid;
+                                                                                  border-left-width: 1px;
+                                                                                  border-bottom-style: solid;
+                                                                                  border-bottom-width: 1px;
+                                                                                  border-right-style: solid;
+                                                                                  border-right-width: 1px;
+
+                                                                                  vertical-align: baseline;
+                                                                                  padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                    font-size: 18px;
+                                                                                    font-weight: 600;
+                                                                                    margin: 0;
+                                                                                    margin-bottom: 100px;">
+                                                <b>
+                                                    Service
+                                                    Process :
+                                                </b>{{ServiceProcess}}
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"
+                                        style="
+                                                                                    border-left-style: solid;
+                                                                                    border-left-width: 1px;
+                                                                                    border-bottom-style: solid;
+                                                                                    border-bottom-width: 1px;
+                                                                                    border-right-style: solid;
+                                                                                    border-right-width: 1px;
+
+                                                                                    vertical-align: baseline;
+                                                                                    padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                      font-size: 18px;
+                                                                                      font-weight: 600;
+                                                                                      margin: 0;
+                                                                                      margin-bottom: 20px;">
+                                                <b>
+                                                    CS
+                                                    Specific
+                                                    Suggestion:{{CS_SpecificSuggestion}}
+                                                </b>
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="
+                                                                                border-left-style: solid;
+                                                                                border-left-width: 1px;
+                                                                                border-bottom-style: solid;
+                                                                                border-bottom-width: 1px;
+
+                                                                                vertical-align: baseline;
+                                                                                padding-left: 15.9px;">
+                                        <p class="s2"
+                                           style="
+                                                                                    font-size: 18px;
+                                                                                    margin: 0; ">
+                                            <b>
+                                                FUNCTION
+                                                TEST
+                                            </b>
+                                        </p>
+                                    </td>
+                                    <td colspan="4"
+                                        style="
+                                                                                border-left-style: solid;
+                                                                                border-left-width: 1px;
+                                                                                border-bottom-style: solid;
+                                                                                border-bottom-width: 1px;
+                                                                                border-right-style: solid;
+                                                                                border-right-width: 1px;
+                                                                                vertical-align: baseline;
+                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="FunctionTest=='Pass'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                          font-size: 18px;
+                                                                          font-weight: 600;
+                                                                            margin: 0; ">Pass</p>
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="FunctionTest=='Fail'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                          font-size: 18px;
+                                                                          font-weight: 600;
+                                                                            margin: 0; ">Fail</p>
+                                    </td>
+                                    <td style="
+
+                                                                                border-bottom-style: solid;
+                                                                                border-bottom-width: 1px;
+
+                                                                                vertical-align: baseline;
+                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                  font-size: 18px;
+                                                                                  margin: 0; ">
+                                                <b>
+                                                    SAFETY
+                                                    INSPECTION
+                                                </b>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="
+
+                                                                                border-bottom-style: solid;
+                                                                                border-bottom-width: 1px;
+                                                                                border-right-style: solid;
+                                                                                border-right-width: 1px;
+
+                                                                                vertical-align: baseline;
+                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SafetyInspection=='Fail'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                              font-size: 18px;
+                                                                              font-weight: 600;
+                                                                                margin: 0; ">Pass</p>
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SafetyInspection=='Pass'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            
+                                            <p class="s2"
+                                               style="
+                                                                              font-size: 18px;
+                                                                              font-weight: 600;
+                                                                                margin: 0; "><b>Fail</b></p>
+</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"
+                                        style="
+                                                                                          border-left-style: solid;
+                                                                                          border-left-width: 1px;
+                                                                                          border-bottom-style: solid;
+                                                                                          border-bottom-width: 1px;
+                                                                                          border-right-style: solid;
+                                                                                          border-right-width: 1px;
+
+                                                                                          vertical-align: baseline;
+                                                                                          padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                            font-size: 18px;
+                                                                                            margin: 0; ">
+                                                Please
+                                                refer
+                                                to
+                                                the
+                                                service
+                                                manual
+                                                of
+                                                product
+                                                for
+                                                the
+                                                methods
+                                                and
+                                                steps
+                                                to
+                                                perform
+                                                function
+                                                test
+                                                and
+                                                safety
+                                                test.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"
+                                        style="
+                                                                                            border-left-style: solid;
+                                                                                            border-left-width: 1px;
+                                                                                            border-bottom-style: solid;
+                                                                                            border-bottom-width: 1px;
+                                                                                            border-right-style: solid;
+                                                                                            border-right-width: 1px;
+
+                                                                                            vertical-align: baseline;
+                                                                                            padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                              font-size: 18px;
+                                                                                              font-weight: 600;
+                                                                                              margin: 0; ">
+                                                PARTS
+                                                CHANGE
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  font-weight: 600;
+                                                                                                  margin: 0; ">
+                                                Line#
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+                                                                                                border-right-style: solid;
+                                                                                                border-right-width: 1px;
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <p class="s2"
+                                           style="
+                                                                                                  font-size: 18px;
+                                                                                                  font-weight: 600;
+                                                                                                  margin: 0; ">
+                                            Part
+                                            Name
+                                        </p>
+                                    </td>
+                                    <td style="
+
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  font-weight: 600;
+                                                                                                  margin: 0; ">P/N</p>
+                                        </div>
+                                    </td>
+                                    <td style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  margin: 0; ">
+                                                old
+                                                S/N
+                                            </p>
+                                    </td>
+                                    <td style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  margin: 0; ">
+                                                new
+                                                S/N
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  margin: 0; ">
+                                                Quantity
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+                                                                                                border-right-style: solid;
+                                                                                                border-right-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  margin: 0; ">
+                                                Price
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 350px;
+                                          border-top-style: solid;
+                                          border-top-width: 1px;
+                                          border-left-style: solid;
+                                          border-left-width: 1px;
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          border-right-style: solid;
+                                          border-right-width: 1px;padding-left: 10px;
+                                          padding: 10px 0;
+                                        " colspan="1">
+                                        <table style="border-collapse: collapse;">
+                                            <tbody>
+                                                <tr ng-repeat="sp in SpCollectionList" style="border: none;">
+                                                    <td colspan="4" style="border: none; padding: 10px 0;">
+                                                        <p class="s2" style="font-size: 18px; font-weight: 600; margin: 0;"><b>{{$index + 1}}) :</b></p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                    <td style="width: 350px;
+      border-top-style: solid;
+      border-top-width: 1px;
+      border-left-style: solid;
+      border-left-width: 1px;
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      border-right-style: solid;
+      border-right-width: 1px;padding-left: 10px;
+      padding: 10px 0;
+    " colspan="1">
+                                        <table style="border-collapse: collapse;">
+                                            <tbody>
+                                                <tr ng-repeat="sp in SpCollectionList" style="border: none;">
+                                                    <td style="border: none;">
+                                                        <p class="s6" style="margin: 0; padding-left: 10px; padding-right: 10px; text-indent: 0pt; text-align: center;">{{sp.SparePartName}}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                    <td style="width: 350px;
+      border-top-style: solid;
+      border-top-width: 1px;
+      border-left-style: solid;
+      border-left-width: 1px;
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      border-right-style: solid;
+      border-right-width: 1px;padding-left: 10px;
+      padding: 10px 0;
+    " colspan="1">
+                                        <table style="border-collapse: collapse;">
+                                            <tbody>
+                                                <tr ng-repeat="sp in SpCollectionList" style="border: none;">
+                                                    <td style="border: none;">
+                                                        <p class="s6" style="margin: 0; padding-left: 10px; padding-right: 10px; text-indent: 0pt; text-align: center;">{{sp.PN}}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                    <td style="width: 350px;
+      border-top-style: solid;
+      border-top-width: 1px;
+      border-left-style: solid;
+      border-left-width: 1px;
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      border-right-style: solid;
+      border-right-width: 1px;padding-left: 10px;
+      padding: 10px 0;
+    " colspan="1">
+                                        <table style="border-collapse: collapse;">
+                                            <tbody>
+                                                <tr ng-repeat="sp in SpCollectionList" style="border: none;">
+                                                    <td style="border: none;">
+                                                        <p class="s6" style="margin: 0; padding-left: 10px; padding-right: 10px; text-indent: 0pt; text-align: center;">{{sp.OldSN}}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td style="width: 350px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-right-style: solid;
+  border-right-width: 1px;padding-left: 10px;
+  padding: 10px 0;
+" colspan="1">
+                                        <table style="border-collapse: collapse;">
+                                            <tbody>
+                                                <tr ng-repeat="sp in SpCollectionList" style="border: none;">
+                                                    
+                                                    <td style="border: none;">
+                                                        <p class="s6" style="margin: 0; padding-left: 10px; padding-right: 10px; text-indent: 0pt; text-align: center;">{{sp.NewSN}}</p>
+                                                    </td>
+                                                    
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td style="width: 350px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-right-style: solid;
+  border-right-width: 1px;padding-left: 10px;
+  padding: 10px 0;
+" colspan="1">
+                                        <table style="border-collapse: collapse;">
+                                            <tbody>
+                                                <tr ng-repeat="sp in SpCollectionList" style="border: none;">
+                                                    
+                                                    <td style="border: none;">
+                                                        <p class="s6" style="margin: 0; padding-left: 10px; padding-right: 10px; text-indent: 0pt; text-align: center;">{{sp.Quantity}}</p>
+                                                    </td>
+                                                    
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td style="width: 350px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-right-style: solid;
+  border-right-width: 1px;padding-left: 10px;
+  padding: 10px 0;
+" colspan="1">
+                                        <table style="border-collapse: collapse;">
+                                            <tbody>
+                                                <tr ng-repeat="sp in SpCollectionList" style="border: none;">
+                                                    <td style="border: none;">
+                                                        <p class="s6" style="margin: 0; padding-left: 10px; padding-right: 10px; text-indent: 0pt; text-align: center;">{{sp.Charges}}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                
+                                
+                                <tr>
+                                    <td colspan="2"
+                                        style="
+                                                                                                                            border-left-style: solid;
+                                                                                                                            border-left-width: 1px;
+                                                                                                                            border-bottom-style: solid;
+                                                                                                                            border-bottom-width: 1px;
+
+                                                                                                                            vertical-align: baseline;
+                                                                                                                            padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                                              font-size: 18px;                                                                                                                              margin: 0; ">
+                                                Software
+                                                Upgrade
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="
+
+                                                                                                                            border-bottom-style: solid;
+                                                                                                                            border-bottom-width: 1px;
+                                                                                                                            border-right-style: solid;
+                                                                                                                            border-right-width: 1px;
+                                                                                                                            vertical-align: baseline;
+                                                                                                                            padding-left: 15.9px;">
+                                    </td>
+                                    <td style="
+
+                                                                                                                            border-bottom-style: solid;
+                                                                                                                            border-bottom-width: 1px;
+
+                                                                                                                            vertical-align: baseline;
+                                                                                                                            padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SoftwareUpgrade=='Yes'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                                      font-size: 18px;
+                                                                                      font-weight: 600;
+                                                                                        margin: 0; ">Yess</p>
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SoftwareUpgrade=='No'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                                      font-size: 18px;
+                                                                                      font-weight: 600;
+                                                                                        margin: 0; ">No</p>
+                                        </div>
+                                    </td>
+                                    <td colspan="3"
+                                        style="
+                                                                                                                            border-left-style: solid;
+                                                                                                                            border-left-width: 1px;
+                                                                                                                            border-bottom-style: solid;
+                                                                                                                            border-bottom-width: 1px;
+                                                                                                                            border-right-style: solid;
+                                                                                                                            border-right-width: 1px;
+                                                                                                                            vertical-align: baseline;
+                                                                                                                            padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                                              font-size: 18px;
+                                                                                                                              margin: 0; ">
+                                                New
+                                                Software
+                                                Version: {{NewSoftwareVersion}}
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"
+                                        style="
+                                                                                                                            border-left-style: solid;
+                                                                                                                            border-left-width: 1px;
+                                                                                                                            border-bottom-style: solid;
+                                                                                                                            border-bottom-width: 1px;
+
+                                                                                                                            vertical-align: baseline;
+                                                                                                                            padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                                              font-size: 18px;                                                                                                                              margin: 0; ">
+                                                Satisfaction
+                                                Feedback:
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="
+
+                                                                                                                            border-bottom-style: solid;
+                                                                                                                            border-bottom-width: 1px;
+
+                                                                                                                            vertical-align: baseline;
+                                                                                                                            padding-left: 15.9px;">
+                                    </td>
+                                    <td colspan="4"
+                                        style="
+
+                                                                                                                            border-bottom-style: solid;
+                                                                                                                            border-bottom-width: 1px;
+                                                                                                                            border-right-style: solid;
+                                                                                                                            border-right-width: 1px;
+                                                                                                                            vertical-align: baseline;
+                                                                                                                            padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SatisfactionFeedback=='Excellent'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+
+                                            <p class="s2"
+                                               style="
+                                                                                      font-size: 18px;
+                                                                                      font-weight: 600;
+                                                                                        margin: 0; ">Excellent</p>
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SatisfactionFeedback=='Good'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                                      font-size: 18px;
+                                                                                      font-weight: 600;
+                                                                                        margin: 0; ">Good</p>
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SatisfactionFeedback=='Average'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                                      font-size: 18px;
+                                                                                      font-weight: 600;
+                                                                                        margin: 0; ">Average</p>
+                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                <div ng-show="SatisfactionFeedback=='Bad'"> <i class="fa fa-check" aria-hidden="true"></i></div>
+                                            </div>
+                                            <p class="s2"
+                                               style="
+                                                                                      font-size: 18px;
+                                                                                      font-weight: 600;
+                                                                                        margin: 0; ">Bad</p>
+
+</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="2"
+                                        style="
+                                                                                                                              border-left-style: solid;
+                                                                                                                              border-left-width: 1px;
+                                                                                                                              border-bottom-style: solid;
+                                                                                                                              border-bottom-width: 1px;
+
+                                                                                                                              vertical-align: baseline;
+                                                                                                                              padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                                                font-size: 18px;                                                                                                                              margin: 0; ">
+                                                <b> Comment:</b> {{Comment}}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td colspan="6"
+                                        style="
+
+                                                                                                                              border-bottom-style: solid;
+                                                                                                                              border-bottom-width: 1px;
+                                                                                                                              border-right-style: solid;
+                                          border-right-width: 1px;
+                                                                                                                              vertical-align: baseline;
+                                                                                                                              padding-left: 15.9px;">
+                                        @*<p style="border-bottom: 1px solid black;     padding-top: 20px;  margin-bottom: 0;"></p>*@
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td colspan="5"
+                                        style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+
+                                        <p class="s2"
+                                           style="
+                                                                                          font-size: 18px;
+                                                                                          font-weight: 600;
+                                                                                            margin: 0; ">
+                                            <b>
+                                                Engineer's
+                                                Name:
+                                            </b> {{EngineerName}}
+                                        </p>
+                                    </td>
+                                    <td style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  margin: 0;
+                                                                                                  font-weight: 600;">
+                                                <b>
+                                                    Customer's
+                                                    name
+                                                </b>{{CustomerName}}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="
+
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+                                                                                                border-right-style: solid;
+                                                                                                border-right-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;">
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td colspan="5"
+                                        style="
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;
+                                                                                                padding-top: 20px;
+                                                                                                padding-bottom: 20px;">
+
+                                        <p class="s2"
+                                           style="
+                                                                                          font-size: 18px;
+                                                                                          font-weight: 600;
+                                                                                             ">Signature</p>
+                                    </td>
+                                    <td colspan="2"
+                                        style="border-right-style: solid;
+                                                                                          border-right-width: 1px;
+                                                                                                border-left-style: solid;
+                                                                                                border-left-width: 1px;
+                                                                                                border-bottom-style: solid;
+                                                                                                border-bottom-width: 1px;
+                                                                                                vertical-align: baseline;
+                                                                                                padding-left: 15.9px;
+                                                                                                padding-top: 20px;
+                                                                                                padding-bottom: 20px;">
+                                        <div>
+                                            <img src="{{CompanyLogo}}" style="width: 20%; max-height: 20%; margin-right: 50px;">
+                                        </div>
+                                        <div style="display: flex; padding: 10px 0;">
+                                            <p class="s2"
+                                               style="
+                                                                                                  font-size: 18px;
+                                                                                                  margin: 0;
+                                                                                                  font-weight: 600;">
+                                                Signature
+                                                &
+                                                Stamp
+                                            </p>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <table style="width: 100%; margin-top: 20px;" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td class="content-area" style="vertical-align: baseline; padding-left: 15.9px;" colspan="2" rowspan="3">
+                                        <p class="s1" style="font-size: 16px; font-weight: 600; margin: 0; margin-bottom: 0px;">
+                                            Registered Office: Unit no. 1061, Solitaire Corporate Park, Andheri Kurla Roard, Chakala, Andheri East, Mumbai-400 093
+                                        </p>
+                                        <p class="s1" style="font-size: 16px; font-weight: 600; margin: 0; margin-bottom: 0px;">
+                                            Tel: +91 22 4020 0011, Fax: +91 22 4020 0011
+                                        </p>
+                                        <p class="s1" style="font-size: 16px; font-weight: 600; margin: 0; margin-bottom: 0px;">
+                                            Corporate Office: 16th Floor, Building 9B, DLF Cyber City, DLF Phase lll, Gurugram, Haryana - 122 002
+                                        </p>
+                                        <p class="s1" style="font-size: 16px; font-weight: 600; margin: 0; margin-bottom: 0px;">
+                                            Ph: +91 124 4632488, Toll Free: 0008-00-85-22-009, WhatsApp:+91 9319598290, www.mindrayindia.com
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        </table>
+
+                        </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+                @*<div class="modal-footer">
+                    <div class="form-group col-md-12">
+                        <input type="button"
+                               class="btn btn-sm"
+                               style="background-color:forestgreen; color: white; font-size: 14px;"
+                               value="Print"
+                               onclick="print('PrintMain')">
+                        <input type="button"
+                               value="Cancel"
+                               class="btn btn-danger btn-sm"
+                               data-dismiss="modal">
+                    </div>
+                </div>*@
+                <div id="sidebar-overlay"></div>
+            </div>
+            <div id="sidebar-overlay"></div>
+        </div>
+
+
+    </div>
+</body>
+</html>
+
+@*/////////////////// FOR REGULAR SERVICE REPORT ////////////////////*@
+<script>
+    function print(id) {
+        var printHtml = document.getElementById(id).outerHTML;
+        var currentPage = document.body.innerHTML;
+        var elementPage = '<html><body><div style=" padding: 0px 0px;">' + printHtml + '</div> </body></html>';
+        var WindowObject = window.open();
+        WindowObject.document.write(elementPage);
+        WindowObject.document.close();
+        setTimeout(function () {
+            WindowObject.focus();
+            WindowObject.print();
+            WindowObject.close();
+        }, 2000);
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+@*/////////////////// FOR MINDRAY SERVICE REPORT ////////////////////*@
+<script>
+    function print(id) {
+        var printHtml = document.getElementById(id).outerHTML;
+        var currentPage = document.body.innerHTML;
+        var elementPage = '<html><body><div style=" padding: 0px 0px;">' + printHtml + '</div> </body></html>';
+        var WindowObject = window.open();
+        WindowObject.document.write(elementPage);
+        WindowObject.document.close();
+        setTimeout(function () {
+            WindowObject.focus();
+            WindowObject.print();
+            WindowObject.close();
+        }, 2000);
+    }
+</script>
+
+<script src="~/Scripts/angular.min.js"></script>
+<script src="~/AngularJs/Module.js"></script>
+<script src="~/Scripts/angular.js"></script>
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/chart.js/Chart.min.js"></script>
+<script src="~/plugins/sparklines/sparkline.js"></script>
+<script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
+<script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+<script src="~/plugins/jquery-knob/jquery.knob.min.js"></script>
+<script src="~/plugins/moment/moment.min.js"></script>
+<script src="~/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="~/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="~/plugins/summernote/summernote-bs4.min.js"></script>
+<script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<script src="~/dist/js/adminlte.js"></script>
+<script src="~/dist/js/pages/dashboard.js"></script>
+<script src="~/AngularJs/ServiceCallRequest/RegularServiceReport.js"></script>

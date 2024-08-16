@@ -1,0 +1,1677 @@
+﻿
+@{
+    ViewBag.Title = "ViewQuote";
+}
+
+
+<style>
+    .catStyle_Desc {
+        color: black;
+        cursor: pointer;
+        font-size: 15px;
+        border: 1px solid green;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .catStyle_active_Desc {
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: 1px solid green;
+        border-radius: 5px;
+    }
+
+    .wrapper.overflow {
+        overflow-y: scroll;
+        display: inline-block;
+    }
+</style>
+<style type="text/css" media="print">
+    .noprint {
+        display: none;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid;
+    }
+
+    ul.no-bullets {
+        list-style-type: none;
+        margin: 1px;
+        padding: 5px;
+        align-content: center;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<div class="page-content fade-in-up" ng-controller="RegularQuotationCtrl">
+    <input type="hidden" id="tempCustId" />
+
+    <div class="ibox">
+        <div class="ibox-body">
+            <div class="card">
+                <div class="col-md-12" style="margin-top:10px;">
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color:green;color:white"><span class="fa fa-arrow-left"></span></a>
+                        </div>
+                        <div class="col-md-11" style="margin-left:-50px;"><h6><b>View Quotation</b></h6></div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div style="overflow-y:auto">
+                        <table class="table table-striped table-bordered table-hover" id="example-table1" cellspacing="0" width="100%">
+                            <thead style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; ">
+                                <tr>
+                                    <th>Quote No.</th>
+                                    <th>Quot Type</th>
+                                    <th>Quote. Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    @*<th>Product Name</th>*@
+                                    <th> PNDT Status</th>
+                                    @*<th>Model No/Name.</th>*@
+                                    <th>Status</th>
+                                    @*<th>Quotation For</th>*@
+                                    @*<th>P.O.Date </th>*@
+                                </tr>
+                            </thead>
+                            <tbody style="color:black;">
+                                <tr ng-repeat="Quotation in QuotationList">
+                                    <td>{{Quotation.QUOTATION_NO}}</td>
+                                    <td>{{Quotation.QUOTATION_TYPE}}</td>
+                                    <td>{{Quotation.QUOTATION_DATE}}</td>
+                                    <td>{{Quotation.CUSTOMER_NAME}}</td>
+                                    <td>{{Quotation.FIRM_NAME}}</td>
+                                    <td>{{Quotation.PNDT_STATUS}}</td>
+                                    <td>{{Quotation.STATUS}}</td>
+                                    @*<td>{{Quotation.PO_DATE}}</td>*@
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div style="overflow: auto; white-space: nowrap; padding:15px 0px;">
+                            <center>
+                                <span>
+                                    <span class="catmenu_button_Desc catStyle_active_Desc" id="1_catId_Desc" ng-click="OnCategoryClick('1')" style="padding:5px; margin:5px;font-size:12px;"><b>Quotation Product</b></span>
+                                </span>
+                                @*<span>
+                                        <span class="catmenu_button_Desc catStyle_Desc" id="0_catId_Desc" ng-click="OnCategoryClick('0')" style="padding:5px; margin:5px;font-size:12px;"><b>Edit Quotation </b></span>
+                                    </span>*@
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="card-body" id="Demoexample_1">
+                <div class="ibox-body" style="height:700px; overflow-y:auto;">
+                    <div class="col-lg-12" style="margin-bottom:15px;">
+                        <div class="row">
+                            <div id="example-table2" data-myval="5" class="table-responsive col-lg-6" style="background-color: white; height: 340px; overflow-y: scroll;">
+
+                                <table class="table table-striped table-bordered table-hover " id="example-table3" cellspacing="0">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Product Detail</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()">
+                                                                <option value="">Select Category</option>
+                                                                <option ng-repeat="Category in CategoryList" value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input style="width:150PX" id="searchInTb" class="form-control" type="text" placeholder="Search Product" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <th>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;">
+                                        <tr ng-repeat="Product in ProductList">
+                                            <td>{{Product.PRODUCT_NAME}}</td>
+                                            @*<td>{{Product.P_ID}}</td>*@
+                                            <td>
+                                                <a href="" title="Add" ng-click="Getspare(Product)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Add </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive col-lg-6" style="background-color: white; height: 340px; overflow-y: scroll;">
+                                <table class="table table-striped table-bordered table-hover " id="example-table4" cellspacing="0" width="50%">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr><td colspan="6"><strong>*Note: If main product is removed all spare parts and std accessories will be removed</strong></td></tr>
+                                    </thead>
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Product Name</th>
+                                            <th>Quantity</th>
+                                            <th>With STD Accessories</th>
+                                            <th>Price</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;" ng-repeat="P in GroupProductList">
+
+                                        <tr>
+                                            <td>{{$index+1}}</td>
+                                            <td>{{P.PRODUCTNAME}}</td>
+                                            <td>{{P.QUANTITY}}</td>
+                                            <td>{{P.IS_WITH_STANDARD_ACC}}</td>
+                                            <td>{{P.PRODUCTPRICE}}</td>
+                                            <td>
+                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a><br /><br />
+                                                <a href="" title="{{Action}}" ng-click="GetSpareForUpdate(P)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Update</a>
+                                            </td>
+                                        </tr>
+                                        @*<td colspan="2">Product Name: {{P.PRODUCTNAME}}&nbsp;Quantity:{{P.QUANTITY}}&nbsp;Price:{{P.PRODUCTPRICE}}</td>
+                                            <td>
+                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>*@
+
+                                        @*<tr *ngIf="">
+                                                <th>Accessories</th>
+                                                <th>Accessories Price</th>
+                                                <th>Action</th>
+                                            </tr>*@
+
+                                        <tr ng-repeat="Quotation in ProductQuotationList | filter:{QUOTATION_ID:P.QUOTATION_ID} : true |filter:search:strict"
+                                            ng-if="Quotation.SPARE_PART!='' && Quotation.ACCPRICE!=0">
+                                            <td colspan="5"><b>Spare Part Name:</b> {{Quotation.SPARE_PART}}&nbsp;<b>Spare Part Price:</b>{{Quotation.ACCPRICE}}&nbsp; <b>Quantity:</b>{{Quotation.SPARE_QUANTITY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Quotation)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                            @*<td>{{Quotation.SPARE_PART}} </td>
+                                                <td>{{Quotation.ACCPRICE}} </td>
+                                                <td>
+                                                    <a ng-click="getFordelete(Quotation)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                </td>*@
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 " style="margin-bottom:10px">
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Total Amount:</label>
+                                <input class="form-control" readonly type="text" ng-model="final" />
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Including All Taxes:</label>
+                                <label style="color:red;">*</label>&nbsp;&nbsp;
+                                <input type="radio" id="contactChoice1" name="contact" value="Yes" ng-model="result" ng-change="IsIncludeTax(result)" />
+                                <label for="contactChoice1">Yes</label>&nbsp;&nbsp;
+                                <input type="radio" id="contactChoice2" name="contact" value="No" ng-model="result" ng-change="IsIncludeTax(result)" />
+                                <label for="contactChoice2">No</label><br>
+                                <span id="taxNote" style="color :red; display:none;"></span>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">GST(%):</label>
+                                <select class="form-control" id="gstamt" name="gstamt" ng-disabled="IsDisabled" ng-model="gstamt" ng-change="calTax(gstamt)">
+                                    <option value="0">0</option>
+                                    <option value="5">5</option>
+                                    <option value="12">12</option>
+                                    <option value="18">18</option>
+                                    <option value="28">28</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Tax Amount:</label>
+                                <input class="form-control" readonly type="text" placeholder="Enter Tax Amount" ng-model="Ttax" />
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Amount Inc. Tax:</label>
+                                <input class="form-control" readonly type="text" placeholder="Enter Amount Inc Tax" ng-model="AItax" />
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Warranty (Days or Months or Years):</label>
+                                <select ng-model="WARRANTY_PERIOD" id="WARRANTY_PERIOD" name="WARRANTY_PERIOD" class="form-control" value="Months">
+                                    <option value="">Select Warranty Period</option>
+                                    <option value="Days">Days</option>
+                                    <option value="Months">Months</option>
+                                    <option value="Years">Years</option>
+                                </select>
+                                <br />
+                                <input ng-model="WARRANTY_VALUE" id="WARRANTY_VALUE" name="WARRANTY_VALUE" class="form-control" value="0" type="text" placeholder="Enter Warranty" />
+                            </div>
+
+                            <div ng-show="QuotationList[0].QUOTATION_TYPE!='SpareParts'" class="form-group col-md-6">
+                                <label class="control-label">Show Special Warranty:</label>
+                                <label ng-show="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label>@*<label style="color:red">(Don't add For SpareParts Quotation)</label>*@<br>
+                                <input type="radio" id="SpecialWarranty1" name="SpecialWarranty" value="Yes" ng-model="SPL_WARRANTY" />
+                                <label for="SpecialWarranty1">Yes</label>
+                                <input type="radio" id="SpecialWarranty2" name="SpecialWarranty" value="No" ng-model="SPL_WARRANTY" />
+                                <label for="SpecialWarranty2">No</label>
+                            </div>
+
+                            <div ng-show="CUSTOMER_TYPE=='Regular'" class="form-group col-md-6">
+                                <label class="control-label">Show Refurbished Word:</label><label style="color:red;">*</label><br>
+                                <input type="radio" id="Refurbished" name="Refurbished1" value="True" ng-model="IS_REFURGISHED" />
+                                <label for="Refurbished1">Yes</label>
+                                <input type="radio" id="Refurbished" name="Refurbished2" value="False" ng-model="IS_REFURGISHED" />
+                                <label for="Refurbished2">No</label>
+                            </div>
+
+                            <div ng-show="CUSTOMER_TYPE=='Regular'" class="form-group col-md-6">
+                                <label class="control-label">Show Customer Name:</label><label style="color:red;">*</label><br>
+                                <input type="radio" id="C_NAME" name="C_NAME1" value="Yes" ng-model="C_NAME" />
+                                <label for="C_NAME1">Yes</label>
+                                <input type="radio" id="C_NAME" name="C_NAME2" value="No" ng-model="C_NAME" />
+                                <label for="C_NAME2">No</label>
+                            </div>
+
+                            <div ng-show="QuotationList[0].QUOTATION_TYPE!='SpareParts'" class="col-lg-12">
+                                <label class="control-label">Note:</label>@*<label style="color:red">(Dont add For SpareParts Quotation)</label>*@
+                                <textarea ng-model="REMARKS" id="REMARKS" class="form-control" @*rows="3"*@ type="text" placeholder="Enter Note"></textarea>
+                                @*<input ng-model="REMARKS" id="REMARKS" name="REMARKS" class="form-control" value="" type="text" placeholder="Enter Remarks" />*@
+                            </div>
+                            <!--<div style="margin-left:40%;margin-top:11px;">-->
+                            @*<input class="form-control" type="button" value="Total Calculate" style="background-color:red;color:white" />*@
+                            <!--</div>-->
+                        </div>
+                        <div class="flex-row" style="margin-left: 45%; margin-right: 45%; margin-top: 11px; display: flex; ">
+                            <div class="flex-col" style="flex: 1; margin-right: 20px;">
+                                <input id="SaveQuotation" class="form-control" type="button" @*data-toggle="modal" data-target="#QUotationAdd"*@ value="Save" style="background-color:green;color:black" ng-click="SaveQuotDetails()" />
+                            </div>
+                            <div class="flex-col" style="flex: 1;">
+                                <input id="PrintQuotation" class="form-control" type="button" @*data-toggle="modal" data-target="#QUotationAdd"*@ value="Print" style="background-color:aquamarine;color:black" ng-click="numTowords()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="AddProductAccessories">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:gray; color: white; padding: 10px; ">
+                            <h4 class="modal-title">
+                                <b> {{Action}} Product Accessories </b>
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <div class="col-12">
+                                            <div class="row">
+                                                @*<div class="form-group col-md-4">
+                                                        <label class="control-label">Product Name:</label><label style="color:red;">*</label>
+                                                       <input class="form-control" type="text" ng-model="{{Product.PRODUCT_NAME}}" />
+                                                    </div>*@
+                                                <div class="form-group col-md-4">
+                                                    <label class="control-label">Quantity:<label ng-if="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label></label>
+
+                                                    <input id="prodQuant" class="form-control" type="number" name="PRODUCT_QUANTITY" ng-model="PRODUCT_QUANTITY" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" />
+                                                    <span ng-show="(AddPayment.PRODUCT_QUANTITY.$invalid && (AddPayment.PRODUCT_QUANTITY.$touched || AddPayment.PRODUCT_QUANTITY.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.required">Quantity is required</span>
+                                                        <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.number">Please enter a valid Quantity</span>
+                                                    </span>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label class="control-label">MRP:<label ng-if="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label></label>
+
+                                                    <input id="prodPrice" class="form-control" type="number" name="PROCUCT_PRICE" ng-model="PROCUCT_PRICE" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" />
+                                                    <span ng-show="(AddPayment.PROCUCT_PRICE.$invalid && (AddPayment.PROCUCT_PRICE.$touched || AddPayment.PROCUCT_PRICE.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.PROCUCT_PRICE.$error.required">MRP is required</span>
+                                                        <span class="error" ng-show="AddPayment.PROCUCT_PRICE.$error.number">Please enter valid MRP</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <div class="row">
+
+                                                    <input id="STDACCESSORIES" type="checkbox" class="STD_ACC" ng-model="IS_WITH_STANDARD_ACC" ng-click="ShowHideStdAcc()" value="Std_Acc" style="margin-bottom: 8px;" />
+
+                                                    <div class="col-8" @*style="margin-bottom:4px;"*@>
+                                                        <label>With Standard Accessories</label>
+                                                    </div>
+                                                    <table id="StdAccTB" class="table table-bordered StdAccClass" style="font-size: 0.9rem;color:black;display:none;">
+
+                                                        <thead>
+                                                            <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                                <th>
+                                                                    <input id="checkAllChkboxStd" type="checkbox" onclick="CheckALLStd()" checked />
+                                                                </th>
+                                                                @*<th> No</th>*@
+                                                                <th>Std Accessories Name</th>
+                                                                <th style="width:150px;">Quantity</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-if="StdAccPartList.length>0" ng-repeat="StdAccpart in StdAccPartList">
+                                                                <td scope="row" class="checkbox_std">
+                                                                    <input id="prodStdAcc" class="StdAccParts" value="{{StdAccpart.STD_ID}}" ng-model="STD_ID" type="checkbox" />
+                                                                </td>
+                                                                @*<td ng-click="GotoPage(Sparepart)">{{Sparepart.SP_ID}}</td>*@
+                                                                <td width="570px">{{StdAccpart.STD_ACC_NAME}}</td>
+                                                                <td><input class="form-control stdid" type="number" name="STD{{StdAccpart.STD_ID}}" id="STD{{StdAccpart.STD_ID}}" value="1" min="1" max="500" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="col-5"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox" type="checkbox" value="false" onclick="CheckALL()" />
+                                                    </th>
+                                                    @*<th> No</th>*@
+                                                    <th>Spare Parts Name</th>
+                                                    <th style="width:150px;">Quantity</th>
+                                                    <th style="width:150px;">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="Sparepart in SparepartList">
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="SparePart" value="{{Sparepart.SP_ID}}" ng-model="SP_ID" type="checkbox" />
+                                                    </td>
+                                                    @*<td ng-click="GotoPage(Sparepart)">{{Sparepart.SP_ID}}</td>*@
+                                                    <td>{{Sparepart.SPARE_PART}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{Sparepart.SP_ID}}" id="Q{{Sparepart.SP_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td><input class="form-control priceid" type="number" name="PRICE{{Sparepart.SP_ID}}" id="PRICE{{Sparepart.SP_ID}}" value="{{Sparepart.PRICE}}" min="1" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; }" /></td>
+                                                    @*<td>{{Sparepart.PRICE}}</td>*@
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="form-group col-md-12">
+                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddProduct(Sparepart)" value="{{Action}} Product" />
+                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" @*data-dismiss="modal"*@ />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="QUotationAdd">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintMain" style="border: 2px solid #000; font-family:'Google Sans', 'Roboto', Arial, sans-serif">
+
+                                    <style>
+                                        .cover {
+                                            object-fit: cover;
+                                            width: 512px;
+                                            height: 512px;
+                                        }
+
+                                        .page-header, .page-header-space {
+                                            height: 210px;
+                                        }
+
+                                        .page {
+                                            page-break-after: always;
+                                            padding-bottom: 55px;
+                                        }
+
+                                        @@page {
+                                            margin: 5mm
+                                        }
+
+                                        @@media print {
+                                            .page-header {
+                                                position: fixed;
+                                                top: 0mm;
+                                                width: 100%;
+                                                height: 220px;
+                                            }
+
+                                            thead {
+                                                display: table-header-group;
+                                            }
+
+                                            body {
+                                                margin: 0;
+                                            }
+                                        }
+                                    </style>
+
+                                    <div class="page-header" style="text-align: center">
+                                        <div class="header-section">
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                <div class="header-section" style="object-fit:contain;">
+                                                                    <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <div class="page-header-space"></div>
+                                                </td>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div>
+                                                        <div class="quotation-heading-section"
+                                                             style="border-top: 2px solid #000; border-bottom: 2px solid #000; padding:5px;">
+                                                            <h2 style="margin: 0px; text-align: center;">Quotation</h2>
+
+                                                        </div>
+
+                                                        <div class="address-section" style="padding:0px 10px;">
+                                                            <table style="margin-top:10px; padding: 10px 10px; width: 100%;">
+                                                                <tbody>
+                                                                    <tr valign="top">
+                                                                        <td style="font-size: 14px; color: #000; ">
+                                                                            <table width="100%">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td style="text-align: left; font-weight: 600;"><span style="display: none" id="cName1">To,</span></td>
+                                                                                        <td style="text-align: right;"> Date : {{QuotationList[0].QUOTATION_DATE}}</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td style="text-align: left;">
+                                                                                            <strong style="display: none" id="cName">{{QuotationList[0].CUSTOMER_NAME}},</strong>
+                                                                                            <strong style="display: none" id="cName2">To,</strong>
+                                                                                        </td>
+                                                                                        <td style="text-align: right;">
+                                                                                            Quotation Ref.No: {{QuotationList[0].QUOTATION_NO}}
+                                                                                        </td>
+                                                                                    </tr>
+
+                                                                                    <tr>
+                                                                                        <td style="text-align: left;"><strong>{{QuotationList[0].FIRM_NAME}}</strong>,</td>
+                                                                                        @*<td style="text-align: right;">
+                                                                                                Quotation Ref.No: {{QuotationList[0].QUOTATION_NO}}
+                                                                                            </td>*@
+                                                                                    </tr>
+
+                                                                                    <tr>
+                                                                                        <td width="250" style="text-align: left;">{{QuotationList[0].FIRM_ADDRESS}},</td>
+                                                                                    </tr>
+
+                                                                                    <tr>
+                                                                                        <td colspan="1" style="text-align: left;"><strong style="font-weight: 600;">Zip Code:</strong> {{QuotationList[0].ZIP_CODE}}</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td colspan="1" style="text-align: left;"><strong style="font-weight: 600;">Mobile No:</strong> {{QuotationList[0].CONTACT_NO}}@*9011462844.*@</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td colspan="1" style="text-align: left;"><strong style="font-weight: 600;">Email Id:</strong>  {{QuotationList[0].EMAIL}}</td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <div class="description-section" style="border-top:2px solid #000; border-bottom:2px solid #000; padding:5px 10px 0;">
+                                                            <table width="100%">
+                                                                <tbody>
+                                                                    <tr align="left">
+                                                                        <td style="font-size: 16px; color: #000;">
+                                                                            <span style="font-weight: 600; font-size:18px;">Description :</span>
+
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <div class="amount-section" style="padding:5px 10px 0;">
+                                                            <table align="center" style="width: 100%; page-break-inside: auto; border-collapse: collapse;" border="1">
+                                                                <tbody>
+                                                                    <tr style="border: 2px solid #000; page-break-inside: avoid; page-break-after: auto; text-align:center;">
+                                                                        <th style="border:2px solid #000; font-size: 18px;">Particular</th>
+                                                                        <th style="border:2px solid #000; font-size: 16px;">Price</th>
+                                                                        <th style="border:2px solid #000; font-size: 16px;"> Quantity</th>
+                                                                        <th style="border:2px solid #000; font-size: 16px;">Total Price</th>
+                                                                    </tr>
+
+                                                                    <tr style="page-break-inside: avoid; page-break-after: auto; ">
+                                                                        <td align="left" style="border: 2px solid #000; font-size: 13px; vertical-align: top; padding-top: 9px;">
+                                                                            <div ng-if="ProductQuotList.length>0" ng-repeat="obj in ProductQuotList">
+                                                                                <p style="display: none;" id="isRefurbished1">{{$index+1}}) {{obj.M_NAME}} {{obj.PRODUCTNAME}} {{obj.CAT_NAME}} {{obj.IS_WITH_STANDARD_ACC}}</p>
+                                                                                <p style="display: none;" id="isRefurbished2">{{$index+1}}) Refurbished {{obj.M_NAME}} {{obj.PRODUCTNAME}} {{obj.CAT_NAME}} {{obj.IS_WITH_STANDARD_ACC}}</p>
+                                                                                @*<br>*@
+                                                                                <span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0">Std Acc:</span>
+                                                                                <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                                    <span style="padding : 10px">{{itm.STD_ACC_NAME}}</span>
+                                                                                </div>
+                                                                                <span ng-if="obj.SPARE_PARTLIST.length>0">Spare Parts:</span>
+                                                                                <div ng-if="obj.SPARE_PARTLIST.length>0" ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                                    <span style="padding : 10px">{{item.SPARE_PART}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td align="center" style="border: 2px solid #000; font-size: 13px; vertical-align: top; padding-top: 9px;">
+                                                                            <div ng-repeat="obj in ProductQuotList">
+                                                                                <span>{{obj.PRODUCTPRICE}}/-</span><br>
+                                                                                <span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" style="color : white"> &nbsp; </span>
+                                                                                <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                                    <span style="color : black"> &nbsp; </span>
+                                                                                </div>
+                                                                                <span ng-if="obj.SPARE_PARTLIST.length>0" style="color : white"> &nbsp; </span>
+                                                                                <div ng-if="obj.SPARE_PARTLIST.length>0" ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                                    <span>{{item.ACCPRICE}}/-</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td align="center" style="border: 2px solid #000; font-size: 13px; vertical-align: top; padding-top: 9px;">
+                                                                            <div ng-repeat="obj in ProductQuotList">
+                                                                                <span>{{obj.QUANTITY}}</span><br><br>
+                                                                                <span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" style="color : white"> &nbsp; </span>
+                                                                                <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                                    <span style="color : black"> {{itm.STDACC_QUANTITY}} </span>
+                                                                                </div>
+                                                                                <span ng-if="obj.SPARE_PARTLIST.length>0" style="color : white"> &nbsp; </span>
+                                                                                <div ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                                    <span>{{item.SPARE_QUANTITY}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        @*<td align="center" style="border:2px solid #000; font-size: 13px;">{{FinalAmount}}/-</td>*@
+                                                                        <td align="center" style="border:2px solid #000; font-size: 13px; vertical-align: top; padding-top:9px;">
+                                                                            <div>
+                                                                                {{FinalAmount}}/-
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr style="page-break-inside: avoid; page-break-after: auto; ">
+                                                                        <td colspan="2" style="font-size:14px;"><b>Amount In Words :</b> Rs. {{amtInwords}}/-</td>
+                                                                        <td align="center" style="font-weight: 600;">Total</td>
+                                                                        <td align="center" style="font-weight: 600;">{{FinalAmount}}/-</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <div class="payment-details" style="padding: 0px 10px; border-top: 2px solid #000; border-bottom: 2px solid #000;">
+                                                            <table style="width:100% ; ">
+                                                                <tr style="page-break-inside: avoid; page-break-after: auto; ">
+                                                                    <td>
+                                                                        <table style="width:100%; font-size:14px; color:#000; line-height:22px;">
+                                                                            <tr>
+                                                                                <td colspan="3" style="color:#00ccff; font-size:16px;">Details of Making Payment</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Account Name  </td>
+                                                                                <td>:</td>
+                                                                                <td style="text-transform: uppercase;">{{cbd[0].ACC_HOLDER_NAME}}</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td>Account No.</td>
+                                                                                <td>:</td>
+                                                                                <td>{{cbd[0].ACC_NO}}</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td>IFSC Code</td>
+                                                                                <td>:</td>
+                                                                                <td>{{cbd[0].IFSC_CODE}}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td> Name of the Bank</td>
+                                                                                <td>:</td>
+                                                                                <td style="text-transform: uppercase;">{{cbd[0].BANK_NAME}} </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Address</td>
+                                                                                <td>:</td>
+                                                                                <td>{{cbd[0].BRANCH_NAME}} </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                    <td align="center" style="border-left: 2px solid #000;">
+                                                                        <div class="">
+                                                                            <img src="{{cbd[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+
+                                                                        </div>
+                                                                        <div style="margin-top:5px;"><strong>AUTHORIZED SEAL AND SIGNATORY</strong></div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+
+                                                        <div id="REMARKS_SECTION" class="Remarks" style="display: block; border-top: 2px solid #000; border-bottom: 2px solid #000; page-break-inside: avoid; page-break-after: auto; padding-right: 5px;">
+
+                                                            <span style="align-content: start; vertical-align: top; font-size: 16px; font-weight: 600; color: #000; text-align: left; padding-left: 5px;">Note: </span><label style="align-content: start; vertical-align: top; text-align: left; font-size: 16px; font-weight: 300; white-space: pre-wrap; " id="QRemarks">@*{{REMARKS}}*@</label>
+
+                                                        </div>
+
+                                                        <div class="terms-ssection" style="text-align:justify">
+                                                            <table style="width:100%; ">
+                                                                <tbody>
+                                                                    <tr style="page-break-inside: avoid; page-break-after: auto;">
+                                                                        <td style="font-size: 18px; font-weight: 600; border-bottom:2px solid #000; padding: 10px;">  Terms and Conditions:       </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 1. Validity of offer : </span> This offer is valid for a period of 30 days.
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td ng-model="IncludingTaxes" style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 2. Taxes and Levies :</span> {{IncludingTaxes}}@*Excluding*@ GST and any other taxes. (GST {{gstamt}}%)
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 3. Delivery :</span> Within two months from the date of receipt of technically and commercially clear order along with
+                                                                            dispatch instructions.
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 4. Payment :</span> {{QuotationList[0].PAYMENT_TERM}}% advance and balance along with taxes before dispatch.
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 5. Installation / Assembly / Demonstration SAI MEDICAL SERVICES :</span> shall carry out installation of the
+                                                                            equipment and shall not be responsible for any Preliminaries, Site alterations, etc. The purchaser shall provide
+                                                                            a suitable site. Proper uninterrupted power supply as per our requirement.
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 6. Operational requirements :</span> The purchaser shall maintain the environmental conditions recommended by us
+                                                                            for proper functioning of the equipment so as to neither ensure that the equipment does nor suffer damage due
+                                                                            to humidity. Dust, pests, severe temperature etc. The purchaser shall ensure that the equipment is operated as
+                                                                            per the operating instructions and manufacturer’s recommendations. The purchaser shall also ensure that
+                                                                            competent, trained and skilled personnel operate the equipment. We shall not be responsible for any loss
+                                                                            damage or injuries caused due to purchaser’s non-fulfillment of these conditions. Obtaining all necessary
+                                                                            permissions from concerned competent authorities ({{QuotationList[0].AERB_OR_PNDT}}) to operate the unit will be scope of purchaser and
+                                                                            <span>SAI MEDICAL SERVICES</span> shall not be held responsible for the same.
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 7.Warranty :</span> The equipment offered is covered by guarantee under proper use for faulty material or
+                                                                            workmanship for
+                                                                            <span><b>{{WARRANTY_VALUE}} {{WARRANTY_PERIOD}} </b></span> from date of dispatch.
+                                                                            <span>SAI MEDICAL SERVICES</span> shall not be responsible for
+                                                                            any defect or damaged caused due to any alterations, addition or repair carried out to the equipment by any
+                                                                            person not authorized by the us to carry out such alterations, addition or repair SAI MEDICAL SERVICES
+                                                                            shall not be responsible for any defect or damaged caused to the equipment, directly or indirectly, due to
+                                                                            mishandling misconduct or negligence on the part of the purchaser or his employees, failure to operate the
+                                                                            equipment as recommended by the manufacturer or failure to maintain the environmental conditions
+                                                                            recommended. Parts which deteriorate due to wear and tear, consumables or any such parts not specifically
+                                                                            covered under this guarantee shall be outside the scope of this guarantee.
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr id="Special_Warranty" style="display:block;">
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600; font-style: italic;">
+                                                                                Special warranty term “The purchaser shall be entitled for pro-rata credit up to maximum of 12 months
+                                                                                from the date of dispatch or 100000 Scan second on Spiral CT Scan tubes whichever is earlier.”
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px; padding: 10px; border-bottom:2px solid #000;">
+                                                                            <span style="font-weight: 600;"> 8. General Conditions :</span> of Supply These General Conditions of Supply form an integral part of the offer and
+                                                                            the offer shall be read and understood in conjunction with the General Conditions of Supply. The General
+                                                                            Conditions of Supply shall be applicable and prevail, unless otherwise accepted by the
+                                                                            <span>
+                                                                                SAI MEDICAL
+                                                                                SERVICES
+                                                                            </span> in writing.
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <div style="clear:both; display:block;">
+                                                            <div class="thanks-msg-section">
+                                                                <table style="width:100%">
+                                                                    <tbody>
+                                                                        <tr align="center">
+                                                                            <td style="font-weight: 600; font-size:16px; padding: 5px;">"Thanks for your enquiry, we will be happy to serve you quality services."</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintMain')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="QUotationAddSpare">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body" style="padding:5px">
+                        <div id="PrintSpareSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div class="container" style="border: 2px solid #000; margin:0 auto; padding:0 5px">
+                                <div id="PrintSpareMain" style="font-family:'Google Sans', 'Roboto', Arial, sans-serif">
+
+                                    <style>
+                                        .cover {
+                                            object-fit: cover;
+                                            width: 302px;
+                                            height: 512px;
+                                        }
+
+                                        .page-header, .page-header-space {
+                                            height: 210px;
+                                        }
+
+                                        .page {
+                                            page-break-after: always;
+                                            padding-bottom: 55px;
+                                        }
+
+                                        @@page {
+                                            margin: 5mm
+                                        }
+
+                                        @@media print {
+                                            .page-header {
+                                                position: fixed;
+                                                top: 0mm;
+                                                width: 100%;
+                                                height: 220px;
+                                            }
+
+                                            thead {
+                                                display: table-header-group;
+                                            }
+
+                                            body {
+                                                margin: 0;
+                                            }
+                                        }
+                                    </style>
+
+                                    @*<div class="header-section" style="text-align: center">
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border: 2px solid #000;">
+                                                    <tr>
+                                                        <td>
+                                                            <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>*@
+
+                                    <div class="page-header" style="text-align: center">
+                                        <div class="header-section">
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                <div class="header-section" style="object-fit:contain;">
+                                                                    <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <div class="page-header-space"></div>
+                                                </td>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div style="width: 150%;">
+                                                        <table style="margin-left: 35px; padding: 20px 10px 10px; ">
+                                                            <tr>
+                                                                <td style="text-align:right; font-size:14px"> <strong>Date:</strong>{{QuotationList[0].QUOTATION_DATE}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right; font-size:14px"><strong>Quotation Ref.No:</strong>{{QuotationList[0].QUOTATION_NO}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align:left; font-size:14px">
+                                                                    <p style=" margin: 0px; font-size:14px"> <strong>To,</strong></p>
+                                                                    <p style=" margin: 0px; font-size:14px; line-height:24px">
+                                                                        <strong>
+                                                                            {{QuotationList[0].CUSTOMER_NAME}}<br>
+                                                                            {{QuotationList[0].FIRM_NAME}},
+                                                                        </strong>
+                                                                    </p>
+                                                                    <p style=" margin: 0px; font-size:14px; line-height:24px; width:30%">
+                                                                        {{QuotationList[0].FIRM_ADDRESS}}-{{QuotationList[0].ZIP_CODE}}
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <p style="font-size: 14px; margin-bottom: 0px; padding-left:110px;"> <strong>Subject:-</strong> Quotation for {{PRODSUB}} </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <p style="font-size: 14px; margin-bottom: 0px;">Dear Sir/ Madam,</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <p style="margin-bottom:20px; font-size: 14px; text-indent: 50px; line-height:24px">Please find enclosed herewith quotation for above subject.</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table style="width: 65rem; border: 1px solid #000; border-collapse: collapse; " border="1">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="font-size: 14px; text-align:center; padding:2px 5px;">Sr.No.</th>
+                                                                                <th style="font-size: 14px; text-align:center; padding:2px 5px;">Description</th>
+                                                                                <th style="font-size: 14px; text-align:center; padding:2px 5px;">Quantity</th>
+                                                                                <th style="font-size: 14px; text-align:center; padding:2px 5px;">Price(Rs.)</th>
+                                                                                <th style="font-size: 14px; text-align:center; padding:2px 5px;">Total Amount(Rs.)</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td colspan="1" align="center" @*style="text-align: center; padding: 10px 0;font-weight: 600; "*@ style=" font-size: 13px; vertical-align: top; padding-top: 9px;">
+                                                                                    <div ng-if="ProductQuotList.length>0" ng-repeat="obj in ProductQuotList">
+                                                                                        <span>{{$index+1}}</span><br>
+                                                                                        <span style="color:white; padding : 5px"
+                                                                                              ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0"> &nbsp; </span>
+                                                                                        <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                                            <span style="color: white; padding: 5px"> &nbsp; </span>
+                                                                                        </div>
+                                                                                        <span style="color: white; padding: 5px" ng-if="obj.SPARE_PARTLIST.length>0"> &nbsp; </span>
+                                                                                        <div ng-if="obj.SPARE_PARTLIST.length>0" ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                                            <span style="color: white; padding: 5px"> &nbsp; </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td colspan="1" @*style="text-align:left; padding:10px 20px; font-weight:600; "*@ style=" font-size: 13px; vertical-align: bottom; padding-top: 9px;">
+                                                                                    <div ng-if="ProductQuotList.length>0" ng-repeat="obj in ProductQuotList">
+                                                                                        <span>@*{{$index+1}})*@ Refurbished {{obj.M_NAME}} {{obj.PRODUCTNAME}} {{obj.IS_WITH_STANDARD_ACC}}</span><br>
+                                                                                        <span @*style="padding : 10px"*@ ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0">Std Acc:</span>
+                                                                                        <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                                            <span @*style="padding : 20px"*@>{{itm.STD_ACC_NAME}}</span>
+                                                                                        </div>
+                                                                                        <span @*style="padding : 10px"*@ ng-if="obj.SPARE_PARTLIST.length>0">Spare Parts:</span>
+                                                                                        <div ng-if="obj.SPARE_PARTLIST.length>0" ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                                            <span @*style="padding : 20px"*@>{{item.SPARE_PART}}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td rowspan="1" @*style="text-align: center; padding-top:5px;font-weight: 600; "*@ style="font-size: 13px; vertical-align: bottom; text-align: center; padding-top: 9px;">
+                                                                                    <div style="row-gap:normal" ng-repeat="obj in ProductQuotList">
+                                                                                        <!--<span>-->@*{{obj.QUANTITY}}*@ <!--&nbsp; </span><br>-->
+                                                                                        @*<span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" style="color : white"> &nbsp; </span>*@
+                                                                                        <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                                            <span style="color : black"> {{itm.STDACC_QUANTITY}} </span>
+                                                                                        </div>
+                                                                                        @*<span ng-if="obj.SPARE_PARTLIST.length>0" style="color : white"> &nbsp; </span>*@
+                                                                                        <div ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                                            <span>{{item.SPARE_QUANTITY}}</span>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td rowspan="1" @*style="text-align: right; padding: 10px 0; font-weight: 600; "*@ style=" font-size: 13px; vertical-align: bottom; text-align: center; padding-top: 9px;">
+                                                                                    <div ng-repeat="obj in ProductQuotList">
+                                                                                        <!--<span>-->@*{{obj.PRODUCTPRICE}}*@<!--&nbsp;</span><br>-->
+                                                                                        @*<span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" style="color : white"> &nbsp; </span>*@
+                                                                                        @*<div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories' && obj.STD_ACC_LIST.length>0" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                                            <span style="color : black"> &nbsp; </span>
+                                                                                        </div>*@
+                                                                                        @*<span ng-if="obj.SPARE_PARTLIST.length>0" style="color : white"> &nbsp; </span>*@
+                                                                                        <div ng-if="obj.SPARE_PARTLIST.length>0" ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                                            <span>{{item.ACCPRICE}}/-</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td rowspan="1" @*style="text-align: right; padding: 10px 0; font-weight: 600; "*@ style=" font-size: 13px; vertical-align: central;text-align:center; padding-top: 9px;">
+                                                                                    {{FinalAmount}}/-
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <div style="display: flex; justify-content: space-between;">
+                                                                        <div>
+                                                                            <p>
+                                                                                Amount In Words <b>:- {{amtInwords}}/-</b>
+                                                                            </p>
+                                                                        </div>
+                                                                       
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>
+                                                                    <h6 style="font-size: 16px; color: #000; font-weight: 600; padding: 3px; margin-bottom: -4px;">Terms and Conditions:</h6>
+                                                                    <ol>
+                                                                        <li style="font-size:14px; padding:0px 0 2px;">Payment terms - {{QuotationList[0].PAYMENT_TERM}}% in advance.</li>
+                                                                        <li ng-if="IncOption == 'Yes'" style="font-size:14px; padding: 2px 0;">{{gstamt}}% GST will be Included.</li>
+                                                                        <li ng-if="IncOption == 'No'" style="font-size:14px; padding: 2px 0;">{{gstamt}}% GST will be borne by customer.</li>
+                                                                        <li style="font-size:14px; padding: 2px 0;">{{WARRANTY_VALUE}} {{WARRANTY_PERIOD}} Warranty.</li>
+                                                                        <li style="font-size:14px; padding: 2px 0;">With Buyback of defective part. </li>
+                                                                        <li style="font-size:14px; padding: 2px 0;">This quotation is valid for 15 days from the above date.</li>
+                                                                    </ol>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td style="font-size:16px; font-weight:400; line-height:24px;">
+                                                                    Thanking you<br>
+                                                                    Yours Faithfully,
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                @*<td style="padding-top: 8rem;">&nbsp;</td>*@
+                                                                <td style="align-content:flex-start;">
+                                                                    <div class="">
+                                                                        @*<img src="~/Images/signture-stamp-img.jpg" style="width:300px; max-width:100%;" />*@
+                                                                        <img src="{{cbd[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+
+                                                                    </div>
+                                                                    <div style="margin-top:5px;"><strong>AUTHORIZED SEAL AND SIGNATORY</strong></div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="font-size: 16px;">For <strong>{{cbd[0].COMPANY_NAME}}</strong></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <h6 style="font-size: 16px; color: #000; font-weight: 600; margin: 20px 0 0;">Bank Details:</h6>
+                                                                    <ul style="list-style-type: none; margin: 0px; padding: 0px;">
+                                                                        <li style="font-size:16px; line-height: 24px;"><strong>Name: </strong>{{cbd[0].ACC_HOLDER_NAME}}</li>
+                                                                        <li style="font-size:16px; line-height: 24px;"><strong>Bank: </strong>{{cbd[0].BANK_NAME}}</li>
+                                                                        <li style="font-size:16px; line-height: 24px;"><strong>A/c No: </strong>{{cbd[0].ACC_NO}}</li>
+                                                                        <li style="font-size:16px; line-height: 24px;"><strong>IFSC Code: </strong>{{cbd[0].IFSC_CODE}}</li>
+                                                                        <li style="font-size:16px; line-height: 24px;"><strong>Branch: </strong>{{cbd[0].BRANCH_NAME}}</li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group col-md-12">
+                                        <div class="noprint">
+                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintSpareMain')" />
+                                            <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="QuotationMedtronic">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintMedtronic" style="border: 0px solid #000; font-family:'Google Sans', 'Roboto', Arial, sans-serif">
+                                    <div style="font-family: 'Roboto', sans-serif;">
+                                        <div class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                            <div class="container" style="border: 2px solid #000;">
+                                                <div class="header-section" style=" padding:10px 10px 0;">
+                                                    <div class="table">
+                                                        <table style="width: 100%;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    @*<td>
+                                                                            <div align="center" class="right-logo" style="border-right: 2px solid #2B5794; padding-right:0px;">
+                                                                                <img src="~/Images/sai-logo.png" style="margin: 0 auto;">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td valign="top">
+                                                                            <div class="left-text-logo" style="margin-left:5px; ">
+                                                                                <img src="~/Images/sai-imaging-logo.png">
+                                                                            </div>
+                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
+                                                                            <h4 style="margin:0 0 0 40px; font-size:24px; color:#2B5794; padding:5px 0;">  Sales & Services of Refurbished -</h4>
+                                                                            <p style="margin:0 0 0 40px; color: #000; font-size:14px;">CT Scan // MRI // Ultra Sound & Colour Doppler // Mammography Machine // BMD Machine</p>
+                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
+                                                                            <div style="float: left; width:40%; text-align: left; font-size: 16px; color: #2B5794; margin:0 0 0 40px;">
+                                                                                www.saihealthcare.co.in
+                                                                            </div>
+                                                                            <div style="float: right; width: 50%; text-align:right; font-size:16px; color:#2b6793; ">
+                                                                                sagar.borade@saihealthcare.co.in
+                                                                            </div>
+
+                                                                        </td>
+                                                                        <td valign="top">
+                                                                            <div align="center" class="right-logo" style=" padding-right:0px;">
+                                                                                <img src="~/Images/medtronic-logo.png" style="width: 165px; margin: 0 auto;">
+                                                                            </div>
+                                                                        </td>*@
+                                                                    <td>
+                                                                        <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="address-section">
+                                                    <table style="padding: 10px 10px; width: 100%;">
+                                                        <tbody>
+                                                            <tr valign="top">
+                                                                <td style="font-size: 16px; color: #000; ">
+                                                                    <table width="100%">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td style="text-align: right;"> <strong>Date:</strong> {{QuotationList[0].QUOTATION_DATE}}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="text-align: right;"> <strong> Quotation No: </strong> {{QuotationList[0].QUOTATION_NO}}</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td style="text-align: left; font-weight: 600;"></td>
+                                                                                <td style="text-align: right;"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="1" style="text-align: left; font-weight: 600; font-size: 20px; margin-top: 20px;">To,</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="1" style="text-align: left; font-weight: 600;">
+                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].CUSTOMER_NAME}}<br>{{QuotationList[0].FIRM_NAME}},</p>
+                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].FIRM_ADDRESS}}-{{QuotationList[0].ZIP_CODE}}</p>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="description-section" style="padding:5px 10px 0;">
+                                                    <table width="100%">
+                                                        <tbody>
+                                                            <tr align="left">
+                                                                <td style="font-size: 16px; color: #000;">
+                                                                    <span style="font-weight: 600; font-size:18px; margin-left: 20px;">Sub: Quotation for NEW MR8 DRILL SYSTEM.</span>
+
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table width="100%" style="border: 1px solid #000;  border-collapse: collapse;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">S.N.</th>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">DESCRIPTION</th>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">QTY</th>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">BASIC PRICE (Rs.)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">01</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">MIDAS REX MR8 NEURO DRILL SYSTEM</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">01</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: right;">16,50,000/- + GST@12%</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <div style="clear:both; display:block;">
+                                                    <div>
+                                                        <table style="width:100%">
+                                                            <tbody>
+                                                                <tr align="left">
+                                                                    <td style="font-weight: 600; font-size:16px; padding-top: 20px; padding-left:30px;"><strong>NOTE:</strong>Quoted price as per Configuration attached in Annexure I for MR8 DRILL</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="font-size: 24px; text-align: center; text-decoration: underline; padding: 20px 0;">ANNEXURE I</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="font-size: 24px; text-align: center; padding: 20px 0 0; font-weight: 700;">
+                                                                        MIDAS REX MR8 DRILL
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+                                                    <div style="padding:5px 10px 0;">
+                                                        <table style="width: 100%; border-collapse: collapse;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Sr.No.</th>
+                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Cat. No.</th>
+                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Description</th>
+                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Qty.</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> &nbsp;</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:bold; text-align: center; text-decoration: underline;">MAIN SYSTEM</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> EC300</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">CONSOLE EC300 IPC NT</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">2</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> EF200</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">ACCY EF200 IPC FOOT CONTROL</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">3</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> EM800</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MOTOR MR8 ELECTRIC</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> &nbsp;</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:bold; text-align: center; text-decoration: underline;">ATTACHMENTS</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">4</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-AA15</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">ATT MR8 MR8-AA15 15CM ANGLED 2.4 MM</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">5</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> MR8-AS10</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">ATT MR8 MR8-AS10 10CM STRAIGHT 2.4 MM</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">6</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> MR8 -AF02</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">ATT MR8 MR8-AF02 FOOTED F2 B-1 2.4 MM</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">7</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> MR8-AD03</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">ATT MR8 MR8-AD03 PERF DRIVER 1000 RPM</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> &nbsp;</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:bold; text-align: center; text-decoration: underline;">TOOLS</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-10BA30</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">TOOL MR8-10BA30 MR8 10CM BALL 3MM DIAM</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">2</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-10BA40</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">TOOL MR8-10BA40 MR8 10CM BALL 4MM</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                        <table style="margin-top:30px; width: 100%;">
+                                                            <tbody>
+                                                                <tr align="center">
+                                                                    <td style="font-size: 16px; color: #1f497d;">
+                                                                        <span style="font-weight: 600; font-size:18px;">Admi. Office:</span> {{cbd[0].COMPANY_REG_ADDRESS}} – {{cbd[0].ZIP_CODE}}
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div style="clear:both; display:block;"></div>
+                                                <div style="page-break-before:always">&nbsp;</div>
+                                                <div class="header-section" style=" padding:10px 10px 0;">
+                                                    <div class="table">
+                                                        <table style="width: 100%;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    @*<td>
+                                                                            <div align="center" class="right-logo" style="border-right: 2px solid #2B5794; padding-right:0px;">
+                                                                                <img src="~/Images/sai-logo.png" style="margin: 0 auto;">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td valign="top">
+                                                                            <div class="left-text-logo" style="margin-left:5px; ">
+                                                                                <img src="~/Images/sai-imaging-logo.png">
+                                                                            </div>
+                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
+                                                                            <h4 style="margin:0 0 0 40px; font-size:24px; color:#2B5794; padding:5px 0;">  Sales & Services of Refurbished -</h4>
+                                                                            <p style="margin:0 0 0 40px; color: #000; font-size:14px;">CT Scan // MRI // Ultra Sound & Colour Doppler // Mammography Machine // BMD Machine</p>
+                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
+                                                                            <div style="float: left; width:40%; text-align: left; font-size: 16px; color: #2B5794; margin:0 0 0 40px;">
+                                                                                www.saihealthcare.co.in
+                                                                            </div>
+                                                                            <div style="float: right; width: 50%; text-align:right; font-size:16px; color:#2b6793; ">
+                                                                                sagar.borade@saihealthcare.co.in
+                                                                            </div>
+
+                                                                        </td>
+                                                                        <td valign="top">
+                                                                            <div align="center" class="right-logo" style=" padding-right:0px;">
+                                                                                <img src="~/Images/medtronic-logo.png" style="width: 165px; margin: 0 auto;">
+                                                                            </div>
+                                                                        </td>*@
+                                                                    <td>
+                                                                        <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div style="padding:5px 10px 0;">
+                                                    <table style="width: 100%; border-collapse: collapse;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">3</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-15BA40</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">TOOL MR8-15BA40 MR8 15CM BALL 4MM</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">4</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-15BA50</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">TOOL MR8-15BA50 MR8 15CM BALL 5MM</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">5</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-F2/7TA23</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">TOOL MR8-F2/7TA23 MR8 F2/7CM TAPER 2.3MM</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">6</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-SD12BA30</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">TOOL MR8-SD12BA30 MR8 12CM SD BALL 3MM</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">7</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">MR8-SP12BA30</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">TOOL MR8-SP12BA30 MR8 12CM SP BALL 3MM</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">1</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div>
+                                                    <h3 style="font-size:18px; font-weight: 600; padding: 5px 10px;"> Terms & Conditions:</h3>
+                                                    <div style="padding:5px 10px;">
+                                                        <table style="width: 100%; border-collapse: collapse; ">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">ORDER</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">Order In Favor Of:</p>
+                                                                        <p style="padding: 0px; margin: 0px;"><strong>Sai Imaging Healthcare Pvt. Ltd.</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px;">
+                                                                            405-406 ShreejiBizzworld, Opp. Camel House,
+                                                                            Near KatheGali Signal, Dwarka, Nashik – 422
+                                                                            011.
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">PAYMENT TERMS</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">70% Advance, 30% Against Delivery</p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">GUARANTEE/WARRANTY</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">
+                                                                            12 Months from the date of delivery / installation
+                                                                            against manufacturing defects / workmanship.
+                                                                            Warranty does not include consumables (tools,
+                                                                            burs, blades etc) warranty subjected to use of
+                                                                            equipment according to manufacturer’s
+                                                                            instructions.
+                                                                        </p>
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">GST</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">Excluding</p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">SUPPLY</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">To your Stores / Dept. as specified in the Purchase Order.</p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">DELIVERY PERIOD</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">6 to 8 Weeks.</p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        INSURANCE CHARGES, FREIGHT,
+                                                                        PACKING & FORWARDING CHARGES
+                                                                    </td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">Shall be borne by us.</p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">INSTALLATION CHARGES</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">Free of Cost. </p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">VALIDITY OF THE OFFER</td>
+                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                        <p style="padding: 0px; margin: 0px;">For 30 Days</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div style="padding:5px 10px;">
+                                                        <table style="width: 100%; border-collapse: collapse; ">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="font-size: 18px; padding:5px 10px; font-weight:bold; text-align: left;">Bank Details:</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>{{cbd[0].ACC_HOLDER_NAME}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>{{cbd[0].BANK_NAME}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>{{cbd[0].BRANCH_NAME}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>{{cbd[0].ACC_NO}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>{{cbd[0].IFSC_CODE}}</strong></p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; margin-bottom:80px; margin-top:20px; font-weight: bold; ">For Sai Imaging Healthcare Pvt. Ltd.</p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; margin-top:80px; font-weight: bold;">Authorized Signatory</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <table style="margin-top:30px; width: 100%;">
+                                                    <tbody>
+                                                        <tr align="center">
+                                                            <td style="font-size: 16px; color: #1f497d;">
+                                                                <span style="font-weight: 600; font-size:18px;">Admi. Office:</span> {{cbd[0].COMPANY_REG_ADDRESS}} – {{cbd[0].ZIP_CODE}}.
+
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintMedtronic')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts{
+
+    <script src="~/AngularJs/RegularQuotaionView.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>*@
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    <script>
+        // Write on keyup event of keyword input element
+        $("#searchInTb").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#example-table3 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+        //const tr05 = ($("#example-table tr:eq(05)"))[0];
+        //alert();
+        //const tr10OffsetTop = tr05.clientHeight + tr05.offsetTop;
+        // alert('jj');
+        //$('.wrapper').css('max-height', tr10OffsetTop);
+
+    </script>
+
+    <script>
+        function CheckALL() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox").change(function () {
+                if (this.checked) {
+                    $(".SparePart").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".SparePart").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".SparePart").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".SparePart").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox").prop("checked", false);
+                }
+            });
+        }
+
+        function CheckALLStd() {
+            $("#checkAllChkboxStd").change(function () {
+                if (this.checked) {
+                    $(".StdAccParts").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".StdAccParts").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".StdAccParts").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".StdAccParts").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkboxStd").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkboxStd").prop("checked", false);
+                }
+            });
+        }
+    </script>
+
+}
+
+

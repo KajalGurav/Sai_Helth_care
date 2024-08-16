@@ -1,0 +1,846 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 0;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Payment Receipt Master</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                @* <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminReceiptClick()">Add Payment Receipt</button>*@
+                                <a href="~/PaymentReceipt/PaymentReceiptAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId=0&FirmId=0&ReceiptNo=null&ReceiptId=0" class="btn btn-sm pull-left" style="background-color: green; color: white">Add Payment Receipt</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Payment Receipt" ng-model="CUSTOMER_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr.No</th>
+                                    <th>Payment Receipt No</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    <th>Ref. No</th>
+                                    <th>Receipt Type</th>
+                                    <th>Payment Type</th>
+                                    <th>Receipt for</th>
+                                    <th>Total Amount</th>
+                                    <th>Amount Received</th>
+                                    <th>Amount Remaining</th>
+                                    <th>Status</th>
+                                    <th>Reg Date</th>
+                                    <th style="width:130px">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in PaymentReceiptList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{admin.PAYMENT_RECEIPT_NO}}</td>
+                                    <td>{{admin.CUSTOMER_NAME}}</td>
+                                    <td>{{admin.FIRM_NAME}}</td>
+                                    <td>{{admin.PAYMENT_REF_NO}}</td>
+                                    <td>{{admin.PAYMENT_RECEIPT_TYPE}}</td>
+                                    <td>{{admin.PAYMENT_TYPE}}</td>
+                                    <td style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:100px;"><a href="" ng-click="ShowReceiptFor(admin)" data-target="#ReceiptForModal" data-toggle="modal">{{admin.RECIEPT_FOR}}</a></td>
+                                    <td>{{admin.PAYMENT_AMOUNT}}</td>
+                                    <td>{{admin.AMOUNT_RECEIVED}}</td>
+                                    <td>{{admin.AMOUNT_REMAINING}}</td>
+                                    <td><b style="color:green">{{admin.STATUS}}</b></td>
+                                    <td>{{admin.RECEIPT_GEN_DATE}}</td>
+                                    <td>
+                                        @*<a data-toggle="modal" ng-click="getReceiptForUpdate(admin)" title="Add Language" class="btn btn-xs btn-danger">Edit </a>*@
+                                        <a href="~/PaymentReceipt/PaymentReceiptAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&FirmId={{admin.CUSTOMER_ID}}&ReceiptNo={{admin.PAYMENT_RECEIPT_NO}}&ReceiptId={{admin.R_ID}}" title="Edit Receipt" class="btn btn-xs btn-danger">Edit</a>
+                                        <a data-toggle="modal" ng-click="PreviewPR(admin)" title="Add Language" class="btn btn-xs btn-success">Print Preview</a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="14" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal fade" id="ReceiptForModal">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>Receipt Details</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <label>Payment Receipt No: &nbsp;</label><span class="control-label">{{RECEIPT_NO}}</span><br />
+                                            <label>Customer Name: &nbsp;</label><span class="control-label">{{CUSTOMER_NAME}}</span><br />
+                                            <label>Firm Name: &nbsp;</label><span class="control-label">{{FIRM_NAME}}</span><br />
+                                            <label>Ref. No: &nbsp;</label><span class="control-label">{{RECORD_ID}}</span>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Receipt For:</label>
+                                            <textarea class="form-control" ng-model="RECIEPT_FOR" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal fade" id="PaymentReceipt">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ Add Receipt Master</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Receipt No:</label>
+                                                <input type="text" name="RECEIPT_NO" id="RECEIPT_NO" ng-model="RECEIPT_NO" class="form-control" readonly placeholder="Receipt Number" />
+                                                <span ng-show="(AddPayment.RECEIPT_NO.$invalid && (AddPayment.RECEIPT_NO.$touched || AddPayment.RECEIPT_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.RECEIPT_NO.$error.required">Receipt No is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Select Customer Name:</label>
+                                                <select id="CUSTOMER_ID" class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID"
+                                                        ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in PaymentCustomerList"
+                                                        ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-change="GetCustomerChange()">
+                                                    <option value="">Select Customer Name</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.CUSTOMER_ID.$invalid && (AddPayment.CUSTOMER_ID.$touched || AddPayment.CUSTOMER_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CUSTOMER_ID.$error.required">Customer Name is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                                                <select id="FIRM_ID" class="form-control" name="FIRM_ID" ng-model="FIRM_ID"
+                                                        ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in PaymentCustomerFirmList"
+                                                        ng-selected="Customer.F_ID == FIRM_ID" ng-change="GetFirmChange()" required>
+                                                    <option value="">Select Firm Name</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.FIRM_ID.$invalid && (AddPayment.FIRM_ID.$touched || AddPayment.FIRM_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FIRM_ID.$error.required">Customer Firm Name is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Payment Receipt Type: </label><label style="color:red;">*</label>
+                                                <select name="PAYMENT_RECEIPT_TYPE" class="form-control" ng-model="PAYMENT_RECEIPT_TYPE" ng-change="GetReferenceNo()" required>
+                                                    <option value="">Select Payment Receipt</option>
+                                                    <option value="Quotation">Quotation</option>
+                                                    <option value="PurchaseOrder">Purchase Order</option>
+                                                    <option value="Invoice">Invoice</option>
+                                                    <option value="AMC">AMC</option>
+                                                    <option value="CMC">CMC</option>
+                                                    <option value="Services">Services</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.PAYMENT_RECEIPT_TYPE.$invalid && (AddPayment.PAYMENT_RECEIPT_TYPE.$touched || AddPayment.PAYMENT_RECEIPT_TYPE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PAYMENT_RECEIPT_TYPE.$error.required">Payment Receipt Type is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Ref. No.:</label><label style="color:red;">*</label>
+                                                <select name="RECORD_ID" id="RECORD_ID" class="form-control" ng-model="RECORD_ID" ng-change="GetProductDetails()" required>
+                                                    <option value="">Select Ref. No</option>
+                                                    <option ng-repeat="Customer in CustomerRecordList" value="{{Customer.REF_NO_LIST}}" ng-if="Customer.REF_NO_LIST!=''">{{Customer.REF_NO_LIST}}</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.RECORD_ID.$invalid && (AddPayment.RECORD_ID.$touched || AddPayment.RECORD_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.RECORD_ID.$error.required">Ref. No is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Payment Type: </label><label style="color:red;">*</label>
+                                                <select name="PAYMENT_TYPE" class="form-control" ng-model="PAYMENT_TYPE" ng-change="onPaymentType()" required>
+                                                    <option value="">Select Payment Type</option>
+                                                    <option value="Cash">Cash</option>
+                                                    <option value="Online">Online</option>
+                                                    <option value="RTGS">RTGS</option>
+                                                    <option value="NEFT">NEFT</option>
+                                                    <option value="Cheque">Cheque</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.PAYMENT_TYPE.$invalid && (AddPayment.PAYMENT_TYPE.$touched || AddPayment.PAYMENT_TYPE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PAYMENT_TYPE.$error.required">Payment Type is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Receipt For:</label>
+                                                <textarea name="RECIEPT_FOR" ng-model="RECIEPT_FOR" id="RECIEPT_FOR" class="form-control" rows="4" type="text" readonly></textarea>
+                                            </div>
+                                            <div id="idTranscrtion" class="form-group col-md-6" style="display:none;">
+                                                <label class="control-label">Enter Cheque No./Transaction Id:</label><label style="color:red;">*</label>
+                                                <input type="text" id="TXN_ID" name="TXN_ID" ng-model="TXN_ID" class="form-control" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Total Amount to be Paid:</label>
+                                                <input type="number" name="TOTAL_AMOUNT" ng-model="TOTAL_AMOUNT" class="form-control" readonly />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Amount Received:</label><label style="color:red;">*</label>
+                                                <input type="number" name="AMOUNT_RECEIVED" ng-model="AMOUNT_RECEIVED" class="form-control" min="0" max="{{TOTAL_AMOUNT}}" ng-pattern="/^([1-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" ng-change="CalRemainingAmount()" placeholder="Enter Received Amount" required />
+                                                <span ng-show="(AddPayment.AMOUNT_RECEIVED.$invalid && (AddPayment.AMOUNT_RECEIVED.$touched || AddPayment.AMOUNT_RECEIVED.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.AMOUNT_RECEIVED.$error.required">Amount Received is required</span>
+                                                    <span class="error" ng-show="AddPayment.AMOUNT_RECEIVED.$error.number">Invalid Amount Received entered</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Amount Remaining:</label>
+                                                <input type="number" name="AMOUNT_REMAINING" ng-model="AMOUNT_REMAINING" class="form-control" readonly />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* PO Order Start *@
+                <div class="modal fade" id="PreviewPR">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                    <div>
+                                        <div id="PrintMain" style="display: flex;
+                                        justify-content: center;
+                                        margin-top: 5%;">
+                                            @* New Receipt Start *@
+                                            <table style="width:75%; border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%; font-size: 12px;">
+                                                <tr>
+                                                    <th colspan="4" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        @*<div style="display: flex; justify-content: center; align-items: center; gap: 5%;">
+                                                                <img style="width: 9%;" src="~/Images/sai-logo.png" alt="SAI MEDICAL LOGO">
+                                                                <h1>  <strong>SAI MEDICAL SERVICES </strong></h1>
+                                                            </div>*@
+
+                                                        <div style="display: flex; justify-content: center; align-items: center;">
+                                                            <img style="width: 100%;" src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" alt="SAI MEDICAL LOGO">
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%; width: 60%;">
+                                                        <p>
+                                                            <strong>Customer Name: </strong><br>
+                                                            <strong>{{CUSTOMER_NAME}} </strong><br>
+                                                            <strong>{{FIRM_NAME}}</strong><br>
+                                                            {{FIRM_ADDRESS}} – {{FIRM_ZIP_CODE}}.
+                                                        </p>
+                                                    </td>
+                                                    <td style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%">
+                                                        <p style="margin-top: 10px;">
+                                                            <strong>Receipt No.:</strong> <br>
+                                                            <strong>{{RECEIPT_NO}}</strong>
+                                                        <p style="margin-top: -10px;">
+                                                            <strong>Reference No.:</strong> <br>
+                                                            <strong>{{RECORD_ID}}</strong>
+                                                    </td>
+                                                    <td style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        <p style="margin-top: -35px;">
+                                                            <strong>Date:</strong> <br>
+                                                            <strong>{{RECEIPT_GEN_DATE}}</strong>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="border:1px solid black; border-collapse: collapse; padding-left: 2%;padding-right: 2%;">
+                                                        <p>
+                                                            <strong>Amount in Words (Rs):</strong><br>
+                                                            <strong>{{amtInwords}}.</strong>
+                                                    </td>
+
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        <p style="margin-top: 0px;"><Strong>Location: {{CITY_NAME}}</Strong></p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:1px solid black; border-collapse: collapse; padding-left: 2%;padding-right: 2%; width: 25%;">
+                                                        <P style="margin-top: 5px;"><Strong> Amount Received</Strong></P>
+                                                    </td>
+
+                                                    <td style="border:1px solid black;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <P style="margin-top: 5px;"><Strong>Cheque/CASH/NEFT/<br>RTGS/Online</Strong></P>
+                                                    </td>
+
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <P style="margin-top: 5px;"><Strong>Receipt Issued Subject to {{PAYMENT_TYPE}}</Strong></P>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="border: 1px solid black; border-collapse: collapse; padding-left: 2%; padding-right: 2%; text-align:right;">
+                                                        <p style="margin-top: -1px;"><strong>{{AMOUNT_RECEIVED}}/- </strong></p>
+                                                    </td>
+                                                    <td style="border-bottom: 1px solid;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <p ng-if="PAYMENT_TYPE == 'Cash'" style="margin-top: -1px;"><strong> {{PAYMENT_TYPE}}</strong></p>
+                                                        <p ng-if="PAYMENT_TYPE != 'Cash'" style="margin-top: -1px;"><strong> "{{TXN_ID}}"</strong></p>
+                                                    </td>
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        <p>
+                                                            <strong>
+                                                                Against {{RECIEPT_FOR}}
+                                                            </strong>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" style="border:1px solid black;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <table style="width:100%;">
+                                                            <tr>
+                                                                <td style="width:40%;">
+                                                                    <p style="width:200px; height:100px;"><strong>{{COMPANYNAME}},</strong><br>{{COMPANYREGADDRESS}} – {{ZIPCODE}}.</p>
+                                                                </td>
+                                                                <td style="width:60%;">
+                                                                    @*<img src="~/Images/signture-stamp-img.jpg" style="float:right;padding-right:0px;height:100%; width:250px;" />*@
+                                                                    <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="float:right;padding-right:0px;height:100%; width:250px;" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                            @* New Receipt End *@
+                                            @* Old Receipt Start*@
+                                            @*<table style="width:75%; border:1px solid black;border-collapse: collapse; padding-left: 0%; padding-right: 0%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="3" style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <div style="display: flex; justify-content: center; align-items: center;">
+                                                                    <img style="width: 10%;" src="~/Images/sai-logo.png" alt="SAI MEDICAL LOGO">
+                                                                    <h1>  <strong>SAI MEDICAL SERVICES</strong></h1>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Customer Name:</strong></p>
+                                                                <p><strong>{{CUSTOMER_NAME}} &nbsp; {{FIRM_NAME}}</strong></p>
+                                                                <p>{{FIRM_ADDRESS}} – {{FIRM_ZIP_CODE}}.</p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Receipt No.</strong></p> <br>
+                                                                <p><strong>{{RECEIPT_NO}}</strong></p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Date</strong></p><br>
+                                                                <p><strong>{{RECEIPT_GEN_DATE}}</strong></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Amount in Words (Rs):</strong></p><br>
+                                                                <p><strong>{{amtInwords}}.</strong></p>
+                                                            </td>
+                                                            <td colspan="2" style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <P><STRong>Location Thane</STRong></P>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Amount Received:{{AMOUNT_RECEIVED}}/- </strong></p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong> Cheque/ CASH/ NEFT/ RTGS</strong></p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Receipt Issued Subject to {{PAYMENT_TYPE}}</strong></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Total Amount:{{TOTAL_AMOUNT}}/-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{PAYMENT_TYPE}}</strong></p>
+                                                            </td>
+                                                            <td colspan="2" style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>
+                                                                    Against {{RECIEPT_FOR}}
+
+                                                                </strong></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p style="margin-top: 25%;"><strong>{{COMPANYNAME}},</strong><br>{{COMPANYREGADDRESS}} – {{ZIPCODE}}.</p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>*@
+                                            @* Old Receipt End *@
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="form-group col-md-12">
+                                            <div class="noprint">
+                                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print Payment Receipt" ng-click="Print('PrintMain')" />
+                                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @* PO Order end *@
+
+                @* MedPR Order Start *@
+                <div class="modal fade" id="PreviewPRMed">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                    <div>
+                                        <div id="PrintMainMed" style="display: flex;
+                                        justify-content: center;
+                                        margin-top: 5%;">
+                                            @* New Receipt Start *@
+                                            <table style="width:75%; border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%; font-size: 12px;">
+                                                <tr>
+                                                    <th colspan="4" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        @*<div style="display: flex; justify-content: center; align-items: center; gap: 5%;">
+                                                                <img style="width: 20%;" src="~/Images/sai-logo.png" alt="SAI MEDICAL LOGO">
+                                                                <h5>  <strong><i>SAI IMAGING HEALTHCARE PVT. LTD. </i> </strong></h5>
+                                                            </div>*@
+
+                                                        <div style="display: flex; justify-content: center; align-items: center;">
+                                                            <img style="width: 100%;" src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" alt="SAI MEDICAL LOGO">
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%; width: 60%;">
+                                                        <p>
+                                                            <strong>Customer Name: </strong><br>
+                                                            <strong>{{CUSTOMER_NAME}} </strong><br>
+                                                            <strong>{{FIRM_NAME}}</strong><br>
+                                                            {{FIRM_ADDRESS}} – {{FIRM_ZIP_CODE}}.
+                                                        </p>
+                                                    </td>
+                                                    <td style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%">
+                                                        <p style="margin-top: 10px;">
+                                                            <strong>Receipt No.:</strong> <br>
+                                                            <strong>{{RECEIPT_NO}}</strong>
+                                                        <p style="margin-top: -10px;">
+                                                            <strong>Reference No.:</strong> <br>
+                                                            <strong>{{RECORD_ID}}</strong>
+                                                    </td>
+                                                    <td style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        <p style="margin-top: -35px;">
+                                                            <strong>Date:</strong> <br>
+                                                            <strong>{{RECEIPT_GEN_DATE}}</strong>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="border:1px solid black; border-collapse: collapse; padding-left: 2%;padding-right: 2%;">
+                                                        <p>
+                                                            <strong>Amount in Words (Rs):</strong><br>
+                                                            <strong>{{amtInwords}}.</strong>
+                                                    </td>
+
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        <p style="margin-top: 0px;"><Strong>Location: {{CITY_NAME}}</Strong></p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:1px solid black; border-collapse: collapse; padding-left: 2%;padding-right: 2%; width: 25%;">
+                                                        <P style="margin-top: 5px;"><Strong> Amount Received</Strong></P>
+                                                    </td>
+
+                                                    <td style="border:1px solid black;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <P style="margin-top: 5px;"><Strong>Cheque/CASH/NEFT/<br>RTGS/Online</Strong></P>
+                                                    </td>
+
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <P style="margin-top: 5px;"><Strong>Receipt Issued Subject to {{PAYMENT_TYPE}}</Strong></P>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="border: 1px solid black; border-collapse: collapse; padding-left: 2%; padding-right: 2%;text-align:right;">
+                                                        <p style="margin-top: -1px;"><strong>{{AMOUNT_RECEIVED}}/- </strong></p>
+                                                    </td>
+                                                    <td style="border-bottom: 1px solid;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <p ng-if="PAYMENT_TYPE == 'Cash'" style="margin-top: -1px;"><strong> {{PAYMENT_TYPE}}</strong></p>
+                                                        <p ng-if="PAYMENT_TYPE != 'Cash'" style="margin-top: -1px;"><strong> "{{TXN_ID}}"</strong></p>
+                                                    </td>
+                                                    <td colspan="2" style="border:1px solid black;
+                                                                                    border-collapse: collapse;
+                                                                                    padding-left: 2%;
+                                                                                    padding-right: 2%;">
+                                                        <p>
+                                                            <strong>
+                                                                Against Medtronic standard accessories@*{{RECIEPT_FOR}}*@
+                                                            </strong>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" style="border:1px solid black;
+                                                                                        border-collapse: collapse;
+                                                                                        padding-left: 2%;
+                                                                                        padding-right: 2%;">
+                                                        <table style="width:100%;">
+                                                            <tr>
+                                                                <td style="width:40%;">
+                                                                    @*<p style="width:200px; height:100px;"><strong>{{COMPANYNAME}},</strong><br>{{COMPANYREGADDRESS}} – {{ZIPCODE}}.</p>*@
+                                                                    @*<p style="width:200px; height:100px;"><strong>Sai Imaging Healthcare Pvt. Ltd.,</strong><br>Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001.</p>*@
+                                                                    <p style="width:200px; height:100px;"><strong>{{COMPANYNAME}},</strong><br>{{COMPANYREGADDRESS}} – {{ZIPCODE}}.</p>
+                                                                </td>
+                                                                <td style="width:60%;">
+                                                                    @*<img src="~/Images/Sai-ImagingServices-stamp.png" style="float:right;padding-right:0px;height:100%; width:250px;" />*@
+                                                                    <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="float:right;padding-right:0px;height:100%; width:250px;" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                            @* New Receipt End *@
+                                            @* Old Receipt Start*@
+                                            @*<table style="width:75%; border:1px solid black;border-collapse: collapse; padding-left: 0%; padding-right: 0%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="3" style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <div style="display: flex; justify-content: center; align-items: center;">
+                                                                    <img style="width: 10%;" src="~/Images/sai-logo.png" alt="SAI MEDICAL LOGO">
+                                                                    <h1>  <strong>SAI MEDICAL SERVICES</strong></h1>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Customer Name:</strong></p>
+                                                                <p><strong>{{CUSTOMER_NAME}} &nbsp; {{FIRM_NAME}}</strong></p>
+                                                                <p>{{FIRM_ADDRESS}} – {{FIRM_ZIP_CODE}}.</p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Receipt No.</strong></p> <br>
+                                                                <p><strong>{{RECEIPT_NO}}</strong></p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Date</strong></p><br>
+                                                                <p><strong>{{RECEIPT_GEN_DATE}}</strong></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Amount in Words (Rs):</strong></p><br>
+                                                                <p><strong>{{amtInwords}}.</strong></p>
+                                                            </td>
+                                                            <td colspan="2" style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <P><STRong>Location Thane</STRong></P>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Amount Received:{{AMOUNT_RECEIVED}}/- </strong></p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong> Cheque/ CASH/ NEFT/ RTGS</strong></p>
+                                                            </td>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Receipt Issued Subject to {{PAYMENT_TYPE}}</strong></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>Total Amount:{{TOTAL_AMOUNT}}/-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{PAYMENT_TYPE}}</strong></p>
+                                                            </td>
+                                                            <td colspan="2" style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p><strong>
+                                                                    Against {{RECIEPT_FOR}}
+
+                                                                </strong></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                            border-collapse: collapse;
+                                                            padding-left: 2%;
+                                                            padding-right: 2%;">
+                                                                <p style="margin-top: 25%;"><strong>{{COMPANYNAME}},</strong><br>{{COMPANYREGADDRESS}} – {{ZIPCODE}}.</p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>*@
+                                            @* Old Receipt End *@
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="form-group col-md-12">
+                                            <div class="noprint">
+                                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print Payment Receipt" ng-click="Print('PrintMainMed')" />
+                                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @* MedPR Order end *@
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/Customermaster.js"></script>
+    <script src="~/AngularJs/PaymentMaster.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+}
+

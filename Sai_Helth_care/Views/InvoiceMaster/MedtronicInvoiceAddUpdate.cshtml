@@ -1,0 +1,1829 @@
+﻿
+@{
+    ViewBag.Title = "MedtronicInvoiceAddUpdate";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+
+<style>
+    .options-container {
+        z-index: 1000;
+        overflow: scroll;
+        position: absolute;
+        height: 150px;
+        background: #fff;
+        width: 550px;
+    }
+
+    li.ng-binding.ng-scope {
+        cursor: pointer;
+    }
+
+    .options-container {
+        z-index: 1000;
+        overflow: scroll;
+        position: absolute;
+        max-height: 150px;
+        background: #fff;
+        height: auto;
+        /*width: auto;*/
+        box-shadow: 1px 1px 4px 0px;
+    }
+</style>
+<section ng-controller="AddUpdateMedtronicInvoiceCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h4 class="modal-title"><b>{{Action}} Invoice </b></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form name="AddUpdateInvoice" ng-submit="AddUpdateInvoice(AddUpdateInvoice.$valid)" data-toggle="validator" role="form">
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Invoice Number:</label>@*<label style="color:red;">*</label>*@
+                                    <input type="text" name="Invoice_Number" ng-model="INVOICE_Number" class="form-control" readonly placeholder="Invoice Number" />
+                                </div>
+
+                                <div class="form-group col-md-3" ng-show="Admin_Action=='Update Invoice'">
+                                    <label class="control-label">DC Number:</label>
+                                    <input type="text" name="DC_Number" ng-model="DC_Number" class="form-control" readonly placeholder="DC Number" />
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Invoice Date:</label><label style="color:red;">*</label>
+                                    <input type="text" id="INVOICE_DATE" name="INVOICE_DATE"
+                                           ng-model="INVOICE_DATE" class="form-control"
+                                           placeholder="Enter Invoice Date" @*required*@ />
+                                    <span ng-show="(AddUpdateInvoice.INVOICE_DATE.$invalid && (AddUpdateInvoice.INVOICE_DATE.$touched || AddUpdateInvoice.INVOICE_DATE.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.INVOICE_DATE.$error.required">Invoice Date is required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Select Customer:</label><label style="color:red;">*</label>
+                                    <select ng-model="Customer_ID" id="Customer_ID" name="Customer_ID" class="form-control"
+                                            ng-options="cust.Customer_ID as cust.CUSTOMER_NAME for cust in AllCustomerList"
+                                            ng-selected="cust.Customer_ID == Customer_ID"
+                                            ng-change="OnCustomerChange()" ng-disabled="IS_DISABLE" required>
+                                        <option value="">Select Customer</option>
+                                    </select>
+                                    <span ng-show="(AddUpdateInvoice.Customer_ID.$invalid
+                                                      && (AddUpdateInvoice.Customer_ID.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.Customer_ID.$error.required">
+                                            Customer is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                                    <select ng-model="F_ID" id="F_ID" name="F_ID" class="form-control"
+                                            ng-options="firm.F_ID as firm.FIRM_NAME for firm in CustomerFirmList"
+                                            ng-selected="firm.F_ID == F_ID" ng-change="GetReferenceNo()" required>
+                                        <option value="">Select Customer Firm</option>
+                                    </select>
+                                    <span ng-show="(AddUpdateInvoice.F_ID.$invalid
+                                                      && (AddUpdateInvoice.F_ID.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.F_ID.$error.required">
+                                            Customer Firm is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-3" ng-show="PurchaseOrderList.length > 0">
+                                    <label class="control-label">Quotation Number:</label>@*<label style="color:red;">*</label>*@
+                                    <select ng-model="PO_NUMBER" id="PO_NUMBER" name="PO_NUMBER" class="form-control"
+                                            ng-options="po.REF_NO_LIST as po.REF_NO_LIST for po in PurchaseOrderList"
+                                            ng-selected="po.REF_NO_LIST == PO_NUMBER" ng-change="GetQuotationProductDetails(PO_NUMBER)">
+                                        <option value="">Select Quotation Number</option>
+                                    </select>
+
+                                    <span ng-show="(AddUpdateInvoice.PO_NUMBER.$invalid && (AddUpdateInvoice.PO_NUMBER.$touched || AddUpdateInvoice.PO_NUMBER.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.PO_NUMBER.$error.required">PO Number is required</span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-3" @*ng-show="PurchaseOrderList.length == ''"*@>
+                                    <label class="control-label">PO Date:</label>
+                                    <input type="text" id="PO_DATE" name="PO_DATE"
+                                           ng-model="PO_DATE" class="form-control"
+                                           placeholder="Enter Po Date" />
+                                </div>
+
+                                <div class="form-group col-md-3" @*ng-show="PurchaseOrderList.length == ''"*@>
+                                    <label class="control-label">PO Number:</label>
+                                    <input type="text" class="form-control" name="INVOICE_PO_NUMBER" ng-model="INVOICE_PO_NUMBER" placeholder="Enter PO Number" />
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Select Product Name/Model:</label><label style="color:red;">*</label>
+                                    <select ng-model="P_ID" id="P_ID" name="P_ID" class="form-control"
+                                            ng-options="prod.P_ID as prod.PRODUCT_NAME for prod in ProductList"
+                                            ng-selected="prod.P_ID == P_ID" ng-change="OnProductChange()" required>
+                                        <option value="">Select Product Name/Model</option>
+                                    </select>
+                                    <span ng-show="(AddUpdateInvoice.P_ID.$invalid && (AddUpdateInvoice.P_ID.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.P_ID.$error.required">
+                                            Product name/model is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Expiry Date:</label>
+                                    <input type="text" id="EXPIRY_DATE" name="EXPIRY_DATE" ng-model="EXPIRY_DATE" class="form-control" placeholder="Enter Expiry Date" />
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Product MRP:</label>
+                                    <input type="number" name="MRP" ng-model="MRP" class="form-control" placeholder="Product MRP" />
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Invoice For Spare Part:</label><label style="color:red;">*</label>
+                                    <select name="IS_INVOICEForSparePart" class="form-control" ng-model="IS_INVOICEForSparePart" required>
+                                        <option value="">Select</option>
+                                        <option ng-value=1>Yes</option>
+                                        <option ng-value=0>No</option>
+                                    </select>
+                                    <span ng-show="(AddUpdateInvoice.IS_INVOICEForSparePart.$invalid
+                                                      && (AddUpdateInvoice.IS_INVOICEForSparePart.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.IS_INVOICEForSparePart.$error.required">
+                                            Invoice For Spare Part is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Product Serial No:</label><label ng-show="IS_INVOICEForSparePart !== 1" style="color:red;">(Avl Qty: {{StockProductSerialNoList.length}})</label>
+
+                                    <select ng-model="NEW_PSERIAL_NO_ID" id="NEW_PSERIAL_NO_ID" name="NEW_PSERIAL_NO_ID" ng-change="SelectProductSerialNo()" class="form-control"
+                                            ng-selected="srno.P_STOCK_ID == NEW_PSERIAL_NO_ID">
+                                        <option value="">Select Product Serial No</option>
+                                        <option ng-repeat="srno in StockProductSerialNoList" ng-value="{{srno.P_STOCK_ID}}">{{srno.P_SERIAL_NO}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Product HSN Code:</label>
+                                    <input type="text" name="HSN_CODE" ng-model="HSN_CODE" maxlength="50" class="form-control" placeholder="Product HSN Code" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Quantity:</label><label ng-show="IS_INVOICEForSparePart !== 1" style="color:red;">*</label>
+                                    <input type="number" name="INVOICE_QTY" ng-model="INVOICE_QTY" class="form-control" min="0" minlength="1" maxlength="6" onkeyup=" if (this.value < min) { this.value = ''; return false; }"
+                                           placeholder="Enter Qty" @*ng-required="IS_INVOICEForSparePart !== 1"*@ />
+                                    <span ng-show="(AddUpdateInvoice.INVOICE_QTY.$invalid && (AddUpdateInvoice.INVOICE_QTY.$touched || AddUpdateInvoice.INVOICE_QTY.$dirty))">
+                                        <span style="color:red" ng-if="AddUpdateInvoice.INVOICE_QTY.$error.required">Quantity is required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Price:</label><label ng-show="IS_INVOICEForSparePart !== 1" style="color:red;">*</label>
+                                    <input type="text" name="INVOICE_PRICE" ng-model="INVOICE_PRICE" ng-pattern="/^(0*([1-9]\d*?|0)(\.\d{1,2})?)$/" class="form-control" placeholder="Enter Price" ng-required="IS_INVOICEForSparePart !== 1" />
+                                    <span ng-show="(AddUpdateInvoice.INVOICE_PRICE.$invalid && (AddUpdateInvoice.INVOICE_PRICE.$touched || AddUpdateInvoice.INVOICE_PRICE.$dirty))">
+                                        <span style="color:red" ng-show="AddUpdateInvoice.INVOICE_PRICE.$error.pattern">Please enter valid number</span>
+                                        <span style="color:red" ng-show="AddUpdateInvoice.INVOICE_PRICE.$error.required">Price is required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label" style="color:white">.</label>
+                                    <button type="button" ng-click="CalculateAmountProduct()" class="btn btn-sm pull-left form-control" style="background-color:peru; color: white">Calculate</button>
+                                </div>
+
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Software Version:</label>
+                                    <input type="text" class="form-control" name="SOFTWARE_VERSION" ng-model="SOFTWARE_VERSION" placeholder="Software Version" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">No of Transducers:</label>
+                                    <input type="number" name="NO_OF_TRANSDUCER" ng-model="NO_OF_TRANSDUCER" class="form-control" value="0" maxlength="6"
+                                           placeholder="Enter No of Transducers" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Serial No of Tube:</label>
+                                    <input type="text" class="form-control" name="SERIAL_NO_OF_TUBE" ng-model="SERIAL_NO_OF_TUBE" placeholder="Serial No of Tube" />
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Warranty (Days or Months or Years):</label>
+                                    <select ng-model="WARRANTY_IN_DMY" id="WARRANTY_IN_DMY" name="WARRANTY_IN_DMY" class="form-control" value="Months">
+                                        <option value="">Select Warranty</option>
+                                        <option value="Days">Days</option>
+                                        <option value="Months">Months</option>
+                                        <option value="Years">Years</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Warranty Period:</label>
+                                    <input ng-model="WARRANTY_PERIOD" id="WARRANTY_PERIOD" name="WARRANTY_PERIOD" class="form-control" value="0" type="text" placeholder="Enter Warranty Period" />
+                                </div>
+
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Invoice For:</label>
+                                    <select name="INVOICE_For" class="form-control" ng-model="INVOICE_For">
+                                        <option value="MAIN SYSTEM">Main System</option>
+                                        <option value="ATTACHMENTS">Attachments</option>
+                                        <option value="TOOLS">Tools</option>
+                                    </select>
+                                </div>
+
+                                @*<div class="form-group col-md-6" ng-show="INVOICE_For === 'MAIN SYSTEM'">
+                                        <label class="control-label">Main System:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                        <select ng-model="MED_ACC_ID" id="MED_ACC_ID1" name="MED_ACC_ID1" class="form-control"
+                                                ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict"
+                                                ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                            <option value="">Select Main System</option>
+                                        </select>
+                                        <span ng-show="IsMainSystemSelected == 'No'" style="color:red">Please select Main System</span>
+                                    </div>*@
+
+                                <div class="form-group col-md-6" ng-show="INVOICE_For === 'MAIN SYSTEM'">
+                                    <label class="control-label">Main System:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                    <input type="text" placeholder="Search Tool Name" class="form-control"
+                                           autoComplete="on" ng-model="ACCESSORY_NAME" ng-focus="showOptions = true" />
+                                    <div class="options-container" ng-show="showOptions">
+                                        <ul class="options-list">
+                                            <li ng-repeat="accs in AccessoriesList | filter:ACCESSORY_NAME | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict" ng-click="selectaccs(accs)">
+                                                {{accs.ACCESSORY_NAME}}
+                                                <input type="hidden" ng-model="accs.MED_ACC_ID" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                @*<div class="form-group col-md-6" ng-show="INVOICE_For === 'ATTACHMENTS'">
+                                        <label class="control-label">Attachments:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                        <select ng-model="MED_ACC_ID" id="MED_ACC_ID2" name="MED_ACC_ID2" class="form-control"
+                                                ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict"
+                                                ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                            <option value="">Select Attachments</option>
+                                        </select>
+                                        <span ng-show="IsAttachmentsSelected == 'No'" style="color:red">Please select Attachments</span>
+                                    </div>*@
+
+                                <div class="form-group col-md-6" ng-show="INVOICE_For === 'ATTACHMENTS'">
+                                    <label class="control-label">Attachments:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                    <input type="text" placeholder="Search Tool Name" class="form-control"
+                                           autoComplete="on" ng-model="ACCESSORY_NAME" ng-focus="showOptions = true" />
+                                    <div class="options-container" ng-show="showOptions">
+                                        <ul class="options-list">
+                                            <li ng-repeat="accs in AccessoriesList | filter:ACCESSORY_NAME | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict" ng-click="selectaccs(accs)">
+                                                {{accs.ACCESSORY_NAME}}
+                                                <input type="hidden" ng-model="accs.MED_ACC_ID" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+                                @*<div class="form-group col-md-6" ng-show="INVOICE_For === 'TOOLS'">
+                                        <label class="control-label">Tools:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                        <select ng-model="MED_ACC_ID" id="MED_ACC_ID3" name="MED_ACC_ID3" class="form-control"
+                                                ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict"
+                                                ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                            <option value="">Select Tools</option>
+                                        </select>
+                                        <span ng-show="IsToolsSelected == 'No'" style="color:red">Please select Tools</span>
+                                    </div>*@
+
+                                <div class="form-group col-md-6" ng-show="INVOICE_For === 'TOOLS'">
+                                    <label class="control-label">Tools:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                    <input type="text" placeholder="Search Tool Name" class="form-control"
+                                           autoComplete="on" ng-model="ACCESSORY_NAME" ng-focus="showOptions = true" />
+                                    <div class="options-container" ng-show="showOptions">
+                                        <ul class="options-list">
+                                            <li ng-repeat="accs in AccessoriesList | filter:ACCESSORY_NAME | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict" ng-click="selectaccs(accs)">
+                                                {{accs.ACCESSORY_NAME}}
+                                                <input type="hidden" ng-model="accs.MED_ACC_ID" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Quantity:</label>@*<label style="color:red;">*</label>*@
+                                    <input type="text" name="PART_QTY" ng-model="PART_QTY" value="0" class="form-control" minlength="1" maxlength="6"
+                                           placeholder="Enter Qty" @*required*@ />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Price:</label>@*<label style="color:red;">*</label>*@
+                                    <input type="text" name="PART_PRICE" ng-model="PART_PRICE" value="0" class="form-control" placeholder="Enter Price" @*required*@ />
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Part HSN Code:</label>
+                                    <input type="text" name="PART_HSN_CODE" ng-model="PART_HSN_CODE" maxlength="50" class="form-control" placeholder="Part HSN Code" />
+                                </div>
+
+
+
+                                <div class="form-group col-md-2">
+                                    <label class="control-label" style="color:white">.</label>
+                                    <button type="button" class="btn btn-sm pull-left form-control"
+                                            style="background-color:peru; color: white"
+                                            ng-click="AddPartsButtonClicked()">
+                                        Add Parts
+                                    </button>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th style="width:20px;">No.</th>
+                                                    <th>Accessories</th>
+                                                    <th>Serial No.</th>
+                                                    <th>Batch No.</th>
+                                                    <th style="max-width:100px; text-align:center">Price</th>
+                                                    <th style="max-width: 100px; text-align: center;">Quantity</th>
+                                                    <th style="max-width: 100px; text-align: center;">Part HSN Code</th>
+                                                    <th style="max-width: 100px; text-align: center;">Part GST</th>
+                                                    <th style="max-width: 100px; text-align: center;">Part Taxable amount</th>
+                                                    <th style="max-width: 100px; text-align: center;">Part Tax amount</th>
+                                                    <th style="max-width: 50px; text-align: center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="acc in IM_SparePartsAndAccessories">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>{{acc.ACCESSORY_NAME}}</td>
+                                                    <td>{{acc.SERIAL_NO}}</td>
+                                                    <td>{{acc.BATCH_NO}}</td>
+                                                    <td style="text-align: center">Rs.{{acc.PART_PRICE}}/-</td>
+                                                    <td style="text-align: center">{{acc.PART_QTY}}</td>
+                                                    <td style="text-align: center">{{acc.HSN_CODE}}</td>
+                                                    <td style="text-align: center">{{acc.GST_PERCENTAGE}}%</td>
+                                                    <td style="text-align: center">Rs.{{(acc.PART_TAXABLE_VALUE).toFixed(2)}}</td>
+                                                    <td style="text-align: center">Rs.{{(acc.PART_TAX_AMOUNT).toFixed(2)}}</td>
+                                                    <td>
+                                                        <a class="btn btn-xs btn-success" data-target="#SerialNo_Addupdate" data-toggle="modal" ng-click="EditSerialNo(acc)">Edit</a>
+                                                        <a class="btn btn-xs btn-danger" ng-click="Delete_IM_MedtronicAccessories(acc)">Remove</a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row" style="margin:0px; padding:0px;">
+                                        <div class="form-group col-md-10" style="color:red; "> Serial No selection is mandatory* </div>
+                                        <div class="form-group col-md-2">
+                                            <button type="button" ng-click="CalculateAmountSparePart()" class="btn btn-sm pull-left form-control" style="background-color:peru; color: white">Calculate</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Total Amount:</label>
+                                    <input type="text" name="AMOUNT" ng-model="TOTAL_AMOUNT" class="form-control" readonly
+                                           placeholder="Total Amount" value="0" @*required*@ />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Inc. All Taxes:</label>
+                                    <label style="color:red;">*</label>
+                                    <select ng-model="IAT_ID" id="IAT_ID" name="IAT_ID" class="form-control"
+                                            ng-options="IAT.IAT_ID as IAT.IAT_NAME for IAT in IncludingAllTaxesList"
+                                            ng-selected="IAT.IAT_ID == IAT_ID" ng-change="IsIncludingTax()" required>
+                                        <option ng-value="">Select</option>
+                                        @*<option ng-repeat="state in AllCustomerList" value="{{cust.IAT_ID}}">{{cust.IAT_NAME}}</option>*@
+                                    </select>
+                                    <span ng-show="(AddUpdateInvoice.IAT_ID.$invalid
+                                                      && (AddUpdateInvoice.IAT_ID.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.IAT_ID.$error.required">
+                                            Inc. All Taxes is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-3" ng-show="IS_INVOICEForSparePart === 0">
+                                    <label class="control-label">GST:</label>@*<label style="color:red;">*</label>*@
+
+                                    <select ng-model="GSTP_ID" id="GSTP_ID" name="GSTP_ID" class="form-control"
+                                            ng-options="gst.GSTP_ID as gst.GST_PERC for gst in GSTPercentageList"
+                                            ng-selected="gst.GSTP_ID == GSTP_ID" ng-disabled="IS_GST_INCLUDED" ng-change="CalculateTaxAmount()">
+                                        <option value="">NA</option>
+                                    </select>
+
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Tax Amount:</label>
+                                    <input type="text" name="TAX_AMOUNT" class="form-control" ng-model="TAX_AMOUNT" readonly placeholder="Tax Amount" @*required*@ />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Amount Inc. Tax:</label>
+                                    <input type="text" name="AMOUNT_INC_TAX" class="form-control" ng-model="AMOUNT_INC_TAX" readonly placeholder="Amount Inc. Tax" @*required*@ />
+                                </div>
+
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Engineer Name:</label> <label style="color:red;">*</label>
+                                    <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                            ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                            ng-selected="emp.EMP_ID == EMP_ID" required>
+                                        <option value="">Select Engineer</option>
+                                    </select>
+                                    <span ng-show="(AddUpdateInvoice.EMP_ID.$invalid
+                                                      && (AddUpdateInvoice.EMP_ID.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.EMP_ID.$error.required">
+                                            Engineer is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Dispatched Through:</label>
+                                    <input type="text" class="form-control" name="DISPATCHED_THROUGH" ng-model="DISPATCHED_THROUGH" placeholder="Dispatched Through" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Destination:</label>
+                                    <input type="text" class="form-control" name="DESTINATION" ng-model="DESTINATION" placeholder="Destination" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Comments:</label>
+                                    <textarea class="form-control" ng-model="COMMENTS" placeholder="Comments"></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Admin Remark:</label>
+                                    <textarea class="form-control" ng-model="ADMIN_REMARK" placeholder="Admin Remark"></textarea>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Select Company Bank Details(to print on Invoice):</label><label style="color:red;">*</label>
+                                    <select id="BANK_ID" class="form-control" name="BANK_ID" ng-model="BANK_ID"
+                                            ng-options="Bank.B_ID as Bank.BANK_AND_ACCNO for Bank in CompanyBankList"
+                                            ng-selected="Bank.B_ID == BANK_ID" required>
+                                        <option value="">Select Bank Details</option>
+                                    </select>
+                                    <span ng-show="(AddUpdateInvoice.BANK_ID.$invalid && (AddUpdateInvoice.BANK_ID.$touched || AddUpdateInvoice.BANK_ID.$dirty))">
+                                        <span class="error" ng-show="AddUpdateInvoice.BANK_ID.$error.required">Company Bank Details are required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Show IGST Tax:</label><br />
+                                    <input type="radio" id="IGST" name="IGST" value="Yes" ng-model="IGST" />
+                                    <label for="IGST">Yes</label>
+                                    <input type="radio" id="IGST" name="IGST" value="No" ng-model="IGST" />
+                                    <label for="IGST">No</label>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <div>
+
+                                        <label class="control-label">Payment Terms Details:</label><label style="color:red;">*</label>
+                                        <textarea class="form-control" ng-model="PAYMENT_TERMS_DETAILS" id="PAYMENT_TERMS_DETAILS" name="PAYMENT_TERMS_DETAILS" placeholder="Enter Terms"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <div class="form-group col-md-12">
+                            <div class="form-group col-md-12">
+                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddUpdateInvoice.$invalid || AddUpdateInvoiceDisable" ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+                                <a ng-show="Action!='Add'" style="background-color: lightgray; color: blue; font-size: 14px; text-align: center; cursor:pointer;" title="Print Proforma Invoice" data-target="#PrintProformaInvoice" data-toggle="modal" ng-click="PrintProformaInvoice()" class="fa fa-print btn-sm">Print PI</a>
+                                <a ng-show="Action!='Add'" style="background-color: lightgray; color: blue; font-size: 14px; text-align: center; cursor:pointer;" title="Print Tax Invoice" data-target="#PrintTaxInvoice" data-toggle="modal" ng-click="PrintTaxInvoice()" class="fa fa-print btn-sm">Print TI</a>
+                                @*<a ng-show="Action!='Add'" style="background-color: lightgray; color: blue; font-size: 14px; text-align: center; cursor:pointer;" title="Print Delivery Challan" data-target="#PrintChallan" data-toggle="modal" ng-click="PrintChallan()" class="fa fa-print btn-sm">Print DC</a>*@
+                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="SerialNo_Addupdate">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; padding: 10px;">
+                                    <h5 class="modal-title"><b>Assign Serial No</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card-body">
+                                        <form role="form" name="SerialNo1" ng-submit="SerialNo1(SerialNo1.$valid)" data-toggle="validator">
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Part Price:<label style="color:red;">*</label></label>
+                                                    <input class="form-control" type="text" name="NEW_PART_PRICE" ng-pattern="/^(0*([1-9]\d*?|0)(\.\d{1,2})?)$/" ng-model="NEW_PART_PRICE" required />
+                                                    <span style="color:red" ng-if="SerialNo1.NEW_PART_PRICE.$error.pattern">Please enter valid number</span>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">HSN Code:<label style="color:red;">*</label></label>
+                                                    <input class="form-control" type="text" name="NEW_HSN_CODE" ng-model="NEW_HSN_CODE" required />
+
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label class="control-label">Serial No:<label style="color:red;">* (Avl Qty: {{StockPartSerialNoList.length}})</label> </label>
+                                                    <select ng-model="NEW_SERIAL_NO_ID" id="NEW_SERIAL_NO_ID" name="NEW_SERIAL_NO_ID" ng-change="SelectSerialNo()" class="form-control"
+                                                            ng-options="srno.SP_STOCK_ID as srno.PART_SERIAL_NO for srno in StockPartSerialNoList"
+                                                            ng-selected="srno.SP_STOCK_ID == NEW_SERIAL_NO_ID" required>
+                                                        <option value="">Select Serial No</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Batch No:@*<label style="color:red;">*</label>*@</label>
+                                                    <input class="form-control" type="text" id="NEW_BATCH_NO" name="NEW_BATCH_NO" ng-model="NEW_BATCH_NO" />
+                                                </div>
+
+                                                <div class="form-group col-md-3">
+                                                    <label class="control-label">Expiry Date:</label>
+                                                    <input type="text" id="EXPIRY_DATE1" name="EXPIRY_DATE1" ng-model="EXPIRY_DATE1" class="form-control" placeholder="Enter Expiry Date" />
+                                                </div>
+
+                                                <div class="form-group col-md-3">
+                                                    <label class="control-label">MRP:</label>
+                                                    <input type="number" name="MRP1" ng-model="MRP1" class="form-control" placeholder="Product MRP" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm" style="color:white;background-color:green" ng-disabled="SerialNo1.$invalid" ng-click="UpdatePartsAccessories()">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="PrintProformaInvoice">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div id="PrintSectionPerformaInvoice" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                        <div id="PrintProformaDetails">
+                                            <style>
+                                                .cover {
+                                                    object-fit: cover;
+                                                    width: 512px;
+                                                    height: 512px;
+                                                }
+
+                                                td {
+                                                    border: 1px solid black;
+                                                    border-collapse: collapse;
+                                                }
+
+                                                table {
+                                                    border-collapse: collapse;
+                                                }
+
+                                                p {
+                                                    padding-left: 15px;
+                                                }
+
+                                                td {
+                                                    border: 1px solid black;
+                                                    border-collapse: separate;
+                                                }
+
+                                                th {
+                                                    border-top: 0;
+                                                    border-bottom: 1px solid;
+                                                    border-left: 1px solid;
+                                                    border-right: 1px solid;
+                                                }
+
+                                                .bb-none-line {
+                                                    border-bottom: 0;
+                                                }
+
+
+                                                .page-footer, .page-footer-space {
+                                                    height: 50px;
+                                                }
+
+                                                .page-footer {
+                                                    position: absolute;
+                                                    bottom: 0;
+                                                    width: 100%;
+                                                }
+
+
+                                                .page {
+                                                    page-break-after: always;
+                                                    padding-bottom: 55px;
+                                                }
+
+                                                @@page {
+                                                    margin: 5mm
+                                                }
+
+                                                @@media print {
+                                                    .page-header {
+                                                        position: fixed;
+                                                        top: 0mm;
+                                                        width: 100%;
+                                                        height: 150px;
+                                                    }
+
+                                                    .bb-none-line {
+                                                        border-bottom: 1px solid #000;
+                                                    }
+
+                                                    th {
+                                                        border-top: 1px solid;
+                                                        border-bottom: 1px solid;
+                                                        border-left: 1px solid;
+                                                        border-right: 1px solid;
+                                                    }
+
+                                                    .page-header, .page-header-space {
+                                                        height: 150px;
+                                                    }
+
+                                                    .page-footer {
+                                                        position: fixed;
+                                                        bottom: 0mm;
+                                                        width: 100%;
+                                                    }
+
+                                                    thead {
+                                                        display: table-header-group;
+                                                    }
+
+                                                    tfoot {
+                                                        display: table-footer-group;
+                                                    }
+
+                                                    body {
+                                                        margin: 0;
+                                                    }
+                                                }
+
+                                                p {
+                                                    font-size: 18px;
+                                                }
+
+                                                tbody {
+                                                    vertical-align: baseline;
+                                                }
+
+                                                p {
+                                                    font-size: 16px;
+                                                    margin: 5px 0;
+                                                }
+                                            </style>
+                                            <div class="page-header" style="text-align: center">
+                                                <div class="header-section">
+                                                    <div class="table-responsive">
+                                                        <table style="width: 100%; margin: 0px 0;">
+                                                            <tbody>
+                                                                <tr>
+
+                                                                    <td valign="top" style="border: 0;">
+                                                                        <div class="header-section" style="object-fit:contain;">
+                                                                            <img style="width: 100%; max-height: 200px;" src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" alt="SAI MEDICAL LOGO">
+                                                                        </div>
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                            <table cellspacing="0" style="width: 100%; page-break-inside: avoid;">
+
+                                                <thead>
+                                                    <tr>
+                                                        <td style="border: 0;height:200px;">
+                                                            <!--place holder for the fixed-position header-->
+                                                            <div class="page-header-space"></div>
+                                                        </td>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr colspan="5">
+                                                        <td style="border: 0;">
+                                                            <h1 style="text-align: center; font-size: 22px; text-decoration: underline;">PROFORMA-INVOICE</h1>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="border: 0;">
+                                                            <table style="width: 100%;" cellspacing="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td colspan="2"
+                                                                            rowspan="3" style="width:  58.5%;">
+                                                                            <p class="s1" style="
+                        font-size: 19px;
+                        font-weight: 600;
+                    ">
+                                                                                Name and address of Customer:
+                                                                            </p>
+                                                                            <p style="margin-bottom: 0;"><strong>{{InvoiceList.CUSTOMER_NAME}} <br /> {{InvoiceList.FIRM_NAME}}</strong></p>
+                                                                            <p style="margin-top: 0; margin-bottom: 0; font-size:15px;">
+                                                                                {{InvoiceList.CUSTOMER_ADDRESS}} - {{InvoiceList.ZIP_CODE}}.<br />
+                                                                                <strong ng-if="GSTIN_NUMBER!=''">GSTIN No.:</strong><span> {{GSTIN_NUMBER}}</span>
+                                                                            </p>
+                                                                        </td>
+                                                                        <td colspan="3">
+                                                                            <p class="s6">
+                                                                                <b>Invoice No.: {{InvoiceList.INVOICE_NUMBER}}</b>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="3">
+                                                                            <p class="s6">
+                                                                                <b> Date:- {{InvoiceList.INVOICE_DATE}}</b>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="3">
+                                                                            <p class="s7">
+                                                                                Bank Details:
+                                                                            </p>
+                                                                            <p class="s7">
+                                                                                Name: <b>{{CmpDetailsList[0].ACC_HOLDER_NAME}}</b>
+                                                                            </p>
+                                                                            <p class="s7">
+                                                                                Bank: <b>{{CmpDetailsList[0].BANK_NAME}}</b>
+                                                                            </p>
+                                                                            <p>
+                                                                                Branch: <b>{{CmpDetailsList[0].BRANCH_NAME}}</b>
+                                                                            </p>
+                                                                            <p class="s7">
+                                                                                A/c No: <b>{{CmpDetailsList[0].ACC_NO}}</b>
+                                                                            </p>
+                                                                            <p class="s7">
+                                                                                IFSC Code: <b>{{CmpDetailsList[0].IFSC_CODE}}</b>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>
+                                                                            <p class="s1" style="padding-top: 6pt; padding-left: 5pt; text-indent: 0pt; text-align: left">
+                                                                                Sr. No
+                                                                            </p>
+                                                                        </th>
+                                                                        <th>
+                                                                            <p class="s6" style="padding-top: 6pt; padding-left: 5pt; text-indent: 0pt; text-align: center">
+                                                                                Description
+                                                                            </p>
+                                                                        </th>
+                                                                        <th>
+                                                                            <p class="s6"
+                                                                               style=" padding-top: 5pt; padding-left: 5pt; text-indent: 0pt; text-align: center; ">
+                                                                                CFN
+                                                                            </p>
+                                                                        </th>
+                                                                        <th>
+                                                                            <p class="s6"
+                                                                               style=" padding-top: 5pt; padding-left: 5pt; text-indent: 0pt; text-align: center; ">
+                                                                                Quantity
+                                                                            </p>
+                                                                        </th>
+                                                                        <th>
+                                                                            <p class="s6"
+                                                                               style=" padding-top: 5pt; padding-left: 5pt; text-indent: 0pt; text-align: center; ">
+                                                                                Amount
+                                                                            </p>
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody ng-repeat="groupData in orderedGroups">
+                                                                    <tr ng-repeat-start="item in groupData.items">
+                                                                        <td style="border-top: 0;border-bottom: 0;">
+                                                                            <p class="s4"
+                                                                               style="text-indent: 0pt; padding-left: 5pt; line-height: 11pt; text-align: center">
+                                                                                <span>{{item.customSerialNumber}}</span>
+                                                                            </p>
+                                                                        </td>
+                                                                        <td style="border-top: 0;border-bottom: 0;">
+                                                                            <p class="s4"
+                                                                               style="
+                                                              padding-left: 10pt;
+                                                              text-indent: 0pt;
+                                                              line-height: 11pt;
+                                                              text-align: left;
+                                                            ">
+                                                                                {{item.ACCESSORY_NAME}}
+                                                                            </p>
+                                                                        </td>
+                                                                        <td style="border-top: 0;border-bottom: 0;">
+                                                                            <p class="s4"
+                                                                               style="
+                                                              padding-left: 10pt;
+                                                              text-indent: 0pt;
+                                                              line-height: 11pt;
+                                                              text-align: left;
+                                                            ">
+                                                                                <span>{{item.ACCESSORY_CODE}}</span>
+                                                                            </p>
+                                                                        </td>
+                                                                        <td style="border-top: 0;border-bottom: 0;">
+                                                                            <p class="s4"
+                                                                               style="
+                                                              padding-left: 1pt;
+                                                              text-indent: 0pt;
+                                                              line-height: 11pt;
+                                                              text-align: center;
+                                                            ">
+                                                                                <span>{{item.PART_QTY}}</span>
+                                                                            </p>
+                                                                        </td>
+                                                                        <td style="border-top: 0;border-bottom: 0;">
+                                                                            <p class="s4"
+                                                                               style="
+                                                              padding-right: 4pt;
+                                                              text-indent: 0pt;
+                                                              line-height: 11pt;
+                                                              text-align: right;
+                                                            ">
+                                                                                <span>{{item.PART_TAXABLE_VALUE.toFixed(2)}}/-</span>
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr ng-repeat-end></tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <table style="width: 100%; page-break-inside:avoid;" cellspacing="0" ng-if="InvoiceList.ProductList.length>0">
+                                                                <tbody ng-repeat="groupData in orderedGroupsGST">
+                                                                    <tr>
+                                                                        <td style="width:58.5%"></td>
+                                                                        <td style="width:20%;"> <p> <b>Net Amount@@{{groupData.GST_PERCENTAGE}}%</b> </p> </td>
+                                                                        <td style="text-align: right;"><p><b>{{ getTotalNetAmount(groupData.products) }}/-</b> </p></td>
+
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td></td>
+                                                                        <td> <p> <b> CGST@@{{groupData.GST_PERCENTAGE/2}}%</b></p> </td>
+                                                                        <td style="text-align: right;"><p><b>{{ getTotalCGST(groupData.products) }}/-</b></p></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td></td>
+                                                                        <td> <p> <b> SGST@@{{groupData.GST_PERCENTAGE/2}}%</b></p> </td>
+                                                                        <td style="text-align: right;"><p><b>{{ getTotalSGST(groupData.products) }}/-</b></p></td>
+                                                                    </tr>
+                                                                </tbody>
+
+                                                            </table>
+                                                            <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td style="width:58.5%"></td>
+                                                                        <td style="width:20%"> <p> <b> Round Off</b></p> </td>
+                                                                        <td style="text-align: right;"><p><b>{{roundoff}}/-</b></p></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td></td>
+                                                                        <td> <p> <b>Total Amount</b> </p> </td>
+                                                                        <td style="text-align: right;"><p><b> {{AMOUNT_INC_TAX}}/-</b> </p></td>
+                                                                    </tr>
+
+                                                                </tbody>
+                                                            </table>
+
+                                                            @*<table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" class="bb-none-line" style="border-top: 0; width: 50%;" rowspan="3">
+                                        <p>
+                                            E & OE <b>
+                                                :- {{amtInwords2}}/-
+                                            </b>
+                                        </p>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>*@
+                                                            <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td colspan="5" class="bb-none-line" style="width: 50%;" rowspan="3">
+                                                                            <div style="display: flex; justify-content: space-between;">
+                                                                                <div>
+                                                                                    <p>
+                                                                                        Amount In Words <b>:- {{amtInwords2}}/-</b>
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p style="padding-right:5px;">E & OE</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                            <table style="width: 100%; page-break-inside: avoid;" cellspacing="0" ng-if="COMMENTS!=''">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td colspan="5" class="bb-none-line" style="width: 50%;" rowspan="3">
+                                                                            <div style="display: flex; justify-content: space-between;">
+                                                                                <div>
+                                                                                    <p>
+                                                                                        Comments <b style="word-break: break-word; overflow-wrap: break-word;">:- {{COMMENTS}}</b>
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                            <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td style="border-right: 0; width: 50%;">
+                                                                            @*<p> <b>Terms & Conditions:</b>  </p>*@
+                                                                            <p> <b>Payment Terms Details : </b></p>
+                                                                            <p style="word-break: break-word; overflow-wrap: break-word;"><span id="TNC"></span></p>
+
+                                                                        </td>
+                                                                        <td>
+                                                                            <p> <b> <small>For</small>    <br>  {{CmpDetailsList[0].COMPANY_NAME}}</b>  </p>
+                                                                            <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+                                                                            <h4 style="margin-bottom: 0; font-size: 16px; "><b style="padding-left:10px;">Seal & Signature</b></h4>
+                                                                        </td>
+                                                                    </tr>
+
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+
+
+                                            </table>
+                                        </div>
+
+                                      
+                                        
+                                        <div class="modal-footer">
+                                            <div class="form-group col-md-12">
+                                                <div class="noprint">
+                                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print PI" ng-click="PrintChallanDetails('PrintProformaDetails')" />
+                                                    @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                                    <input type="button" value="Cancel" ng-click="CancelPreview()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="PrintTaxInvoice">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div id="PrintSectionMedtronic" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                        <div id="PrintTaxInvoiceDetails">
+                                            <style>
+                                                .cover {
+                                                    object-fit: cover;
+                                                    width: 512px;
+                                                    height: 512px;
+                                                }
+
+                                                td {
+                                                    border: 1px solid black;
+                                                    border-collapse: collapse;
+                                                }
+
+                                                table {
+                                                    border-collapse: collapse;
+                                                }
+
+                                                p {
+                                                    padding-left: 15px;
+                                                }
+
+                                                td {
+                                                    border: 1px solid black;
+                                                    border-collapse: separate;
+                                                }
+
+                                                th {
+                                                    border-top: 0;
+                                                    border-bottom: 1px solid;
+                                                    border-left: 1px solid;
+                                                    border-right: 1px solid;
+                                                }
+
+                                                .bb-none-line {
+                                                    border-bottom: 0;
+                                                }
+
+
+                                                .page-footer, .page-footer-space {
+                                                    height: 50px;
+                                                }
+
+                                                .page-footer {
+                                                    position: absolute;
+                                                    bottom: 0;
+                                                    width: 100%;
+                                                }
+
+
+                                                .page {
+                                                    page-break-after: always;
+                                                    padding-bottom: 55px;
+                                                }
+
+                                                @@page {
+                                                    margin: 5mm
+                                                }
+
+                                                @@media print {
+                                                    .page-header {
+                                                        position: fixed;
+                                                        top: 0mm;
+                                                        width: 100%;
+                                                        height: 200px;
+                                                    }
+
+                                                    .bb-none-line {
+                                                        border-bottom: 1px solid #000;
+                                                    }
+
+                                                    th {
+                                                        border-top: 1px solid;
+                                                        border-bottom: 1px solid;
+                                                        border-left: 1px solid;
+                                                        border-right: 1px solid;
+                                                    }
+
+                                                    .page-header, .page-header-space {
+                                                        height: 220px;
+                                                    }
+
+                                                    .page-footer {
+                                                        position: fixed;
+                                                        bottom: 0mm;
+                                                        width: 100%;
+                                                    }
+
+                                                    thead {
+                                                        display: table-header-group;
+                                                    }
+
+                                                    tfoot {
+                                                        display: table-footer-group;
+                                                    }
+
+                                                    body {
+                                                        margin: 0;
+                                                    }
+                                                }
+
+                                                p {
+                                                    font-size: 18px;
+                                                }
+
+                                                tbody {
+                                                    vertical-align: baseline;
+                                                }
+
+                                                p {
+                                                    font-size: 16px;
+                                                    margin: 5px 0;
+                                                }
+                                            </style>
+                                           
+                                            <div class="page-header" style="text-align: center">
+                                                <div class="header-section">
+                                                    <div class="table-responsive">
+                                                        <table style="width: 100%; margin: 0px 0;">
+                                                            <tbody>
+                                                                <tr>
+
+                                                                    <td valign="top" style="border: 0;">
+                                                                        <div class="header-section" style="object-fit:contain;">
+                                                                            <img style="width: 100%; max-height: 200px;" src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" alt="SAI MEDICAL LOGO">
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+
+                                                </div>
+                                        </div>
+
+
+                                        <table cellspacing="0" style="width: 100%; page-break-inside: avoid;">
+
+                                            <thead>
+                                                <tr>
+                                                    <td style="border: 0;">
+                                                        <!--place holder for the fixed-position header-->
+                                                        <div class="page-header-space"></div>
+                                                    </td>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr colspan="5">
+                                                    <td style="border: 0;">
+                                                        <h1 style="text-align: center; font-size: 22px; text-decoration: underline;">TAX-INVOICE</h1>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 0;">
+                                                        <table style="width: 100%;" cellspacing="0">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="2"
+                                                                        rowspan="3" style="width:  58.5%;">
+                                                                        <p class="s1" style="
+                                                        font-size: 19px;
+                                                        font-weight: 600;">
+                                                                            Name and address of Customer:
+                                                                        </p>
+                                                                        <p style="margin-bottom: 0;"><strong id="CustomerName" style="display:none;">{{InvoiceList.CUSTOMER_NAME}} <br /> {{InvoiceList.FIRM_NAME}}</strong></p>
+                                                                        <p style="margin-top: 0; margin-bottom: 0; font-size:15px;">
+                                                                            {{InvoiceList.CUSTOMER_ADDRESS}} - {{InvoiceList.ZIP_CODE}}.
+                                                                        </p>
+                                                                        <p>PO No: <strong>{{InvoiceList.PO_NUMBER}}</strong></p>
+                                                                        <p ng-if="InvoiceList.PO_DATE!=''">PO Date: <strong>{{InvoiceList.PO_DATE}}</strong></p>
+                                                                        <p id="GSTIN_NO" style="display:none;">GSTIN No: <strong>{{InvoiceList.GSTIN_NUMBER}}</strong></p>
+                                                                    </td>
+                                                                    <td colspan="3">
+                                                                        <p class="s6">
+                                                                            <b>Invoice No.: {{InvoiceList.INVOICE_NUMBER}}</b>
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="3">
+                                                                        <p class="s6">
+                                                                            <b> Date:- {{InvoiceList.INVOICE_DATE}}</b>
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="3">
+                                                                        <p class="s7">
+                                                                            Bank Details:
+                                                                        </p>
+                                                                        <p class="s7">
+                                                                            Name: <b>{{CmpDetailsList[0].ACC_HOLDER_NAME}}</b>
+                                                                        </p>
+                                                                        <p class="s7">
+                                                                            Bank: <b>{{CmpDetailsList[0].BANK_NAME}}</b>
+                                                                        </p>
+                                                                        <p>
+                                                                            Branch: <b>{{CmpDetailsList[0].BRANCH_NAME}}</b>
+                                                                        </p>
+                                                                        <p class="s7">
+                                                                            A/c No: <b>{{CmpDetailsList[0].ACC_NO}}</b>
+                                                                        </p>
+                                                                        <p class="s7">
+                                                                            IFSC Code: <b>{{CmpDetailsList[0].IFSC_CODE}}</b>
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>
+                                                                        <p class="s1" style="padding-top: 6pt; padding-left: 5pt; text-indent: 0pt; text-align: center ">
+                                                                            Sr. No
+                                                                        </p>
+                                                                    </th>
+                                                                    <th>
+                                                                        <p class="s6" style="padding-top: 6pt; padding-left: 5pt; text-indent: 0pt; text-align: center">
+                                                                            Particular
+                                                                        </p>
+                                                                    </th>
+                                                                    <th>
+                                                                        <p class="s6"
+                                                                           style=" padding-top: 5pt; padding-left: 5pt; text-indent: 0pt; text-align: center; ">
+                                                                            Code
+                                                                        </p>
+                                                                    </th>
+                                                                    <th>
+                                                                        <p class="s6"
+                                                                           style=" padding-top: 5pt; padding-left: 5pt; text-indent: 0pt; text-align: center; ">
+                                                                            Quantity
+                                                                        </p>
+                                                                    </th>
+                                                                    <th>
+                                                                        <p class="s6"
+                                                                           style=" padding-top: 5pt; padding-left: 5pt; text-indent: 0pt; text-align: center; ">
+                                                                            Amount
+                                                                        </p>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody ng-repeat="groupData in orderedGroups">
+                                                                <tr ng-repeat-start="item in groupData.items">
+
+                                                                    <td style="border-top: 0;border-bottom: 0;">
+                                                                        <p class="s4"
+                                                                           style="text-indent: 0pt; padding-left: 5pt; line-height: 11pt; text-align: center">
+                                                                            <span>{{item.customSerialNumber}}</span>
+                                                                        </p>
+                                                                    </td>
+                                                                    <td style="border-top: 0;border-bottom: 0;">
+                                                                        <p class="s4"
+                                                                           style="
+                                                                                              padding-left: 10pt;
+                                                                                              text-indent: 0pt;
+                                                                                              line-height: 11pt;
+                                                                                              text-align: left;
+                                                                                            ">
+                                                                            {{item.ACCESSORY_NAME}}<br />
+
+                                                                            <div>
+                                                                                <table style="margin-left: 10pt; width: 100%; page-break-inside: avoid; border: 0px;" cellspacing="0" ng-if="item.SerialNoList.length > 0">
+                                                                                    <tr style="border: 0px;" ng-repeat="srno in item.SerialNoList">
+                                                                                        <td style="width: 0px; border: 0px; " ng-if="(item.INVOICE_FOR !== 'TOOLS')">
+                                                                                            <span ng-if="$index + 1 === 1">Sr.No.: </span>
+                                                                                        </td>
+                                                                                        <td style="width: auto; border: 0px; text-align: left;" ng-if="(item.INVOICE_FOR === 'TOOLS')">
+                                                                                            <span ng-if="$index + 1 === 1">Batch No.: </span>
+                                                                                        </td>
+                                                                                        <td style="border: 0px;">
+                                                                                            <span style="text-align: left;" ng-if="item.SerialNoList.length > 1 && item.INVOICE_FOR !== 'TOOLS'"><b>{{srno.SERIAL_NO}} 1EA</b></span>
+                                                                                            <span style="text-align: left;" ng-if="item.SerialNoList.length === 1 && item.INVOICE_FOR !== 'TOOLS'"><b>{{srno.SERIAL_NO}} {{item.PART_QTY}}EA</b></span>
+                                                                                            <span style="text-align: left;" ng-if="(item.INVOICE_FOR === 'TOOLS') && $index + 1 === 1"><b>{{item.BATCH_NO}} {{item.PART_QTY}}EA</b></span>
+                                                                                            <br />
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+
+
+
+                                                                                <table style="margin-left: 10pt; width: 100%; page-break-inside: avoid; border: 0px;" cellspacing="0">
+                                                                                    <tr style="border: 0px;">
+                                                                                        <td style="border: 0px;" ng-if="item.EXPIRY_DATE!=''">Exp Date : {{item.EXPIRY_DATE}}</td>
+                                                                                    </tr>
+
+                                                                                    <tr style="border: 0px;">
+                                                                                        <td style="border: 0px;" ng-if="item.MRP!='0'">MRP : {{item.MRP}}</td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </div>
+                                                                            @*<span style="padding-left:5pt;" ng-if="item.SerialNoList.length>0" ng-repeat="srno in item.SerialNoList">
+
+                            </span>*@
+                                                                        </p>
+                                                                    </td>
+                                                                    <td style="border-top: 0;border-bottom: 0;">
+                                                                        <p class="s4"
+                                                                           style="
+                                                                                              padding-left: 10pt;
+                                                                                              text-indent: 0pt;
+                                                                                              line-height: 11pt;
+                                                                                              text-align: left;
+                                                                                            ">
+                                                                            <span>{{item.ACCESSORY_CODE}}</span>
+                                                                        </p>
+                                                                    </td>
+                                                                    <td style="border-top: 0;border-bottom: 0;">
+                                                                        <p class="s4"
+                                                                           style="
+                                                                                              padding-left: 1pt;
+                                                                                              text-indent: 0pt;
+                                                                                              line-height: 11pt;
+                                                                                              text-align: center;
+                                                                                            ">
+                                                                            <span>{{item.PART_QTY}}</span>
+                                                                        </p>
+                                                                    </td>
+                                                                    <td style="border-top: 0;border-bottom: 0;">
+                                                                        <p class="s4"
+                                                                           style="
+                                                                                              padding-right: 4pt;
+                                                                                              text-indent: 0pt;
+                                                                                              line-height: 11pt;
+                                                                                              text-align: right;
+                                                                                            ">
+                                                                            <span>{{Math.round(item.PART_TAXABLE_VALUE * 100)/100}}/-</span>
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr ng-repeat-end></tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <table style="width: 100%; page-break-inside:avoid;" cellspacing="0" ng-if="InvoiceList.ProductList.length>0">
+                                                            <tbody ng-repeat="groupData in orderedGroupsGST">
+                                                                <tr>
+                                                                    <td style="width:58.5%"></td>
+                                                                    <td style="width:20%;"> <p> <b>Net Amount@@{{groupData.GST_PERCENTAGE}}%</b> </p> </td>
+                                                                    <td style="text-align: right;"><p><b>{{ getTotalNetAmount(groupData.products) }}/-</b> </p></td>
+
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td> <p> <b> CGST@@{{groupData.GST_PERCENTAGE/2}}%</b></p> </td>
+                                                                    <td style="text-align: right;"><p><b>{{ getTotalCGST(groupData.products) }}/-</b></p></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td> <p> <b> SGST@@{{groupData.GST_PERCENTAGE/2}}%</b></p> </td>
+                                                                    <td style="text-align: right;"><p><b>{{ getTotalSGST(groupData.products) }}/-</b></p></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="width:58.5%"></td>
+                                                                    <td style="width:20%"> <p> <b> Round Off</b></p> </td>
+                                                                    <td style="text-align: right;"><p><b>{{roundoff}}/-</b></p></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="font-size:18px;"><span style="display: none;padding-left:5px;" id="MGST_NO">GSTIN No: <b>{{CmpDetailsList[0].GST_NO}}</span></b></td>
+                                                                    <td> <p> <b>Total Amount</b> </p> </td>
+                                                                    @*<td style="text-align: right;"><p><b> {{Math.round(AMOUNT_INC_TAX)}}/-</b> </p></td>*@
+                                                                    <td style="text-align: right;"><p><b> {{AMOUNT_INC_TAX}}/-</b> </p></td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+
+                                                        <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="5" class="bb-none-line" style="width: 50%;" rowspan="3">
+                                                                        <div style="display: flex; justify-content: space-between;">
+                                                                            <div>
+                                                                                <p>
+                                                                                    Amount In Words <b>:- {{amtInwords2}}/-</b>
+                                                                                </p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <p style="padding-right:5px;">E & OE</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+
+                                                        <table style="width: 100%; page-break-inside: avoid;" cellspacing="0" ng-if="COMMENTS!=''">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="5" class="bb-none-line" style="width: 50%;" rowspan="3">
+                                                                        <div style="display: flex; justify-content: space-between;">
+                                                                            <div>
+                                                                                <p>
+                                                                                    Comment <b style="word-break: break-word; overflow-wrap: break-word;">:- {{COMMENTS}}</b>
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                        <table style="width: 100%; page-break-inside: avoid;" cellspacing="0">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="border-right: 0; width: 50%;">
+                                                                        <p> <b>Declaration:</b>  </p>
+                                                                        <p style="word-break: break-word; overflow-wrap: break-word;">
+                                                                            We declare that this invoice shows the actual
+                                                                            price of the goods described and that all
+                                                                            particulars are true and correct.
+                                                                        </p>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        <p> <b> <small>For</small>    <br>  {{CmpDetailsList[0].COMPANY_NAME}}</b>  </p>
+                                                                        <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+                                                                        <h4 style="margin-bottom: 0; font-size: 16px; padding-left:10px; "><b>Seal & Signature</b></h4>
+                                                                    </td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                            <!--<tfoot>
+                                            <tr>
+                                                <td>-->
+                                            <!--place holder for the fixed-position footer-->
+                                            <!--<div class="page-footer-space"></div>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>-->
+
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="form-group col-md-12">
+                                            <div class="noprint">
+                                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print TI" ng-click="PrintChallanDetails('PrintSectionMedtronic')" />
+                                                @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                                <input type="button" value="Cancel" ng-click="CancelPreview()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="PrintChallan">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                    <div id="PrintChallanDetails">
+                                        <div>
+                                            <div style="display: flex; justify-content: center; align-items: center;">
+                                                @*<img style="width: 100%;" src="~/Images/SaiHealthCare_Challan.jpg" alt="SAI MEDICAL LOGO">*@
+                                                <img style="width: 100%;" src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" alt="SAI MEDICAL LOGO">
+                                            </div>
+                                            <div style="font-size: 25px; width:100%; text-align:center; "><b>Delivery Challan</b></div>
+                                            <div style="display: flex;
+                                            justify-content: center;
+                                            ">
+
+                                                <table style="width:100%; border:1px solid black;
+                                                border-collapse: collapse;
+                                                padding-left: 2%;
+                                                padding-right: 2%;">
+
+                                                    <tr>
+                                                        <td style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 10px;
+                                                        padding-right: 2%;
+                                                        width: 40%;
+                                                        font-size: 16px;
+                                                        " rowspan="3" colspan="2">
+                                                            <p style="margin: 0;"><strong>Name and address of Customer:</strong></p>
+                                                            <p style="margin: 0;"><strong>{{InvoiceList.CUSTOMER_NAME}} <br /> {{InvoiceList.FIRM_NAME}}</strong></p>
+                                                            <p style="margin: 0; font-size: 16px;">
+                                                                {{ChallanList.CUSTOMER_ADDRESS}} - {{ChallanList.ZIP_CODE}}.
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="4" style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 2%;
+                                                        padding-right: 2%;
+                                                        font-size: 16px;">
+                                                            <P style="margin: 10px 0;"><STRong>DC No.: {{ChallanList.DC_NUMBER}}</STRong></P>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="4" style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 2%;
+                                                        padding-right: 2%;
+                                                        font-size: 16px;">
+                                                            <P style="margin: 4px 0;"><STRong>Date:- {{ChallanList.INVOICE_DATE}}</STRong></P>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="4" style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 2%;
+                                                        padding-right: 2%;
+                                                        font-size: 16px;">
+                                                            <P style="margin: 30px 0 5px 0;"><STRong>GSTIN Number: {{GST_NO}}</STRong></P>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr @*style="background-color:red"*@>
+
+                                                        <td colspan="5" @*style="background-color:yellow"*@>
+                                                            <div @*style="background-color:pink"*@>
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr @*style="background-color:red"*@>
+
+                                                        <td colspan="5" @*style="background-color:yellow"*@>
+
+
+                                                            <div @*style="background-color:pink;"*@ ng-repeat="p in ChallanList.ProductList">
+                                                                <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
+                                                                    <tr ng-if="$index+1 === 1">
+                                                                        <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding: 0 10px;
+                                                    width: 10%;
+                                                    text-align: center;
+                                                    font-size: 16px;">
+                                                                            <p style="margin: 12px 0;"><strong>Sr. No</strong></p>
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding-left: 2%;
+                                                    padding-right: 2%;
+                                                    text-align: center;
+                                                    font-size: 16px;
+                                                    ">
+                                                                            <p style="margin: 12px 0;"><strong>Description</strong></p>
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding-left: 2%;
+                                                    padding-right: 2%;
+                                                    width: 2%;
+                                                    font-size: 16px;">
+                                                                            <p style="margin: 12px 0;"><strong></strong></p>
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding-left: 2%;
+                                                    padding-right: 2%;
+                                                    width: 20%;
+                                                    text-align: center;
+                                                    font-size: 16px;">
+                                                                            <p style="margin: 12px 0;"><strong>Serial No.</strong></p>
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding-left: 2%;
+                                                    padding-right: 2%;
+                                                    width: 13%;
+                                                    text-align: center;
+                                                    font-size: 16px;">
+                                                                            <p style="margin: 10px 0;"><strong>Quantity</strong></p>
+                                                                        </td>
+
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td valign="top" style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                            <P style="margin:0;">
+                                                                                {{$index+1}}
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                            <span ng-show="CUSTOMER_TYPE=='Regular'">Refurbished</span> {{p.M_NAME}} {{p.PRODUCT_NAME}}
+                                                                            <span ng-show="p.AccessoriesList.length>0">
+                                                                                With Std. Accessories
+                                                                            </span>
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                            &nbsp;
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                            {{p.SERIAL_NO}}
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                            {{p.QUANTITY}}
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr ng-if="p.AccessoriesList.length>0" ng-repeat="acc in p.AccessoriesList">
+                                                                        <td valign="top" style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                            <span ng-if="$index+1===1">Std Accessories:</span><br>
+                                                                            {{acc.STD_ACC_NAME}}
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                            <span ng-if="$index+1===1">&nbsp;</span><br>
+                                                                            {{acc.SERIAL_NO}}
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                            <span ng-if="$index+1===1">&nbsp;</span><br>
+                                                                            {{acc.PART_QTY}}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr ng-if="p.SparePartsList.length>0" ng-repeat="sp in p.SparePartsList">
+                                                                        <td valign="top" style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                            <span ng-if="$index+1===1">Spare Parts:</span><br>
+                                                                            {{sp.SPARE_PART}}
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                            <span ng-if="$index+1===1">&nbsp;</span><br>
+                                                                            {{sp.SERIAL_NO}}
+                                                                        </td>
+                                                                        <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                            <span ng-if="$index+1===1">&nbsp;</span><br>
+                                                                            {{sp.PART_QTY}}
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+
+                                                    <tr>
+                                                        <th colspan="5" style="border-bottom:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding: 0;">
+                                                            <div style="display: flex; justify-content: center; align-items: center;">
+                                                                <h1> <strong></strong></h1>
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td colspan="3" style="font-size: 16px; ">
+                                                            <center>
+                                                                <p style=" padding-left: 2%; padding-bottom:0px;margin-top:180px;">
+
+                                                                    <strong>
+                                                                        Receiver Seal &
+                                                                        Signature
+                                                                    </strong>
+                                                                </p>
+                                                            </center>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <center>
+                                                                <p style="margin-top: 0; margin-bottom: 20px; font-size: 20px; font-weight: bold;">
+                                                                    <strong style="font-size: 16px;"><sup>For</sup></strong> Sai Medical Services@*{{COMPANYNAME}}*@
+                                                                </p>
+                                                                @*<img src="~/Images/signture-stamp-img.jpg" style="width:300px; max-width:100%;" />*@
+                                                                <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+                                                                <p style="margin-bottom: 0;  font-size: 16px; "><b>Seal & Signature</b></p>
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+                                            @*<div>
+                                                    <h5 style="text-align: center; color: #145da0; margin-top: 100px;">Admin. Office: {{COMPANYREGADDRESS}} – {{ZIPCODE}}.</h5>
+                                                </div>*@
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <div class="form-group col-md-12">
+                                            <div class="noprint">
+                                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print Challan" ng-click="PrintChallanDetails('PrintChallanDetails')" />
+                                                @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                                <input type="button" value="Cancel" ng-click="CancelPreview()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+@section scripts
+{
+    <script src="~/AngularJs/MedtronicInvoiceAddUpdate.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $("#INVOICE_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#INVOICE_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#INVOICE_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#INVOICE_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#INVOICE_DATE").datepicker("option", "yearRange", "2000:2060");
+
+    </script>
+
+    <script>
+        $("#EXPIRY_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#EXPIRY_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#EXPIRY_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#EXPIRY_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#EXPIRY_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+
+    <script>
+        $("#EXPIRY_DATE1").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#EXPIRY_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#EXPIRY_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#EXPIRY_DATE1").datepicker("option", "showMonthAfterYear", false);
+        $("#EXPIRY_DATE1").datepicker("option", "yearRange", "2000:2060");
+    </script>
+
+    <script>
+        $("#PO_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#PO_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#PO_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#PO_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#PO_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+
+    <script>
+        $("#EXPIRY_DATE1").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#EXPIRY_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#EXPIRY_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#EXPIRY_DATE1").datepicker("option", "showMonthAfterYear", false);
+        $("#EXPIRY_DATE1").datepicker("option", "yearRange", "2000:2060");
+    </script>
+}

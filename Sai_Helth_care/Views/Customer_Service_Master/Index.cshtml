@@ -1,0 +1,385 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@*<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>*@
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<link href="~/dist/css/Imagestylesheet.css" rel="stylesheet" />
+<link href="~/dist/css/Paging.css" rel="stylesheet" />
+
+<section ng-controller="CustomerCallCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-6" @*style="margin-left:-50px"*@>
+                                <h3 class="card-title"><b>Service Call</b></h3>
+                            </div>
+                            <div class="col-lg-3" @*style="margin-left:50px;"*@>
+                                <input type="text" class="form-control" placeholder="Search Customer" ng-model="CUSTOMER_NAME" ng-keyup="SearchAdmin()">
+                            </div>
+                            <div class="col-lg-2">
+                                @*<button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" data-target="#Comp_add">Add Service</button>*@
+                                <a href="~/Customer_Service_Master/ServiceCallAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId=0&ServiceId=0&P_ID=0&AmcCmcId=0&EnqId=0" class="btn pull-left form-control" style="background-color: green;text-align: center; color: white">Add Service Call</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <select id="CALL_PRIORITY_TYPE_ID" class="form-control" name="CALL_PRIORITY_TYPE_ID" ng-model="CALL_PRIORITY_TYPE_ID"
+                                        ng-options="priority.CALL_PRIORITY_TYPE_ID as priority.CALL_PRIORITY_TYPE_NAME for priority in CallPriorityList"
+                                        ng-selected="priority.CALL_PRIORITY_TYPE_ID == CALL_PRIORITY_TYPE_ID" @*ng-change="SearchAdmin()"*@>
+                                    <option value="">Select Priority</option>
+                                </select>
+                                @*<select name="Propriatory" class="form-control" ng-model="PRIORITY" id="Taluka Name">
+                        <option value="">Select Priority</option>
+                        <option value="Cash">High</option>
+                        <option value="Cash">Medium</option>
+                        <option value="Cash">Low</option>
+                    </select>*@
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <select id="CALL_STATUS" class="form-control" name="CALL_STATUS" ng-model="CALL_STATUS"
+                                        ng-options="status.STATUS_NAME as status.STATUS_NAME for status in CallStatusList"
+                                        ng-selected="status.STATUS_NAME == CALL_STATUS" @*ng-change="SearchAdmin()"*@>
+                                    <option value="">Select Call Status</option>
+                                </select>
+                                @*<select ng-model="STATUS" class="form-control" id="STATUS" name="STATUS" required>
+                        <option value="">Select Status</option>
+                        <option value="Un-Verified">Completed</option>
+                        <option value="Verified">Pending</option>
+                    </select>*@
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                        ng-selected="emp.EMP_ID == EMP_ID">
+                                    <option value="">Select Employee</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <input type="text" name="STARTING_DATE1" id="STARTING_DATE1" ng-model="STARTING_DATE" class="form-control" placeholder="Select Schedule From Date" />
+                        </div>
+                        <div class="col-lg-3">
+
+                            <input type="text" name="ENDING_DATE1" id="ENDING_DATE1" ng-model="ENDING_DATE" class="form-control" placeholder="Select Schedule To Date" />
+                        </div>
+                        <div class="col-lg-10"></div>
+                        <div class="col-lg-1">
+                            <button type="button" class="form-control btn btn-sm pull-left" style="background-color: green; color: white" ng-click="SearchAdmin()">Search</button>
+                        </div>
+                        <div class="col-lg-1">
+                            <button type="button" class="form-control btn btn-sm pull-left" style="background-color: green; color: white" ng-click="exportToExcel()">Export</button>
+                        </div>
+                    </div>
+                    @*<div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-11">
+                </div>
+                <div class="col-lg-1" style="padding:3px; ">
+                    <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" ng-click="SearchAdmin()">Search</button>
+                </div>
+                <div class="col-lg-1" style="padding:3px; ">
+                    <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" ng-click="SearchAdmin()">Search</button>
+                </div>
+
+            </div>
+        </div>*@
+
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dvData"*@ id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr No.</th>
+                                    <th>Service Call No.</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    <th>Call Assign Date</th>
+                                    <th>Schedule Call Date</th>
+                                    <th ng-hide="CUSTOMER_TYPE==='Medtronic'">Product</th>
+                                    <th ng-hide="CUSTOMER_TYPE==='Medtronic'">Manufacturer</th>
+                                    <th>Model</th>
+                                    <th ng-show="CUSTOMER_TYPE==='Medtronic'">Accessory Name</th>
+                                    <th>Service Engg. Name</th>
+                                    <th>Call Priority</th>
+                                    <th>Call Status</th>
+                                    <th>Work Status</th>
+                                    <th>Service Remark</th>
+                                    <th style="min-width:100px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin  in CustomerCallList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{admin.SERVICE_CALL_NUMBER}}</td>
+                                    <td>{{admin.CUSTOMER_NAME}}</td>
+                                    <td>{{admin.FIRM_NAME}}</td>
+                                    <td>{{admin.CALL_ASSIGN_DATE}}</td>
+                                    <td>{{admin.SCHEDULE_CALL_DATE}}</td>
+                                    <td ng-hide="CUSTOMER_TYPE==='Medtronic'">{{admin.CAT_NAME}}</td>
+                                    <td ng-hide="CUSTOMER_TYPE==='Medtronic'">{{admin.M_NAME}}</td>
+                                    <td>{{admin.PRODUCT_NAME}}</td>
+                                    <td ng-show="CUSTOMER_TYPE==='Medtronic'">{{admin.MED_ACC_NAME}}</td>
+                                    <td>{{admin.SERVICE_ENGG_NAME}}</td>
+                                    <td>{{admin.CALL_PRIORITY_TYPE_NAME}}</td>
+                                    <td>{{admin.CALL_STATUS}}</td>
+                                    <td>{{admin.WORK_STATUS}}</td>
+                                    <td>{{admin.SERVICE_REMARK}}</td>
+                                    @*<td><a href="~/#/Index" data-toggle="modal" data-target="#Comp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a></td>*@
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <a href="~/Customer_Service_Master/ServiceCallAddUpdate?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&ServiceId={{admin.SERVICE_CALL_ID}}&P_ID=0&AmcCmcId=0&EnqId=0" title="Edit" class="btn btn-xs btn-success" style="background-color: green; color: white">Edit</a>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a href="~/Customer_Service_Master/ServiceCallReport?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&ServiceId={{admin.SERVICE_CALL_ID}}" title="View Service Call Report" class="btn btn-xs btn-warning" style="background-color: goldenrod; color: white"><span class="fa fa-eye"></span></a>
+                                            </div>
+
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr ng-show="CUSTOMER_TYPE!=='Medtronic' && (!pager.pages.length) ">
+                                    <td colspan="15" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                                <tr ng-show="CUSTOMER_TYPE==='Medtronic' && (!pager.pages.length)">
+                                    <td colspan="14" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal fade" id="Comp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ Add Service Call </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Service Call Number :</label><label style="color:red;">*</label>
+                                                <input type="number" name="Zip Code" class="form-control" readonly placeholder="Service Call Number" />
+
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Customer Name:</label>
+                                                <select class="form-control" ng-model="CUSTOMER_ID" id="CUSTOMER_ID" ng-change="GetFirmChange()">
+                                                    <option value="">Select Customer Name</option>
+                                                    <option ng-repeat="Customer in CustomerList" value="{{Customer.Customer_ID}} ">{{Customer.CUSTOMER_NAME}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Firm Name:</label><label style="color:red;">*</label>
+                                                <select name="FIRM_ID" id="FIRM_ID" class="form-control" ng-model="FIRM_ID">
+                                                    <option value="">Select Firm Name</option>
+                                                    <option ng-repeat="Customer in CustomerFirmList" value="{{Customer.F_ID}}">{{Customer.FIRM_NAME}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Address:</label>
+                                                <textarea class="form-control" id="ADDRESS" ng-model="ADDRESS" placeholder="Enter Address"></textarea>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Call Assign Date:</label><label style="color:red;">*</label>
+                                                <input type="text" id="CALL_ASSIGN_DATE" ng-model="CALL_ASSIGN_DATE" class="form-control" readonly placeholder="Call Assign Date." />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Schedule Call Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="SCHEDULE_CALL_DATE" ng-model="SCHEDULE_CALL_DATE" class="form-control" readonly placeholder="Schedule Call Date." />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Select Product: </label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                    <option value="">Select Product</option>
+                                                    <option value="New">Apron</option>
+                                                    <option value="Old">CT Scan Machine</option>
+                                                    <option value="BMD Machine">BMD Machine</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                    <option value="">Select Manufacturer</option>
+                                                    <option value="New">Apron</option>
+                                                    <option value="Old">L&T</option>
+                                                    <option value="BMD Machine">Tata</option>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Model:</label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                    <option value="">Select Model</option>
+                                                    <option value="New">High-Speed-H22</option>
+                                                    <option value="Old">High-Speed CT-I22</option>
+                                                    <option value="BMD Machine">High-Speed HU-H22</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select service Engineer:</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                    <option value="">Select Engineer</option>
+                                                    <option value="Cash">Akash Agale</option>
+                                                    <option value="Cash">Archana Sunil Kulkarni</option>
+                                                    <option value="Cash">Cheten Bhagwat</option>
+                                                    <option value="Cash">Manoj Kamat</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contract Type:</label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                    <option value="">Select Contract Type</option>
+
+                                                    <option value="Cash"> CMC</option>
+                                                    <option value="Cash">Warranty</option>
+                                                    <option value="Cash">Paid</option>
+                                                    <option value="Cash">AMC</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Service type:</label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                    <option value="">Select Service Type</option>
+                                                    <option value="PM">PM</option>
+                                                    <option value="CM">CM</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Call Priority:</label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                    <option value="">Select Priority Type</option>
+                                                    <option value="Cash">High</option>
+                                                    <option value="Cash">Medium</option>
+                                                    <option value="Cash">Low</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Description about call / Customer Issue:</label>
+                                                <textarea class="form-control" placeholder="Enter Description"></textarea>
+                                            </div>
+
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Service" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>  
+
+
+
+@section scripts
+{
+
+    <script src="~/AngularJs/CustomerServiceCall.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    @*<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $("#STARTING_DATE1").datepicker({ changeMonth: true, changeYear: true, /*maxDate: 0 */});
+            $("#STARTING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STARTING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STARTING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#STARTING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#ENDING_DATE1").datepicker({ changeMonth: true, changeYear: true, /*maxDate: 0 */});
+            $("#ENDING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#ENDING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#ENDING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#ENDING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+}

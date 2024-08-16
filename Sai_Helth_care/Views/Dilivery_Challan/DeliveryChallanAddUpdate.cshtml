@@ -1,0 +1,765 @@
+﻿
+@{
+    ViewBag.Title = "DeliveryChallanAddUpdate";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    .zoom {
+        transition: transform .1s;
+        width: 400px;
+        height: 200px;
+        margin: 0 auto;
+        z-index: 2021;
+    }
+
+        .zoom:hover {
+            -ms-transform: scale(5.5);
+            -webkit-transform: scale(5.5); 
+            transform: scale(2.6);
+            z-index: 1024;
+        }
+
+    .error{
+        color:red;
+    }
+</style>
+
+<section ng-controller="AddUpdateDeliveryChallanCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h4 class="modal-title"><b>{{Action}} Delivery Challan </b></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form name="AddDeliveryChallan" ng-submit="AddDeliveryChallan(AddDeliveryChallan.$valid)" data-toggle="validator" role="form">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">DC Number:</label><label style="color:red;">*</label>
+                                    <input type="text" name="DC_Number" ng-model="DC_Number" class="form-control" readonly placeholder="DC Number" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Select Customer:</label><label style="color:red;">*</label>
+                                    <select ng-model="Customer_ID" id="Customer_ID" name="Customer_ID" class="form-control"
+                                            ng-options="cust.Customer_ID as cust.CUSTOMER_NAME for cust in AllCustomerList"
+                                            ng-selected="cust.Customer_ID == Customer_ID"
+                                            ng-change="OnCustomerChange()" ng-disabled="IS_DISABLE" required>
+                                        <option value="">Select Customer</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.Customer_ID.$invalid
+                                                      && (AddDeliveryChallan.Customer_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.Customer_ID.$error.required">
+                                            Customer is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                                    <select ng-model="F_ID" id="F_ID" name="F_ID" class="form-control"
+                                            ng-options="firm.F_ID as firm.FIRM_NAME for firm in CustomerFirmList"
+                                            ng-selected="firm.F_ID == F_ID" required>
+                                        <option value="">Select Customer Firm</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.F_ID.$invalid
+                                                      && (AddDeliveryChallan.F_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.F_ID.$error.required">
+                                            Customer Firm is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Enter Product Serial No:</label><label style="color:red;">*</label>
+                                    <input type="text" name="PRODUCT_SERIAL_NO" ng-model="PRODUCT_SERIAL_NO" class="form-control" placeholder="Enter Serial No" required />
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">DC Date:</label>
+                                    <input type="text" id="DC_DATE" name="DC_DATE"
+                                           ng-model="DC_DATE" class="form-control"
+                                           placeholder="Enter DC Date" @*required*@ />
+                                    <span ng-show="(AddDeliveryChallan.DC_DATE.$invalid && (AddDeliveryChallan.DC_DATE.$touched || AddDeliveryChallan.DC_DATE.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.DC_DATE.$error.required">DC Date is required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Select Product Category: </label><label style="color:red;">*</label>
+                                    <select ng-model="CAT_ID" id="CAT_ID" name="CAT_ID" class="form-control"
+                                            ng-options="cat.CAT_ID as cat.CAT_NAME for cat in CategoryList"
+                                            ng-selected="cat.CAT_ID == CAT_ID"
+                                            ng-change="OnCategoryChange()"
+                                            required>
+                                        <option value="">Select Product Category</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.CAT_ID.$invalid
+                                                      && (AddDeliveryChallan.CAT_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.CAT_ID.$error.required">
+                                            Product category is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Select Manufacturer: </label><label style="color:red;">*</label>
+                                    <select ng-model="M_ID" id="M_ID" name="M_ID" class="form-control"
+                                            ng-options="mfg.M_ID as mfg.M_NAME for mfg in ManufacturerList"
+                                            ng-selected="mfg.M_ID == M_ID"
+                                            ng-change="OnManufacturerChange()"
+                                            required>
+                                        <option value="">Select Manufacturer</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.M_ID.$invalid
+                                                      && (AddDeliveryChallan.M_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.M_ID.$error.required">
+                                            Manufacturer is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Select Product Name/Model:</label><label style="color:red;">*</label>
+                                    <select ng-model="P_ID" id="P_ID" name="P_ID" class="form-control"
+                                            ng-options="prod.P_ID as prod.PRODUCT_NAME for prod in ProductList"
+                                            ng-selected="prod.P_ID == P_ID" ng-change="OnProductChange()" required>
+                                        <option value="">Select Product Name/Model</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.P_ID.$invalid
+                                                      && (AddDeliveryChallan.P_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.P_ID.$error.required">
+                                            Product name/model is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                    <input type="number" name="DC_QTY" ng-model="DC_QTY" class="form-control" minlength="1" maxlength="6"
+                                           placeholder="Enter Qty" required />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Price:</label><label style="color:red;">*</label>
+                                    <input type="number" name="DC_PRICE" ng-model="DC_PRICE" class="form-control" placeholder="Enter Price" required />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label" style="color:white">.</label>
+                                    <button type="button" ng-click="CalculateAmountProduct()" class="btn btn-sm pull-left form-control" style="background-color:peru; color: white">Calculate</button>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">DC For Spare Part:</label><label style="color:red;">*</label>
+                                    <select name="IS_DCForSparePart" class="form-control" ng-model="IS_DCForSparePart">
+                                        <option value="">Select</option>
+                                        <option ng-value=1>Yes</option>
+                                        <option ng-value=0>No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">DC For:</label>
+                                    <select name="DC_For" class="form-control" ng-model="DC_For">
+                                        <option value="Accessories">Accessories</option>
+                                        <option value="SpareParts">Spare Parts</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4" ng-show="DC_For === 'Accessories'">
+                                    <label class="control-label">Accessories:</label><label style="color:red;">*</label>
+                                    <select ng-model="STD_ID" id="STD_ID" name="STD_ID" class="form-control"
+                                            ng-options="accs.STD_ID as accs.STD_ACC_NAME for accs in AccessoriesList"
+                                            ng-selected="accs.STD_ID == STD_ID" @*required*@>
+                                        <option value="">Select Accessories</option>
+                                    </select>
+                                    <span ng-show="IsAccessoriesSelected == 'No'" style="color:red">Please select Accessories</span>
+                                </div>
+                                <div class="form-group col-md-4" ng-show="DC_For === 'SpareParts'">
+                                    <label class="control-label">Spare Parts:</label><label style="color:red;">*</label>
+                                    <select ng-model="SP_ID" id="SP_ID" name="SP_ID" class="form-control"
+                                            ng-options="sparpart.SP_ID as sparpart.SPARE_PART for sparpart in SparePartList"
+                                            ng-selected="sparpart.SP_ID == SP_ID" @*required*@>
+                                        <option value="">Select Spare Parts</option>
+                                    </select>
+                                    <span ng-show="IsSparePartSelected == 'No'" style="color:red">Please select spare parts</span>
+                                </div>
+
+
+                                <div class="form-group col-md-2" ng-show="DC_For=='SpareParts'">
+                                    <label class="control-label">Enter Serial No:</label><label style="color:red;">*</label>
+                                    <input type="text" name="SP_SERIAL_NO" ng-model="SP_SERIAL_NO" class="form-control" placeholder="Enter Serial No"/>
+                                </div>
+
+                                <div class="form-group col-md-2" ng-show="DC_For=='Accessories'">
+                                    <label class="control-label">Enter Serial No:</label><label style="color:red;">*</label>
+                                    <input type="text" name="ACC_SERIAL_NO" ng-model="ACC_SERIAL_NO" class="form-control" placeholder="Enter Serial No"/>
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label class="control-label">Quantity:</label>@*<label style="color:red;">*</label>*@
+                                    <input type="text" name="PART_QTY" ng-model="PART_QTY" value="0" class="form-control" minlength="1" maxlength="6"
+                                           placeholder="Enter Qty" @*required*@ />
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label class="control-label">Price:</label>@*<label style="color:red;">*</label>*@
+                                    <input type="text" name="PART_PRICE" ng-model="PART_PRICE" value="0" class="form-control" placeholder="Enter Price" @*required*@ />
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label class="control-label" style="color:white">.</label>
+                                    <button type="button" class="btn btn-sm pull-left form-control"
+                                            style="background-color:peru; color: white"
+                                            ng-click="AddPartsButtonClicked()">
+                                        Add Parts
+                                    </button>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th style="width:20px;">No.</th>
+                                                    <th>Spare Parts/Accessories</th>
+                                                    <th style="width:100px; text-align:center">Price</th>
+                                                    <th style="width: 100px; text-align: center;">Quantity</th>
+                                                    <th style="width: 100px; text-align: center;">Serial No</th>
+                                                    <th style="width: 50px; text-align: center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="dcsa in DC_SparePartsAndAccessories">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>{{dcsa.SP_ACCESSORIES_NAME}}</td>
+                                                    <td style="text-align: center">Rs.{{dcsa.PART_PRICE}}/-</td>
+                                                    <td style="text-align: center">{{dcsa.PART_QTY}}</td>
+                                                    <td style="text-align: center">{{dcsa.SP_ACC_SERIAL_NO}}</td>
+
+                                                    <td>
+                                                        <a class="btn btn-xs btn-danger" ng-click="Delete_DC_SparePartsAndAccessories(dcsa)">Remove</a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row" style="margin:0px; padding:0px;">
+                                        <div class="form-group col-md-10"> </div>
+                                        <div class="form-group col-md-2">
+                                            <button type="button" ng-click="CalculateAmountSparePart()" class="btn btn-sm pull-left form-control" style="background-color:peru; color: white">Calculate</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group col-md-2">
+                                    <label class="control-label">Total Amount:</label>
+                                    <input type="text" name="AMOUNT" ng-model="TOTAL_AMOUNT" class="form-control" readonly
+                                           placeholder="Total Amount" value="0" @*required*@ />
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label class="control-label">Inc. All Taxes:</label>
+                                    <label style="color:red;">*</label>
+                                    <select ng-model="IAT_ID" id="IAT_ID" name="IAT_ID" class="form-control"
+                                            ng-options="IAT.IAT_ID as IAT.IAT_NAME for IAT in IncludingAllTaxesList"
+                                            ng-selected="IAT.IAT_ID == IAT_ID" ng-change="IsIncludingTax()" required>
+                                        <option ng-value="">Select</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.IAT_ID.$invalid
+                                                      && (AddDeliveryChallan.IAT_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.IAT_ID.$error.required">
+                                            Inc. All Taxes is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label class="control-label">GST:</label>
+
+                                    <select ng-model="GSTP_ID" id="GSTP_ID" name="GSTP_ID" class="form-control"
+                                            ng-options="gst.GSTP_ID as gst.GST_PERC for gst in GSTPercentageList"
+                                            ng-selected="gst.GSTP_ID == GSTP_ID" ng-disabled="IS_GST_INCLUDED" ng-change="CalculateTaxAmount()">
+                                        <option value="">NA</option>
+                                    </select>
+                                  
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Tax Amount:</label>
+                                    <input type="text" name="TAX_AMOUNT" class="form-control" ng-model="TAX_AMOUNT" readonly placeholder="Tax Amount" @*required*@ />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Amount Inc. Tax:</label>
+                                    <input type="text" name="AMOUNT_INC_TAX" class="form-control" ng-model="AMOUNT_INC_TAX" readonly placeholder="Amount Inc. Tax" @*required*@ />
+                                </div>
+                              
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Material:</label> @*<label style="color:red;">*</label>*@
+                                    <select ng-model="MATERIAL_ID" id="MATERIAL_ID" name="MATERIAL_ID" class="form-control"
+                                            ng-options="mtrl.MATERIAL_ID as mtrl.MATERIAL_NAME for mtrl in MaterialList"
+                                            ng-selected="mtrl.MATERIAL_ID == MATERIAL_ID" @*required*@>
+                                        <option value="">Select Material</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.MATERIAL_ID.$invalid
+                                                      && (AddDeliveryChallan.MATERIAL_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.MATERIAL_ID.$error.required">
+                                            Material is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">DC Close Date:</label>
+                                    <input type="text" id="DC_CLOSE_DATE" name="DC_CLOSE_DATE" class="form-control" ng-model="DC_CLOSE_DATE" placeholder="Dc close Date" />
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">DC Status:</label> <label style="color:red;">*</label>
+                                    <select ng-model="DCS_ID" id="DCS_ID" name="DCS_ID" class="form-control"
+                                            ng-options="dcs.DCS_ID as dcs.STATUS_NAME for dcs in DCStatusList"
+                                            ng-selected="dcs.DCS_ID == DCS_ID" required>
+                                        <option value="">Select DC Status</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.DCS_ID.$invalid
+                                                      && (AddDeliveryChallan.DCS_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.DCS_ID.$error.required">
+                                            DC Status is required
+                                        </span>
+                                    </span>
+                                </div>
+                                
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Engineer Name:</label> @*<label style="color:red;">*</label>*@
+                                    <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                            ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                            ng-selected="emp.EMP_ID == EMP_ID" @*required*@>
+                                        <option value="">Select Engineer</option>
+                                    </select>
+                                    <span ng-show="(AddDeliveryChallan.EMP_ID.$invalid
+                                                      && (AddDeliveryChallan.EMP_ID.$dirty))">
+                                        <span class="error" ng-show="AddDeliveryChallan.EMP_ID.$error.required">
+                                            Engineer is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label class="control-label">Comments:</label>
+                                    <textarea class="form-control" ng-model="COMMENTS" placeholder="Comments"></textarea>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <div class="form-group col-md-12">
+                            <div class="form-group col-md-12">
+                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddDeliveryChallan.$invalid" ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+                                <a @*value="Print Challan"*@ ng-show="Action!='Add'" style="background-color: lightgray; color: blue; font-size: 14px; text-align: center; cursor: pointer;" title="Print Challan" data-target="#PrintChallan" data-toggle="modal" ng-click="PrintChallan()" class="fa fa-print btn-sm ">Print DC</a>
+                                <a @*value="Upload Challan"*@ ng-show="Action!='Add'" style="background-color: thistle; color: blue; font-size: 14px; text-align: center; cursor: pointer;" title="Upload Challan" data-target="#Admin_Addupdate" data-toggle="modal" ng-click="UploadChallan()" class="fa fa-upload btn-sm ">Upload DC</a>
+                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="Admin_Addupdate">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: #9ECE56; color: black; padding: 10px;">
+                                    <h5 class="modal-title"><b>Upload Challan Image</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card-body">
+                                        <form role="form" name="K1" ng-submit="K1(K1.$valid)" data-toggle="validator">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control" ng-model="DC_ID" style="display:none">
+                                                    <div class="form-group">
+                                                        <label style="color:black;font-size:14px;">Admin Remark:</label> <label style="color:red">*</label>
+                                                        <input type="text" class="form-control" ng-model="ADMIN_REMARK" placeholder="Enter Remark" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-12">
+                                                    <div class="form-group ">
+                                                        <div class="row" style="margin:0px; padding:0px;">
+                                                            <div class="col-lg-12" style="padding:0px;">
+                                                                <center>
+                                                                    <label style="color:black">Select Challan Image:</label> <label style="color:red">*</label>
+                                                                </center>
+                                                                <div hidden>
+                                                                    <input type="file" id="chooseimageFileUploader_AddBanner"
+                                                                           onchange="angular.element(this).scope().SelectFile(event)"
+                                                                           class="form-control" accept="image/*">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12" style="padding:0px; text-align:center;">
+
+                                                                <div ng-click="OpenFileUploader_AddBanner()">
+
+                                                                    <center>
+                                                                        <div class="ProductImageContaine" style="width: 400px; height: 210px; align-content: center;  cursor: pointer; border: 1px solid silver ">
+                                                                            <a class="a-link-normal bb-s-item-url">
+                                                                                <div class="imageOverlay"></div>
+                                                                                <div class="ItemContainerDiv">
+                                                                                    <div class="ImageDiv" style="height: 100%;">
+                                                                                        <br />
+                                                                                        <span ng-show="PreviewImage.length > 0 ">
+                                                                                            <img id="PostImage_img" class="fadeImage PreloadImage currentImage zoom"
+                                                                                                 ng-src="{{PreviewImage}}" width="400" height="200" />
+                                                                                        </span>
+                                                                                        <span ng-show="!PreviewImage.length > 0">
+                                                                                            <img class="fadeImage PreloadImage currentImage" style="height:100px;"
+                                                                                                 src="~/Images/CameraImage.png" />
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <br />
+                                                                                </div>
+                                                                            </a>
+                                                                        </div>
+                                                                    </center>
+                                                                </div>
+                                                            </div>
+                                                       </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm" style="color:white;background-color:green" ng-disabled="K1.$invalid" ng-click="AddImage()">Upload Image</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="PrintChallan">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                        <div id="PrintChallanDetails">
+                                            <div>
+                                                <div style="display: flex; justify-content: center; align-items: center;">
+                                                    <img style="width: 100%;" src="{{COMPANY_LETTERHEAD}}" alt="SAI MEDICAL LOGO">
+                                                </div>
+                                                <div style="font-size: 25px; width:100%; text-align:center; "><b>Delivery Challan</b></div>
+                                                <div style="display: flex;
+                                            justify-content: center;
+                                            ">
+
+                                                    <table style="width:100%; border:1px solid black;
+                                                border-collapse: collapse;
+                                                padding-left: 2%;
+                                                padding-right: 2%;">
+
+                                                        <tr>
+                                                            <td style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 10px;
+                                                        padding-right: 2%;
+                                                        width: 40%;
+                                                        font-size: 16px;
+                                                        " rowspan="3" colspan="2">
+                                                                <p style="margin: 0;"><strong>Name and address of Customer:</strong></p>
+                                                                <p style="margin: 15px 0 0 0;"><strong id="CustomerName" style="display:none;">{{ChallanList.CUSTOMER_NAME}}</strong></p>
+                                                                <p style="margin: 0; font-size: 16px;">
+                                                                    {{ChallanList.CUSTOMER_ADDRESS}} - {{ChallanList.ZIP_CODE}}.
+                                                                </p>
+                                                            </td>
+
+                                                            <td colspan="4" style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 2%;
+                                                        padding-right: 2%;
+                                                        font-size: 16px;">
+                                                                <P style="margin: 10px 0;"><STRong>DC No.: {{ChallanList.DC_NUMBER}}</STRong></P>
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 2%;
+                                                        padding-right: 2%;
+                                                        font-size: 16px;">
+                                                                <P style="margin: 4px 0;"><STRong>Date:- {{ChallanList.DC_DATE}}</STRong></P>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="border:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding-left: 2%;
+                                                        padding-right: 2%;
+                                                        font-size: 16px;">
+                                                                <P style="margin: 30px 0 5px 0;"><STRong>GSTIN Number: {{CmpDetailsList[0].GST_NO}}</STRong></P>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+
+                                                            <td colspan="5">
+                                                                <div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+
+                                                            <td colspan="5">
+                                                                <div ng-repeat="p in ChallanList.ProductList">
+                                                                    <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
+                                                                        <tr ng-if="$index+1 === 1">
+                                                                            <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding: 0 10px;
+                                                    width: 10%;
+                                                    text-align: center;
+                                                    font-size: 16px;">
+                                                                                <p style="margin: 12px 0;"><strong>Sr. No</strong></p>
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding-left: 2%;
+                                                    padding-right: 2%;
+                                                    text-align: center;
+                                                    font-size: 16px;
+                                                    ">
+                                                                                <p style="margin: 12px 0;"><strong>Description</strong></p>
+                                                                            </td>
+
+                                                                            <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding-left: 2%;
+                                                    padding-right: 2%;
+                                                    width: 18%;
+                                                    text-align: center;
+                                                    font-size: 16px;">
+                                                                                <p style="margin: 12px 0;"><strong>Serial No.</strong></p>
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                    border-collapse: collapse;
+                                                    padding-left: 2%;
+                                                    padding-right: 2%;
+                                                    width: 13%;
+                                                    text-align: center;
+                                                    font-size: 16px;">
+                                                                                <p style="margin: 10px 0;"><strong>Quantity</strong></p>
+                                                                            </td>
+
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td valign="top" style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                                <P style="margin:0;">
+                                                                                    {{$index+1}}
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                                <span ng-show="CUSTOMER_TYPE=='Regular'">Refurbished</span> {{p.M_NAME}} {{p.PRODUCT_NAME}}
+                                                                                <span ng-show="p.AccessoriesList.length>0">
+                                                                                    With Std. Accessories
+                                                                                </span>
+                                                                            </td>
+
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                     text-align: center;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                                {{p.PRODUCT_SERIAL_NO}}
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                                {{p.QUANTITY}}
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr ng-if="p.AccessoriesList.length>0" ng-repeat="acc in p.AccessoriesList">
+                                                                            <td valign="top" style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                                <span ng-if="$index+1===1">Std Accessories:</span><br>
+                                                                                {{acc.STD_ACC_NAME}}
+                                                                            </td>
+
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                     text-align: center;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                                {{acc.ACC_SERIAL_NO}}
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                                <span ng-if="$index+1===1">&nbsp;</span><br>
+                                                                                {{acc.PART_QTY}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr ng-if="p.SparePartsList.length>0" ng-repeat="sp in p.SparePartsList">
+                                                                            <td valign="top" style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    font-size: 16px;">
+                                                                                <span ng-if="$index+1===1">Spare Parts:</span><br>
+                                                                                {{sp.SPARE_PART}}
+                                                                            </td>
+
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                                {{sp.SP_SERIAL_NO}}
+                                                                            </td>
+                                                                            <td style="border:1px solid black;
+                                                                    border-collapse: collapse;
+                                                                    padding-left: 2%;
+                                                                    padding-right: 2%;
+                                                                    text-align: center;
+                                                                    font-size: 16px;">
+                                                                                <span ng-if="$index+1===1">&nbsp;</span><br>
+                                                                                {{sp.PART_QTY}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        @*<tr>
+                                                                            <td colspan="4" style="border:1px solid black; border-collapse: collapse; padding-left: 2%; padding-right: 2%; font-size: 16px; word-wrap: break-word;">
+                                                                                comment : gfmkdskmghdkhmdrterjlkmtrrkjmlekmlrkjo54jy34km5ylk34mjkgnkjgjngthtjhooooojyrjterjoijoijoijhtkhlhnlfkghgnhlfkgnfnhdfnlkjhnjhnerjtherrenjhkjrtnehj
+                                                                            </td>
+                                                                        </tr>*@
+
+                                                                        <tr>
+                                                                            <td colspan="4" style="border:1px solid black; border-collapse: collapse; padding-left: 2%; padding-right: 2%; font-size: 16px; max-width: 200px; overflow: auto;">
+                                                                                <b>Comment:</b> {{p.COMMENTS}}
+                                                                            </td>
+                                                                        </tr>
+
+
+                                                                    </table>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                       
+                                                        <tr>
+                                                            <th colspan="5" style="border-bottom:1px solid black;
+                                                        border-collapse: collapse;
+                                                        padding: 0;">
+                                                                <div style="display: flex; justify-content: center; align-items: center;">
+                                                                    <h1> <strong></strong></h1>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="3" style="font-size: 16px; ">
+                                                                <center>
+                                                                    <p style=" padding-left: 2%; padding-bottom:0px;margin-top:180px;">
+
+                                                                        <strong>
+                                                                            Receiver Seal &
+                                                                            Signature
+                                                                        </strong>
+                                                                    </p>
+                                                                </center>
+                                                            </td>
+                                                            <td colspan="2">
+                                                                <center>
+                                                                    <p style="margin-top: 0; margin-bottom: 20px; font-size: 20px; font-weight: bold;">
+                                                                        <strong style="font-size: 16px;"><sup>For</sup></strong> {{COMPANYNAME}}
+                                                                    </p>
+                                                                    @*<img src="~/Images/signture-stamp-img.jpg" style="width:300px; max-width:100%;" />*@
+                                                                    @*<img src="{{CmpDetailsList.COMPANY_SEAL}}" style="width:300px; max-width:100%;" />*@
+                                                                    <img src="{{COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+                                                                    <p style="margin-bottom: 0;  font-size: 16px; "><b>Seal & Signature</b></p>
+                                                                </center>
+                                                            </td>
+                                                        </tr>
+                                                        
+
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <div class="form-group col-md-12">
+                                                <div class="noprint">
+                                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print Challan" ng-click="PrintChallanDetails('PrintChallanDetails')" />
+                                                    <input type="button" value="Cancel" ng-click="CancelPreview()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts
+{
+    <script src="~/AngularJs/DeliveryChallanAddUpdate.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $("#DC_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#DC_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#DC_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#DC_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#DC_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#DC_CLOSE_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#DC_CLOSE_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#DC_CLOSE_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#DC_CLOSE_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#DC_CLOSE_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+}

@@ -1,0 +1,453 @@
+﻿
+@{
+    ViewBag.Title = "CompanyDetails";
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .zoom {
+        /*padding: 50px;*/
+        transition: transform .10s;
+        width: 1000px;
+        height: 1000px;
+        margin: 0 auto;
+    }
+
+        .zoom:hover {
+            -ms-transform: scale(5.5); /* IE 9 */
+            -webkit-transform: scale(1.0); /* Safari 3-8 */
+            transform: scale(2.9);
+            z-index: 1024;
+        }
+</style>
+<style>
+    .catStyle_Desc {
+        color: black;
+        cursor: pointer;
+        font-size: 15px;
+        border: 1px solid green;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .catStyle_active_Desc {
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: 1px solid green;
+        border-radius: 5px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+
+    #BANK_NAME {
+        text-transform: uppercase;
+    }
+        #BANK_NAME::placeholder {
+            text-transform: none;
+        }
+
+    #BRANCH_NAME {
+        text-transform: uppercase;
+    }
+        #BRANCH_NAME::placeholder {
+            text-transform: none;
+        }
+
+    #ACC_HOLDER_NAME {
+        text-transform: uppercase;
+    }
+        #ACC_HOLDER_NAME::placeholder {
+            text-transform: none;
+        }
+
+    #IFSC_CODE {
+        text-transform: uppercase;
+    }
+        #IFSC_CODE::placeholder {
+            text-transform: none;
+        }
+</style>
+
+<div class="page-content fade-in-up" ng-controller="CompanyCtrl">
+    <div class="ibox">
+        <div class="ibox-body">
+            <div class="card">
+              <div class="col-md-12" style="margin-top:10px;">
+                  <div class="row">
+                      <div class="col-sm-1">
+                          <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                          
+                      </div>
+                      <div class="col-sm-11" style="margin-left:-50px">
+                        <h6><b>Company Details</b></h6>
+                      </div>
+                  </div>
+              </div>
+               
+                <div class="card-body">
+                    <div style="overflow-y:auto">
+                        <table class="table table-bordered" style="font-size: 0.8rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Company Id</th>
+                                    <th> Firm Name</th>
+                                    <th>Authority Name</th>
+                                    <th>Address</th>
+                                    <th>Contact No.</th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Reg Date</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="company in CompanyDetails">
+                                    <td>{{company.COMPANY_ID}}</td>
+                                    <td>{{company.COMPANY_NAME}}</td>
+                                    <td>{{company.AUTHORITY_NAME}}</td>
+                                    <td>{{company.COMPANY_REG_ADDRESS}}</td>
+                                    <td>{{company.MOBILE_NO}}</td>
+                                    <td style="color:green"><b>{{company.STATUS}}</b></td>
+                                    <td>{{company.REG_DATE}}</td>
+
+                                </tr>
+                                @*<tr>
+                                        <td>101</td>
+                                        <td><a>SAI MEDICAL SERVICES</a> </td>
+                                        <td> Mr. SAGAR BORADE</td>
+                                        <td> Office No. 405/406, 4th Floor, Shreeji Bizz World, Kathe Galli Signal, Opp.Camel House, Nashik 422011.</td>
+                                        <td>9921004249</td>
+                                        <td>Active</td>
+                                        <td>04-02-23</td>
+                                    </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div style="overflow: auto; white-space: nowrap; padding:15px 0px;">
+                            <center>
+
+                                <span>
+                                    <span class="catmenu_button_Desc catStyle_active_Desc" id="0_catId_Desc" ng-click="OnCategoryClick('0')" style="padding:5px; margin:5px;font-size:12px;"><b>Documents </b></span>
+                                </span>
+                                <span>
+                                    <span class="catmenu_button_Desc catStyle_Desc" id="1_catId_Desc" ng-click="OnCategoryClick('1')" style="padding:5px; margin:5px;font-size:12px;"><b>Bank Details</b></span>
+                                </span>
+
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body" id="Demoexample_0">
+                <div class="col-lg-12">
+                    <div class="row">
+
+                        <div class="col-lg-3">
+                            <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AddDoc()">Add Document</button>
+                        </div>
+                        <div class="col-lg-9">
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="ibox-body">
+                    <table id="example2" class="table table-hover table-bordered" style="font-size: 0.8rem;color:black;">
+                        <thead>
+                            <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                <th>Sr.No</th>
+                                <th><b>Title</b></th>
+                                <th><b>Documents Type</b></th>
+                                <th><b>File URL</b></th>
+                                <th><b>File Type</b></th>
+                                <th><b>Reg Date</b></th>
+                                <th><b>Action</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="company in CompanyDocDetails">
+                                <td>{{$index+1}}</td>
+                                <td>{{company.DOC_TITLE}}</td>
+                                <td>{{company.DOC_TYPE}}</td>
+                                <td><a href="{{company.FILE_URL}}" target="_blank">{{company.FILE_URL}}</a></td>
+                                <td>{{company.FILE_TYPE}}</td>
+                                <td>{{company.DOC_INSERT_DATE}}</td>
+                                <td>
+                                    <a @*href="~/#/Index"*@ data-toggle="modal" ng-click="EditDoc(company)" title="Edit" class="btn btn-xs btn-success">Edit </a>
+                                    @*<a id="download_image" href="" download="https://docs.google.com/uc?id=0B0jH18Lft7ypSmRjdWg1c082Y2M">Download 1</a>*@
+                                    <a data-toggle="modal" ng-click="DownloadFile(company.FILE_URL,company.DOC_TITLE)" title="Download" style="background-color:orange" class="btn btn-xs btn-Primary">Download </a>
+                                </td>
+                            </tr>
+                            <tr ng-show="CompanyDocDetails.length===0 || CompanyDocDetails.length=== null || CompanyDocDetails.length==='' || CompanyDocDetails.length==='undefined' ">
+                                <td colspan="7" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal fade" id="Comp_add">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+                                <h4 class="modal-title"><b>{{Admin_Action}}</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="AddPaymentDoc" ng-submit="AddPaymentDoc(AddPaymentDoc.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Document Type</label><label style="color:red">*</label>
+                                                <select name="DOC_TYPE" id="DOC_TYPE" class="form-control" ng-model="DOC_TYPE" required>
+                                                    <option value="">Select Documents Type</option>
+                                                    <option value="GST">GST Certificate</option>
+                                                    <option value="ShopAct">Shop Act</option>
+                                                    <option value="PAN">PAN Card</option>
+                                                    <option value="DrugLicence">Drug Licence</option>
+                                                    <option value="PNDT">PNDT Certificate</option>
+                                                    <option value="AERB">AERB Certificate</option>
+                                                    <option value="NABL">NABL Certificate</option>
+                                                    <option value="Udyog">Udyog Certificate</option>
+                                                    <option value="Other">Other Document</option>
+                                                </select>
+                                                <span ng-show="(AddPaymentDoc.DOC_TYPE.$invalid && (AddPaymentDoc.DOC_TYPE.$touched || AddPaymentDoc.DOC_TYPE.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentDoc.DOC_TYPE.$error.required">Document Type is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Title</label><label style="color:red">*</label>
+                                                <input type="text" name="TITLE" class="form-control" ng-pattern="/^[A-Za-z][A-Za-z0-9_&.\-\s]*$/" max="400" placeholder="Enter Title" ng-model="TITLE" id="TITLE" autocomplete="off" required />
+                                                <span ng-show="(AddPaymentDoc.TITLE.$invalid && (AddPaymentDoc.TITLE.$touched || AddPaymentDoc.TITLE.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentDoc.TITLE.$error.required">Title is required</span>
+                                                    <span class="error" ng-show="AddPaymentDoc.TITLE.$error.pattern">Title is invalid</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Document Number</label><label style="color:red">*</label>
+                                                <input type="text" class="form-control" name="DOC_NO" placeholder="Enter Document Number" max="400" ng-model="DOC_NO" id="DOC_NO" autocomplete="off" required />
+                                                <span ng-show="(AddPaymentDoc.DOC_NO.$invalid && (AddPaymentDoc.DOC_NO.$touched || AddPaymentDoc.DOC_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentDoc.DOC_NO.$error.required">Document Number is required</span>
+                                                   
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Upload Doc</label><label style="color:red">*</label> <br> <label style="color:red"></label>
+                                                <input type="file" class="form-control" name="DOC_DATA" accept=" image/png, image/jpeg, image/jpg" ng-model="DOC_DATA" id="DOC_DATA" autocomplete="off" />
+                                                <span>
+                                                    <img id="DOC_DATA_Perview" src="{{DOC_DATA}}" height="200" width="300" style="color:red" alt=" (File size must be less than 2 MB. Only .jpg, .jpeg, .png files allowed.)" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12" style=" margin-right: -241px;">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPaymentDoc.$invalid" ng-click="AddDocAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-body" id="Demoexample_1" style="display:none">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AddBank()">Add Bank Detalis</button>
+                        </div>
+                        <div class="col-lg-9">
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="ibox-body">
+                    <table id="example2" class="table table-hover table-bordered" style="font-size: 0.8rem;color:black;">
+                        <thead>
+                            <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                <th>Sr.No</th>
+                                <th><b>Bank  Name</b></th>
+                                <th><b>Branch Name</b></th>
+                                <th><b>Account Number</b></th>
+                                <th><b>Bank Holder Name</b></th>
+                                <th><b>IFSC Code</b></th>
+                                <th><b>Status</b></th>
+                                <th><b>Reg Date</b></th>
+                                <th><b>Action</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="bank.BANK_NAME!='' && bank.ACC_NO!=''" ng-repeat="bank in CompanyBankList">
+                                <td>{{$index+1}}</td>
+                                <td>{{bank.BANK_NAME}}</td>
+                                <td>{{bank.BRANCH_NAME}}</td>
+                                <td>{{bank.ACC_NO}}</td>
+                                <td>{{bank.ACC_HOLDER_NAME}}</td>
+                                <td>{{bank.IFSC_CODE}}</td>
+                                <td><a href="" ng-confirm-click="Do you want to change status ?" confirmed-click="ChangeStatusBank(bank)"><b ng-style="bank.STATUS=='Active'?{'color':'green'}:{'color':'red'}">{{bank.STATUS}}</b></a></td>
+                                <td>{{bank.REG_DATE}}</td>
+                                <td><a @*href="~/#/Index"*@ data-toggle="modal" ng-click="EditBank(bank)" @*title="Add Language"*@ class="btn btn-xs btn-success">Edit </a></td>
+                            </tr>
+                            <tr ng-show="CompanyBankList.length===0 || CompanyBankList.length=== null || CompanyBankList.length==='' || CompanyBankList.length==='undefined' ">
+                                <td colspan="9" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                            </tr>
+                            @*<tr>
+                                    <td>1</td>
+                                    <td>Bank of maharashtra </td>
+                                    <td>Nashik-00001</td>
+                                    <td>121545551212</td>
+                                    <td>Atul Mohite</td>
+                                    <td>IFSC-20255</td>
+                                    <td>Active</td>
+                                    <td>05-02-23</td>
+                                    <td><a href="~/#/Index" data-toggle="modal" data-target="#Comp_Bank" title="Add Language" class="btn btn-xs btn-success">Edit </a></td>
+                                </tr>*@
+
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+
+                <div class="modal fade" id="Comp_Bank">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+                                <h4 class="modal-title"><b>{{AdminBank_Action}} Detalis</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="AddPaymentBank" ng-submit="AddPaymentBank(AddPaymentBank.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Bank Name</label><label style="color:red;">*</label>
+                                                <input type="text" class="form-control" maxlength="1000" placeholder="Enter Bank Name " ng-pattern="/^[A-Za-z]+([\ A-Za-z]+)*/" name="BANK_NAME" ng-model="BANK_NAME" id="BANK_NAME" autocomplete="off" required />
+                                                <span ng-show="(AddPaymentBank.BANK_NAME.$invalid && (AddPaymentBank.BANK_NAME.$touched || AddPaymentBank.BANK_NAME.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentBank.BANK_NAME.$error.required">Bank Name is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Branch Name</label><label style="color:red;">*</label>
+                                                <input type="text" class="form-control" maxlength="1000" placeholder="Enter Branch Name " ng-pattern="/^[A-Za-z]+([\ A-Za-z]+)*/" name="BRANCH_NAME" ng-model="BRANCH_NAME" id="BRANCH_NAME" autocomplete="off" required />
+                                                <span ng-show="(AddPaymentBank.BRANCH_NAME.$invalid && (AddPaymentBank.BRANCH_NAME.$touched || AddPaymentBank.BRANCH_NAME.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentBank.BRANCH_NAME.$error.required">Branch Name is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Account Number</label><label style="color:red;">*</label>
+                                                <input type="text" class="form-control" placeholder="Enter Account Number" maxlength="18" onkeypress="if(this.value.length==18) return false;" ng-pattern="/^\d{9,18}$/" name="ACC_NO" ng-model="ACC_NO" id="ACC_NO" autocomplete="off" required />
+                                                <span ng-show="(AddPaymentBank.ACC_NO.$invalid && (AddPaymentBank.ACC_NO.$touched || AddPaymentBank.ACC_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentBank.ACC_NO.$error.required">Account Number is required</span>
+                                                    <span class="error" ng-show="AddPaymentBank.ACC_NO.$error.pattern">Account Number is invalid</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Bank Holder Name</label><label style="color:red;">*</label>
+                                                <input type="text" class="form-control" maxlength="1000" placeholder="Enter Bank Holder Name" ng-pattern="/^[A-Za-z]+([\ A-Za-z]+)*/" name="ACC_HOLDER_NAME" ng-model="ACC_HOLDER_NAME" id="ACC_HOLDER_NAME" autocomplete="off" required />
+                                                <span ng-show="(AddPaymentBank.ACC_HOLDER_NAME.$invalid && (AddPaymentBank.ACC_HOLDER_NAME.$touched || AddPaymentBank.ACC_HOLDER_NAME.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentBank.ACC_HOLDER_NAME.$error.required">Bank Holder Name is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">IFSC Code</label><label style="color:red;">*</label>
+                                                <input type="text" class="form-control" placeholder="Enter IFSC Code" maxlength="11" ng-pattern="/^[A-Z]{4}0[A-Z0-9]{6}$/" name="IFSC_CODE" ng-model="IFSC_CODE" id="IFSC_CODE" autocomplete="off" required />
+                                                <span ng-show="(AddPaymentBank.IFSC_CODE.$invalid && (AddPaymentBank.IFSC_CODE.$touched || AddPaymentBank.IFSC_CODE.$dirty))">
+                                                    <span class="error" ng-show="AddPaymentBank.IFSC_CODE.$error.required">IFSC Code is required</span>
+                                                    <span class="error" ng-show="AddPaymentBank.IFSC_CODE.$error.pattern">IFSC Code is invalid</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12" style=" margin-right: -241px;">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPaymentBank.$invalid" ng-click="AddBankAdmin()" value="{{AdminBank_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script src="~/AngularJs/CompanyDetails.js"></script>
+    @*<script src="~/AngularJs/Datefilter.js"></script>*@
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+                //function printDiv1() {
+                //    var printContents = document.getElementById('contentdiv1').innerHTML;
+                //    var originalContents = document.body.innerHTML;
+                //    document.body.innerHTML = printContents;
+                //    window.print();
+                //    document.body.innerHTML = originalContents;
+                //    setTimeout(function () {
+                //        location.reload();
+                //    }, 1000);
+                //}
+
+                //function printDiv2() {
+                //    var printContents = document.getElementById('contentdiv2').innerHTML;
+                //    var originalContents = document.body.innerHTML;
+                //    document.body.innerHTML = printContents;
+                //    window.print();
+                //    document.body.innerHTML = originalContents;
+                //    setTimeout(function () {
+                //        location.reload();
+                //    }, 1000);
+                //}
+    </script>
+
+}
+
+
+

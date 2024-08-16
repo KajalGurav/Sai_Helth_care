@@ -1,0 +1,1894 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<style>
+    #printECRPAF {
+        display: block;
+    }
+
+    #border1 {
+        display: none;
+    }
+
+    .paf {
+        text-shadow: 5px 5px 8px #666;
+    }
+</style>
+<style type="text/css" media="print">
+    input[type="checkbox"] {
+        visibility: hidden;
+    }
+
+    input[type="checkbox"] {
+        border: 1px solid #333;
+        content: "\00a0";
+        display: inline-block;
+        font: 16px/1em sans-serif;
+        height: 16px;
+        margin: 0 .25em 0 0;
+        padding: 0;
+        vertical-align: top;
+        width: 16px;
+    }
+
+        input[type="checkbox"]:checked {
+            background: white;
+            color: black;
+            content: "\2713";
+            text-align: center;
+        }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+
+
+<section ng-controller="AMCCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>AMC/CMC Registration</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()">Add Record</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3" ng-show="@Session["COMPANY_ID"]==0">
+                            <div class="form-group">
+                                <select ng-model="COMPANY_ID" id="COMPANY_ID" name="COMPANY_ID" class="form-control"
+                                        ng-options="c.COMPANY_ID as c.COMPANY_NAME for c in CompanyList"
+                                        ng-selected="c.COMPANY_ID == COMPANY_ID" ng-change="SearchAdmin()">
+                                    <option value="">Select Company</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2" style="text-align:center">
+                            <a href="~/AMC_Master/UpcomingPmCm?CustType={{CUSTOMER_TYPE_ID}}" type="button" class="form-control btn btn-sm pull-left" style="background-color: green; color: white ">
+                                <div style="margin-top: 5px;">Upcoming Pm/Cm</div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2" style="text-align:center">
+                            <a href="~/AMC_Master/UpcomingExpiry" type="button" class="form-control btn btn-sm pull-left" style="background-color: green; color: white; ">
+                                <div style="margin-top: 5px;">Upcoming Expiry</div>
+                            </a>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Doc.No./Customer/Firm" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Doc. No.</th>
+                                    <th>Contract Period(Years)</th>
+                                    <th>Contract Period from</th>
+                                    <th>Contract Period To</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    <th ng-hide="CUSTOMER_TYPE_NAME==='Medtronic'">Product Name</th>
+                                    <th>Model No/Name.</th>
+                                    <th>Serial No.</th>
+                                    <th>PM Visit</th>
+                                    <th>CM Visit</th>
+                                    <th>Contract Type</th>
+                                    <th>Contract Status</th>
+                                    <th>Visit Dates</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in AMCCMCList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{admin.CONTRACT_DOCUMENT_NO}}</td>
+                                    <td>{{admin.CONTRACT_PERIOD}}</td>
+                                    <td>{{admin.CONTRACT_FROM}}</td>
+                                    <td>{{admin.CONTRACT_TO}}</td>
+                                    <td>{{admin.CUSTOMER_NAME}}</td>
+                                    <td>{{admin.CUSTOMER_FIRM_NAME}}</td>
+                                    <td ng-hide="CUSTOMER_TYPE_NAME==='Medtronic'">{{admin.PRODUCT_NAME}}</td>
+                                    <td>{{admin.MODEL_NAME}}</td>
+                                    <td>{{admin.MODEL_SERIAL_NO}}</td>
+                                    <td>{{admin.PM_VISIT}}</td>
+                                    <td>{{admin.CM_VISIT}}</td>
+                                    <td>{{admin.CONTRACT_TYPE}}</td>
+                                    <td ng-show="admin.AMC_CMC_STATUS=='Done'"><b style="color:green">{{admin.AMC_CMC_STATUS}}</b></td>
+                                    <td ng-show="admin.AMC_CMC_STATUS=='Pending'"><b style="color:red">{{admin.AMC_CMC_STATUS}}</b></td>
+                                    <td>
+                                        <span ng-repeat="visitDate in admin.VisitDates.split(',')">
+                                            <span ng-show="visitDate.includes('*')" style="background-color:red;color:white;">{{ visitDate.trim() }} <br></span>
+                                            <span ng-hide="visitDate.includes('*')">{{ visitDate.trim() }} <br></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a data-toggle="modal" ng-click="getForUpdate(admin)" title="Update" class="btn btn-xs btn-danger">Edit </a>
+                                        <a ng-show="admin.CONTRACT_TYPE!='Warranty'" data-toggle="modal" ng-click="PreviewPR(admin)" title="Update" class="btn btn-xs btn-success">Print Preview </a>
+
+                                    </td>
+                                </tr>
+                                <tr ng-show="CUSTOMER_TYPE_NAME!='Medtronic' && (!pager.pages.length)">
+                                    <td colspan="16" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                                <tr ng-show="CUSTOMER_TYPE_NAME=='Medtronic' && (!pager.pages.length)">
+                                    <td colspan="15" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal fade" id="AMC_AddUpdate">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>{{Admin_Action}} @*AMC/CMC Registration*@  </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contract Document No:</label><label style="color:red;">*</label>
+                                                <input type="text" name="CONTRACT_DOCUMENT_NO" ng-model="CONTRACT_DOCUMENT_NO" class="form-control" readonly placeholder="Contract Document No" />
+                                                <span ng-show="(AddPayment.CONTRACT_DOCUMENT_NO.$invalid && (AddPayment.CONTRACT_DOCUMENT_NO.$touched || AddPayment.CONTRACT_DOCUMENT_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CONTRACT_DOCUMENT_NO.$error.required">Contract Document No is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Select Contract Type:</label><label style="color:red;">*</label>
+                                                <select name="CONTRACT_TYPE" class="form-control" selected="{{CONTRACT_TYPE}}" ng-model="CONTRACT_TYPE" required>
+                                                    <option value="">Select Contract Name</option>
+                                                    <option value="AMC">AMC</option>
+                                                    <option value="CMC">CMC</option>
+                                                    <option value="Warranty">Warranty</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.CONTRACT_TYPE.$invalid && (AddPayment.CONTRACT_TYPE.$touched || AddPayment.CONTRACT_TYPE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CONTRACT_TYPE.$error.required">Contract Type is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Contract Period (Year): </label><label style="color:red;">*</label>
+
+                                                <select name="CONTRACT_PERIOD" id="CONTRACT_PERIOD" class="form-control" ng-model="CONTRACT_PERIOD" required>
+                                                    <option value="">Select Contract Period (Year)</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.CONTRACT_PERIOD.$invalid && (AddPayment.CONTRACT_PERIOD.$touched || AddPayment.CONTRACT_PERIOD.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CONTRACT_PERIOD.$error.required">Contract Period (Year) is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contract Date : </label><label style="color:red;">*</label>
+                                                <input type="text" id="CONTRACT_DATE" name="CONTRACT_DATE" ng-model="CONTRACT_DATE" class="form-control" maxlength="10" @*readonly*@ placeholder="Contract Date" />
+                                                @*<span ng-show="(AddPayment.CONTRACT_DATE.$invalid && (AddPayment.CONTRACT_DATE.$touched || AddPayment.CONTRACT_DATE.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.CONTRACT_DATE.$error.required">Contract Date is required</span>
+                                                        <span class="error" ng-show="AddPayment.CONTRACT_DATE.$error.date">Invalid Contract Date</span>
+                                                    </span>*@
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Customer Name: </label><label style="color:red;">*</label>
+                                                <select name="CUSTOMER_ID" id="CUSTOMER_ID" class="form-control" ng-model="CUSTOMER_ID"
+                                                        ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in CustomerList"
+                                                        ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-change="GetCustomerChange()" required>
+                                                    <option value="">Select Customer Name</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.CUSTOMER_ID.$invalid && (AddPayment.CUSTOMER_ID.$touched || AddPayment.CUSTOMER_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CUSTOMER_ID.$error.required">Customer Name is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                                                <select name="FIRM_ID" id="FIRM_ID" class="form-control" ng-model="FIRM_ID"
+                                                        ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in CustomerFirmList"
+                                                        ng-selected="Customer.F_ID == FIRM_ID" ng-change="GetFirmChange()" required>
+                                                    <option value="">Select Customer Firm Name </option>
+                                                    @*<option ng-repeat="Customer in CustomerFirmList" value="{{Customer.F_ID}}">{{Customer.FIRM_NAME}}</option>*@
+                                                </select>
+                                                <span ng-show="(AddPayment.FIRM_ID.$invalid && (AddPayment.FIRM_ID.$touched || AddPayment.FIRM_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FIRM_ID.$error.required">Customer Firm Name is required</span>
+                                                </span>
+                                            </div>
+                                            <div ng-hide="CUSTOMER_TYPE_NAME=='Medtronic'" class="form-group col-md-6">
+                                                <label class="control-label">Select Product:</label><label style="color:red;">*</label>
+                                                <select name="CAT_ID" id="CAT_ID" class="form-control" ng-model="CAT_ID"
+                                                        ng-options="Category.CAT_ID as Category.CAT_NAME for Category in CategoryList"
+                                                        ng-selected="Category.CAT_ID == CAT_ID" ng-change="GetCategoryChange()" ng-required="CUSTOMER_TYPE_NAME!='Medtronic'">
+                                                    <option value="">Select Product</option>
+                                                </select>
+                                                @*<select name="CAT_ID" id="CAT_ID" class="form-control" ng-model="CAT_ID" ng-change="GetCategoryChange()" required>
+                                                        <option value="">Select Product</option>
+                                                        <option ng-repeat="Category in CategoryList" value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
+                                                    </select>*@
+                                                <span ng-show="(AddPayment.CAT_ID.$invalid && (AddPayment.CAT_ID.$touched || AddPayment.CAT_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CAT_ID.$error.required">Product is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div @*ng-show="CAT_ID!=7"*@ class="form-group col-md-6">
+                                                <label class="control-label">Select Model:</label><label style="color:red;">*</label>
+                                                <select name="P_ID" id="P_ID" class="form-control" ng-model="P_ID"
+                                                        @*ng-options="option.value as option.label for option in getOptions()"
+                                                        ng-selected="option.value == P_ID" ng-change="GetModelChange()" required>*@
+                                                        ng-options="Product.P_ID as Product.PRODUCT_NAME for Product in ProductList"
+                                                        ng-selected="Product.P_ID == P_ID" ng-change="GetModelChange()" required>
+                                                    <option value="">Select Model</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.P_ID.$invalid && (AddPayment.P_ID.$touched || AddPayment.P_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.P_ID.$error.required">Model is required</span>
+                                                </span>
+                                            </div>
+                                            @*<div ng-show="CAT_ID==7" class="form-group col-md-6">
+                                                    <label class="control-label">Select Model:</label><label style="color:red;">*</label>
+                                                    <select name="P_ID" id="P_ID" class="form-control" ng-model="P_ID"
+                                                            ng-options="Product.MP_ID as Product.PRODUCT_NAME for Product in ProductList"
+                                                            ng-selected="Product.MP_ID == P_ID" ng-change="GetModelChange()" required>
+                                                        <option value="">Select Model</option>
+                                                    </select>
+                                                    <span ng-show="(AddPayment.P_ID.$invalid && (AddPayment.P_ID.$touched || AddPayment.P_ID.$dirty))">
+                                                        <span class="error" ng-show="AddPayment.P_ID.$error.required">Model is required</span>
+                                                    </span>
+                                                </div>*@
+                                            <div class="form-group col-md-6" ng-show="CUSTOMER_TYPE_NAME!='Medtronic' && CONTRACT_TYPE == 'CMC' && (CAT_ID == 1 || CAT_ID == 3 || CAT_ID == 5)">
+                                                <label class="control-label"> Select Contract Type Details:</label><label ng-show="CUSTOMER_TYPE_NAME!='Medtronic' && CONTRACT_TYPE == 'CMC' && (CAT_ID == 1 || CAT_ID == 3 || CAT_ID == 5)" style="color:red;">*</label>
+                                                <select name="CONTRACT_TYPE_DETAILS" class="form-control" ng-selected="{{CONTRACT_TYPE_DETAILS}}" ng-model="CONTRACT_TYPE_DETAILS" ng-required="CUSTOMER_TYPE_NAME!='Medtronic' && CONTRACT_TYPE == 'CMC' && (CAT_ID == 1 || CAT_ID == 3 || CAT_ID == 5)">
+                                                    <option value="">Select Contract Type Details</option>
+                                                    <option ng-show="CAT_ID == 1" value="With Tube">With Tube</option>
+                                                    <option ng-show="CAT_ID == 1" value="Without Tube">Without Tube</option>
+                                                    <option ng-show="CAT_ID == 3" value="Including Helium">Including Helium</option>
+                                                    <option ng-show="CAT_ID == 3" value="Excluding Helium">Excluding Helium</option>
+                                                    <option ng-show="CAT_ID == 5" value="With 1 Probe">With 1 Probe</option>
+                                                    <option ng-show="CAT_ID == 5" value="With 2 Probes">With 2 Probes</option>
+                                                    <option ng-show="CAT_ID == 5" value="With 3 Probes">With 3 Probes</option>
+                                                    <option ng-show="CAT_ID == 5" value="With 4 Probes">With 4 Probes</option>
+                                                    <option ng-show="CAT_ID == 5" value="Without Probes">Without Probes</option>
+
+                                                </select>
+                                                <span ng-show="(AddPayment.CONTRACT_TYPE_DETAILS.$invalid && (AddPayment.CONTRACT_TYPE_DETAILS.$touched || AddPayment.CONTRACT_TYPE_DETAILS.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CONTRACT_TYPE_DETAILS.$error.required">Contract Type Details is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Model Serial No :</label>@*<label style="color:red;">*</label>*@
+                                                <input type="text" name="MODEL_SERIAL_NO" class="form-control" ng-model="MODEL_SERIAL_NO" placeholder="Enter Model Serial." @*required*@ />
+                                                <span ng-show="(AddPayment.MODEL_SERIAL_NO.$invalid && (AddPayment.MODEL_SERIAL_NO.$touched || AddPayment.MODEL_SERIAL_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.MODEL_SERIAL_NO.$error.required">Model Serial No is required</span>
+                                                </span>
+                                            </div>
+
+
+                                            <div ng-show="CUSTOMER_TYPE_NAME=='Medtronic'" class="form-group col-md-12" style="margin:0px; padding:0px;">
+                                                <div class="row" style="margin:0px; padding:0px;">
+                                                    <div class="form-group col-md-6">
+                                                        <label class="control-label">DC For:</label>
+                                                        <select name="DC_For" class="form-control" ng-model="AMC_For">
+                                                            <option value="MainSystem">Main System</option>
+                                                            <option value="Attachments">Attachments</option>
+                                                            <option value="Tools">Tools</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-6" ng-show="AMC_For === 'MainSystem'">
+                                                        <label class="control-label">Main System:</label><label style="color:red;">*</label>
+                                                        <select ng-model="MED_ACC_ID" id="MED_ACC_ID1" name="MED_ACC_ID1" class="form-control"
+                                                                ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict"
+                                                                ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                                            <option value="">Select Main System</option>
+                                                        </select>
+                                                        <span ng-show="IsMainSystemSelected == 'No'" style="color:red">Please select Main System</span>
+                                                    </div>
+                                                    <div class="form-group col-md-6" ng-show="AMC_For === 'Attachments'">
+                                                        <label class="control-label">Attachments:</label><label style="color:red;">*</label>
+                                                        <select ng-model="MED_ACC_ID" id="MED_ACC_ID2" name="MED_ACC_ID2" class="form-control"
+                                                                ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict"
+                                                                ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                                            <option value="">Select Attachments</option>
+                                                        </select>
+                                                        <span ng-show="IsAttachmentsSelected == 'No'" style="color:red">Please select Attachments</span>
+                                                    </div>
+                                                    <div class="form-group col-md-6" ng-show="AMC_For === 'Tools'">
+                                                        <label class="control-label">Tools:</label><label style="color:red;">*</label>
+                                                        <select ng-model="MED_ACC_ID" id="MED_ACC_ID3" name="MED_ACC_ID3" class="form-control"
+                                                                ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict"
+                                                                ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                                            <option value="">Select Tools</option>
+                                                        </select>
+                                                        <span ng-show="IsToolsSelected == 'No'" style="color:red">Please select Tools</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin:0px; padding:0px;">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label">Part Serial No.:</label>@*<label style="color:red;">*</label>*@
+                                                        <input type="text" name="PART_SERIAL_NO" ng-model="PART_SERIAL_NO" class="form-control" placeholder="Enter Part Serial No." @*required*@ />
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label class="control-label">Quantity:</label>@*<label style="color:red;">*</label>*@
+                                                        <input type="number" id="PART_QTY" name="PART_QTY" ng-model="PART_QTY" class="form-control" step="1" min="0" max="999999" onkeyup="if (this.value < min) { this.value = min; return false; } if (this.value > max) { this.value = max; return false; } " onkeypress="if (this.value.length == 6) { return false; }"
+                                                               placeholder="Enter Qty" @*required*@ />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label">Price:</label>@*<label style="color:red;">*</label>*@
+                                                        <input type="number" id="PART_PRICE" name="PART_PRICE" ng-model="PART_PRICE" class="form-control" step="0.01" min="0" max="9999999" onkeyup="if (this.value < min) { this.value = min; return false; } if (this.value > max) { this.value = max; return false; } " onkeypress="if (this.value.length == 7) { return false; }" placeholder="Enter Price" @*required*@ />
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label class="control-label" style="color:white">.</label>
+                                                        <button type="button" class="btn btn-sm pull-left form-control"
+                                                                style="background-color:peru; color: white"
+                                                                ng-click="AddPartsButtonClicked()">
+                                                            Add Parts
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="form-group col-md-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                                            <thead>
+                                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                                    <th style="width:20px;">No.</th>
+                                                                    <th>Accessories</th>
+                                                                    <th>Serial No.</th>
+                                                                    <th style="width:100px; text-align:center">Price</th>
+                                                                    <th style="width: 100px; text-align: center;">Quantity</th>
+                                                                    <th style="width: 50px; text-align: center;">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="acc in AMCAccessories">
+                                                                    <td>{{$index+1}}</td>
+                                                                    <td>{{acc.ACCESSORY_NAME}}</td>
+                                                                    <td>{{acc.SERIAL_NO}}</td>
+                                                                    <td style="text-align: center">Rs.{{acc.AMC_AMOUNT}}/-</td>
+                                                                    <td style="text-align: center">{{acc.QUANTITY}}</td>
+                                                                    <td>
+                                                                        <a class="btn btn-xs btn-danger" ng-click="DeleteAMCAccessories(acc)">Remove</a>
+                                                                    </td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contract From:</label><label style="color:red;">*</label>
+                                                <input type="text" name="CONTRACT_FROM" ng-model="CONTRACT_FROM" id="CONTRACT_FROM" maxlength="10" class="form-control" placeholder="Enter Contract From date" />
+                                                <span ng-show="(AddPayment.CONTRACT_FROM.$invalid && (AddPayment.CONTRACT_FROM.$touched || AddPayment.CONTRACT_FROM.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CONTRACT_FROM.$error.required">Contract From date is required</span>
+                                                    @*<span class="error" ng-show="AddPayment.CONTRACT_FROM.$error.date">Invalid Contract From date</span>*@
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contract To:</label><label style="color:red;">*</label>
+                                                <input type="text" name="CONTRACT_TO" ng-model="CONTRACT_TO" id="CONTRACT_TO" maxlength="10" class="form-control" placeholder="Enter Contract To date" />
+                                                <span ng-show="(AddPayment.CONTRACT_TO.$invalid && (AddPayment.CONTRACT_TO.$touched || AddPayment.CONTRACT_TO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CONTRACT_TO.$error.required">Contract To date is required</span>
+                                                    @* <span class="error" ng-show="AddPayment.CONTRACT_TO.$error.date">Invalid Contract To date</span>*@
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PM Visit:</label><label style="color:red;">*</label>
+                                                <input type="text" name="PM_VISIT" class="form-control" ng-model="PM_VISIT" ng-pattern="/^[a-zA-Z0-9]*$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" placeholder="PM Visit" required />
+                                                <span ng-show="(AddPayment.PM_VISIT.$invalid && (AddPayment.PM_VISIT.$touched || AddPayment.PM_VISIT.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PM_VISIT.$error.required">PM Visit is required</span>
+                                                    <span class="error" ng-show="AddPayment.PM_VISIT.$error.pattern">Invalid PM Visit</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">CM Visit:</label>
+                                                <input type="text" name="CM_VISIT" class="form-control" ng-model="CM_VISIT" ng-pattern="/^[a-zA-Z0-9]*$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" placeholder="CM Visit" />
+                                                <span ng-show="(AddPayment.CM_VISIT.$invalid && (AddPayment.CM_VISIT.$touched || AddPayment.CM_VISIT.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CM_VISIT.$error.required">CM Visit is required</span>
+                                                    <span class="error" ng-show="AddPayment.CM_VISIT.$error.pattern">Invalid CM Visit</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Is Fees Including GST:</label><label style="color:red;">*</label>
+                                                <select name="IS_FEES_INC_GST" id="IS_FEES_INC_GST" class="form-control" ng-model="IS_FEES_INC_GST" required>
+                                                    <option ng-value="true">Yes</option>
+                                                    <option ng-value="false">No</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.IS_FEES_INC_GST.$invalid && (AddPayment.IS_FEES_INC_GST.$touched || AddPayment.IS_FEES_INC_GST.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.IS_FEES_INC_GST.$error.required">Is Fees Including GST is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Fees:</label><label style="color:red;">*</label>
+                                                <input type="number" name="FEES" id="FEES" class="form-control" step="0.01" ng-model="FEES" ng-change="CalAmtIncTaxReg()" min="0" @*ng-pattern="/^([1-9]\d*)$/"*@ onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" value="0" placeholder="Fees" required />
+                                                <span ng-show="(AddPayment.FEES.$invalid && (AddPayment.FEES.$touched || AddPayment.FEES.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FEES.$error.required">Fees is required</span>
+                                                    <span class="error" ng-show="AddPayment.FEES.$error.number">Invalid Fees</span>
+                                                    <span class="error" ng-show="AddPayment.FEES.$error.pattern">Invalid Fees</span>
+                                                </span>
+                                            </div>
+                                            <div ng-show="CUSTOMER_TYPE_NAME=='Medtronic'" class="form-group col-md-6">
+                                                <label class="control-label">GST %:</label><label style="color:red;">*</label>
+                                                <input type="number" id="GST_PERCENTAGE" name="GST_PERCENTAGE" class="form-control" ng-model="GST_PERCENTAGE" ng-change="CalAmtIncTax()" min="0" max="100" onkeyup="if (parseInt(this.value) < 0) { this.value = 0; return false; }if (parseInt(this.value) > max) { this.value = max; return false; }" placeholder="GST %" ng-required="CUSTOMER_TYPE_NAME=='Medtronic'" />
+                                                <span ng-show="(AddPayment.GST_PERCENTAGE.$invalid && (AddPayment.GST_PERCENTAGE.$touched || AddPayment.GST_PERCENTAGE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.GST_PERCENTAGE.$error.required">GST % is required</span>
+                                                    <span class="error" ng-show="AddPayment.GST_PERCENTAGE.$error.number">Invalid GST %</span>
+                                                    @* <span class="error" ng-show="AddPayment.PAID_FEES.$error.pattern">Invalid Paid Fees</span>*@
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Fees In. GST:</label>@*<label style="color:red;">*</label>*@
+                                                <input type="number" id="FEES_IN_GST" name="FEES_IN_GST" class="form-control" ng-model="FEES_IN_GST" step="0.01" @* min="0" ng-pattern="/^([1-9]\d*)$/" onkeyup="if (parseInt(this.value) < 0) { this.value = 0; return false; }" *@ readonly placeholder="Fees In GST" @*required*@ />
+                                                <span ng-show="(AddPayment.FEES_IN_GST.$invalid && (AddPayment.FEES_IN_GST.$touched || AddPayment.FEES_IN_GST.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FEES_IN_GST.$error.required">Fees In. GST is required</span>
+                                                    <span class="error" ng-show="AddPayment.FEES_IN_GST.$error.number">Invalid Fees In. GST</span>
+                                                    <span class="error" ng-show="AddPayment.FEES_IN_GST.$error.pattern">Invalid Fees In. GST</span>
+                                                </span>
+                                                <span ng-show="CUSTOMER_TYPE_NAME!='Medtronic'" style="color:red;">
+                                                    18% GST
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Paid Fees:</label>
+                                                <input type="number" id="PAID_FEES" name="PAID_FEES" class="form-control" ng-model="PAID_FEES" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if (parseInt(this.value) < 0) { this.value = 0; return false; }" @*else { checkAmount('FEES_IN_GST', 'PAID_FEES'); }" value="0"*@ placeholder="Paid Fees" />
+                                                <span ng-show="(AddPayment.PAID_FEES.$invalid && (AddPayment.PAID_FEES.$touched || AddPayment.PAID_FEES.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PAID_FEES.$error.required">Paid Fees is required</span>
+                                                    <span class="error" ng-show="AddPayment.PAID_FEES.$error.number">Invalid Paid Fees</span>
+                                                    @* <span class="error" ng-show="AddPayment.PAID_FEES.$error.pattern">Invalid Paid Fees</span>*@
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Fees Paid By:</label><!--<label--> @*ng-show="CUSTOMER_TYPE_NAME!='Medtronic'"*@ <!--style="color:red;">*</label>-->
+                                                <select name="FEES_PAID_BY" class="form-control" ng-model="FEES_PAID_BY" @*ng-required="CUSTOMER_TYPE_NAME!='Medtronic'"*@>
+                                                    <option value="">Select Fees Paid By</option>
+                                                    <option value="Cash"> Cash </option>
+                                                    <option value="Cheque"> Cheque </option>
+                                                    <option value="Online/RTGS"> Online/RTGS </option>
+                                                </select>
+                                                <span ng-show="(AddPayment.FEES_PAID_BY.$invalid && (AddPayment.FEES_PAID_BY.$touched || AddPayment.FEES_PAID_BY.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FEES_PAID_BY.$error.required">Fees Paid By is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Comments:</label>@*<label style="color:red;">*</label>*@
+                                                <textarea name="COMMENTS" class="form-control" ng-model="COMMENTS" placeholder="Enter Comments" @*required*@></textarea>
+                                                <span ng-show="(AddPayment.COMMENTS.$invalid && (AddPayment.COMMENTS.$touched || AddPayment.COMMENTS.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.COMMENTS.$error.required">Comments is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> AMC Status:</label><label style="color:red;">*</label>
+                                                <select name="AMC_CMC_STATUS" class="form-control" ng-model="AMC_CMC_STATUS" required>
+                                                    <option value="">Select AMC Status </option>
+                                                    <option value="Done"> Done </option>
+                                                    <option value="Pending"> Pending </option>
+                                                </select>
+                                                <span ng-show="(AddPayment.AMC_CMC_STATUS.$invalid && (AddPayment.AMC_CMC_STATUS.$touched || AddPayment.AMC_CMC_STATUS.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.AMC_CMC_STATUS.$error.required">AMC Status is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Company Bank Details(for printing on AMC):</label><label style="color:red;">*</label>
+                                                <select id="BANK_ID" class="form-control" name="BANK_ID" ng-model="BANK_ID"
+                                                        ng-options="Bank.B_ID as Bank.BANK_AND_ACCNO for Bank in CompanyBankList"
+                                                        ng-selected="Bank.B_ID == BANK_ID" required>
+                                                    <option value="">Select Bank Details</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.BANK_ID.$invalid && (AddPayment.BANK_ID.$touched || AddPayment.BANK_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.BANK_ID.$error.required">Company Bank Details are required</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="AMCDocument">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="PrintAMC" class="container">
+                                    <div class="wrapper" style="width: 100%; margin: 5px auto; font-size: 12px; font-family: 'Google Sans', 'Roboto', Arial, sans-serif">
+                                        <div class="container" style="border: 2px solid #000;">
+
+                                            <style>
+                                                .cover {
+                                                    object-fit: cover;
+                                                    width: 512px;
+                                                    height: 512px;
+                                                }
+
+                                                .page-header, .page-header-space {
+                                                    height: 200px;
+                                                }
+
+                                                .page {
+                                                    page-break-after: always;
+                                                    padding-bottom: 55px;
+                                                }
+
+                                                @@page {
+                                                    margin: 5mm
+                                                }
+
+                                                @@media print {
+                                                    .page-header {
+                                                        position: fixed;
+                                                        top: 0mm;
+                                                        width: 100%;
+                                                        height: 220px;
+                                                    }
+
+                                                    thead {
+                                                        display: table-header-group;
+                                                    }
+
+                                                    body {
+                                                        margin: 0;
+                                                    }
+                                                }
+                                            </style>
+
+                                            @*<div class="header-section" style=" padding:10px 10px 0;">
+            <div class="table">
+                <table style="width: 100%; border:2px solid #000;">
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <table style="margin-top:0px; width: 100%;">
+                <tbody>
+                    <tr align="center">
+                        <td style="font-size: 16px; color: #000;">
+                            <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
+                            <br /><br />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>*@
+
+                                            <div class="page-header" style="text-align: center">
+                                                <div class="header-section">
+                                                    <div class="table-responsive">
+                                                        <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td valign="top">
+                                                                        <div class="header-section" style="object-fit:contain;">
+                                                                            <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*<table style="margin-top:0px; width: 100%;">
+                                                <tbody>
+                                                    <tr align="center">
+                                                        <td style="font-size: 16px; color: #000;">
+                                                            <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
+                                                            <br /><br />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>*@
+
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="page-header-space"></div>
+                                                        </td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr align="center">
+                                                        <td style="font-size: 16px; color: #000;">
+                                                            <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
+                                                            <br /><br />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="quotation-heading-section" style="border-top: 2px solid #000; border-bottom: 2px solid #000; padding:10px 10px 0;">
+                                                                <p style="padding:0px 0 0;  margin: 0px; text-align: center; font-size:21px;  font-weight: 600; color: #000;">ANNUAL MAINTENANCE CONTRACT</p>
+                                                                <div class="col-lg-auto">
+                                                                    <table style="width:100%">
+                                                                        <tr style="width:100%">
+                                                                            <td>
+                                                                                <p style="padding:15px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000;">Date: {{CONTRACT_DETAILS.CONTRACT_DATE}} </p>
+                                                                            </td>
+                                                                            <td>
+                                                                                <p style="padding:15px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000; text-align:right;">Ref No: {{CONTRACT_DETAILS.CONTRACT_DOCUMENT_NO}}</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="address-section">
+                                                                <style>
+                                                                    .address-section {
+                                                                        padding: 10px;
+                                                                        background-color: #f5f5f5;
+                                                                        /* border: 1px solid #ccc;*/
+                                                                        border-radius: 5px;
+                                                                        margin-bottom: 10px;
+                                                                        font-family: Arial, sans-serif;
+                                                                    }
+
+                                                                        .address-section table {
+                                                                            width: 100%;
+                                                                            border-collapse: collapse;
+                                                                        }
+
+                                                                        .address-section td {
+                                                                            font-size: 16px;
+                                                                            color: #000;
+                                                                            padding: 10px;
+                                                                        }
+
+                                                                    .r {
+                                                                        display: flex;
+                                                                        width: 100%;
+                                                                    }
+
+                                                                    .t {
+                                                                        display: flex;
+                                                                        width: 100%;
+                                                                    }
+
+                                                                    .s {
+                                                                        flex: 1;
+                                                                        padding: 5px;
+                                                                    }
+
+                                                                    /* .col-md-6:first-child {
+                                                                        border-right: 1px solid #ccc;
+                                                                    }*/
+
+                                                                    .address-section strong {
+                                                                        display: inline-block;
+                                                                        margin-bottom: 5px;
+                                                                    }
+                                                                </style>
+                                                                <table>
+
+                                                                    <tbody>
+                                                                        <tr valign="top">
+                                                                            <td>
+                                                                                <table width="100%">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <div class="row r">
+                                                                                                    <div class="col-md-12 t">
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            Customer Details
+                                                                                                        </div>
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            Machine Details
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <div class="row r">
+                                                                                                    <div class="col-md-12 t">
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            <b> {{CONTRACT_DETAILS.CUSTOMER_NAME}}</b> <br>
+                                                                                                            <b>{{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}</b> <br />
+                                                                                                            <div style="padding-right:10px;">
+                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
+                                                                                                            </div>
+                                                                                                            <span ng-if="CONTRACT_DETAILS.EMAIL!=''"> <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}<br /></span>
+                                                                                                            <span ng-if="CONTRACT_DETAILS.CONTACT_NO!=''"><strong>Mobile No:</strong>{{CONTRACT_DETAILS.CONTACT_NO}}</span>
+                                                                                                            @*<strong ng-if="CONTRACT_DETAILS.EMAIL==''">Mobile No: </strong> {{CONTRACT_DETAILS.CONTACT_NO}}
+                                                                    <br />
+                                                                    <strong ng-if="CONTRACT_DETAILS.CONTACT_NO!='' && CONTRACT_DETAILS.EMAIL!=''">Mobile No: </strong> {{CONTRACT_DETAILS.CONTACT_NO}}*@
+                                                                                                        </div>
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            <strong>Product Name:</strong> {{CONTRACT_DETAILS.PRODUCT_NAME}}<br />
+                                                                                                            <strong>Model:</strong> {{CONTRACT_DETAILS.MODEL_NAME}}<br />
+                                                                                                            <strong>Make:</strong> {{CONTRACT_DETAILS.M_NAME}}<br />
+                                                                                                            <strong>Sr.No:</strong> {{CONTRACT_DETAILS.MODEL_SERIAL_NO}}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="annaul-maintenance">
+                                                                <table style="width: 100%; border-top: 2px solid #000; border-bottom: 2px solid #000;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Contract Type: </strong> Annual Maintenance Contract.</td>
+                                                                        </tr>
+                                                                        <tr id="Comment" style="display:none;">
+                                                                            <td style="font-size: 16px;"> <strong>Comment:</strong> {{CONTRACT_DETAILS.COMMENTS}}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Period of Contract From:</strong> {{CONTRACT_DETAILS.CONTRACT_FROM}} <b>To</b> {{CONTRACT_DETAILS.CONTRACT_TO}}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Yearly Visits:  PMS - {{CONTRACT_DETAILS.PM_VISIT}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  B/D - {{CONTRACT_DETAILS.CM_VISIT}}</strong> </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;">
+                                                                                <strong style="float: left">Contract Fees:</strong>
+                                                                                <span id="ContractFees1" style="display:none;">{{CONTRACT_DETAILS.FEES}}/-</span>
+                                                                                <span id="ContractFees2" style="display:none;">{{CONTRACT_DETAILS.FEES_IN_GST}}/- Including GST @('@') 18 %.</span>
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Contract Fees In Word :</strong> {{amtInwords}}.</td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;">
+                                                                                <strong>Payment Details (Paid By): </strong>
+
+                                                                                <span>
+                                                                                    <span ng-if="CASH === 'true'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                                                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <span ng-if="CASH === 'false'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <label>Cash</label>
+
+                                                                                    <span ng-if="CHEQUE === 'true'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                                                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <span ng-if="CHEQUE === 'false'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <label>Cheque</label>
+
+                                                                                    <span ng-if="ONLINE_RTGS === 'true'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                                                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <span ng-if="ONLINE_RTGS === 'false'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <label>Online/RTGS</label>
+                                                                                </span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/-  <strong>Balance Amount: </strong>{{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-  </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div class="request">
+                                                                    <table style="width: 100%;">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td> <strong>THE REQUEST</strong> </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="font-size:16px;">
+                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;Please accept My/Our {{CONTRACT_DETAILS.MODEL_NAME}} into your Annual Maintenance Contract. The machine is functional and in
+                                                                                    use. We have read and understood the full Terms & Conditions of the Contract as enshrined overleaf and in agreement of which
+                                                                                    I/We have signed and affixed My/Our stamp herein. 
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="text-align:right; padding-top:8rem;">
+                                                                                    <div style="text-align:right"></div>
+                                                                                    <strong>SEAL AND SIGNATURE OF CUSTOMER</strong>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="font-size: 16px;"> <strong>Sir / Madam</strong> </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;We are pleased to accept your m/c into our Annual Maintenance Contract AMC. Thank you for the trust reposed in us.</td>
+                                                                            </tr>
+                                                                            <tr style="page-break-inside:avoid;">
+                                                                                <td style="text-align:right;  padding-top:0rem;">
+                                                                                    <div style="text-align:right"></div>
+                                                                                    <div>
+                                                                                        <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                    </div>
+                                                                                    <div style="font-size:16px; padding: 10px 0; ">
+                                                                                        <strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div class="terms-ssection">
+                                                                <table style="width:100%; border-top: 2px solid #000; border-bottom:2px solid #000;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="font-size: 20px; font-weight: 600; border-bottom:2px solid #000; padding: 10px 0;">  Terms and Conditions:       </td>
+                                                                        </tr>
+                                                                        <tr>
+
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                                                <span style="font-weight: 600;">  1.</span> {{CmpDetailsList[0].COMPANY_NAME}} shall provide {{CONTRACT_DETAILS.PM_VISIT}} preventive maintenance services, during which we will charge labor fees to the client.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">  <span style="font-weight: 600;"> 2. </span> The cost of all spare parts and components shall be paid by the client.</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">  <span style="font-weight: 600;"> 3. </span>An Inspection Report and Estimate shall be provided before commencement of any repair work</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                                                <span style="font-weight: 600;"> 4.</span>All costs shall be paid by the client along with the work Order duly signed and stamped, in advance before the job is
+                                                                                undertaken.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 5. </span> a. The contract comes into effect if and only if the Contract Fee is realized by {{CmpDetailsList[0].COMPANY_NAME}} in total and in
+                                                                                advance and the machine is sealed by {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                                b. The contract and all obligations arising out of it shall be null and void if the seal so affixed is tampered with.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 6. </span> a. 1) A complaint shall be deemed to have been lodged by the client if and only if the complaint Reg. No. is taken down by
+                                                                                the client as given by {{CmpDetailsList[0].COMPANY_NAME}} upon receipt of complaint call.
+                                                                                2) All complaint shall in normal course be attended to within 48 hours, of registration of complaint subject to conditions
+                                                                                force Majeure. b. {{CmpDetailsList[0].COMPANY_NAME}} shall not be responsible for consequential losses arising out of delay in
+                                                                                attending to call and /or delay in repairs, non-availability of parts etc.
+                                                                                c. A complaint shall deemed to have been attended to if and only if the Call Attendance Sheet is prepared and submitted to
+                                                                                the Client for the signature and stamp immediately on entry at the Clients premises and the Client signs and stamps it. A
+                                                                                work shall be carried our only after such signature
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 7. </span> {{CmpDetailsList[0].COMPANY_NAME}}. a) Provide official acknowledgment for the machine and/or any part there of which will have to
+                                                                                be taken to the service centre for necessary repairs. b) {{CmpDetailsList[0].COMPANY_NAME}} not be responsible if the client does not
+                                                                                procure the acknowledgment in the official format duly signed and stamped by the attending personnel of {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                                c) Costs involved in taking material for repairs to service centre shall be borne by client.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; "> <span style="font-weight: 600;"> 8. </span> Any damage due to natural disaster will not cover under contract. (eg. Earth Quake, Fire, Flood, Theft etc.)</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 9. </span> The Contract may be terminated, within the contract period, the services so far rendered by {{CmpDetailsList[0].COMPANY_NAME}}
+                                                                                shall be audited and all expenses deducted from the Contract Fee and balance amount if any shall be paid bank to the client.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 10. </span> The contract is for one machine of one particular owner, located at on particular owner, located at one particular place, and
+                                                                                not transferable without the written consent of {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 11. </span> Maximum liability of {{CmpDetailsList[0].COMPANY_NAME}}:
+                                                                                a. The maximum liability imposed and thrust upon {{CmpDetailsList[0].COMPANY_NAME}} under this Contract shall be limited only to
+                                                                                the amount of contract fee paid to and realized by {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                                b. 1) Should there be faults created by faulty workmanship and / or accidents caused as a direct result of the technical
+                                                                                personnel working of the machine, {{CmpDetailsList[0].COMPANY_NAME}} shall rectify that fault free of all cost to the client.
+                                                                                2) The Work Process Sheet shall at all times be the source of identification of cause of fault and proof conclusive as to the
+                                                                                causes of such incidence.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 12. </span> All disputes arising out of this contract shall at the first instance be settled through negotiation failing which it shall be stetted
+                                                                                in a court of law at Nasik only.
+                                                                            </td>
+                                                                        </tr>
+
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div>
+                                                                <table style="width: 100%; padding: 20px 0; page-break-inside: avoid;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align:center; font-size:18px;  font-weight: 600; color: #000;"><strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding-top: 10px;">
+                                                                                Not with standing all the terms & conditions framed in this contract and at once without prejudice to them it is to deep the
+                                                                                machine in proper working condition and with the barest minimum of downtime that the client has entered into this contract
+                                                                                Medico Imaging Equipment
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding-top: 10px;">
+                                                                                There {{CmpDetailsList[0].COMPANY_NAME}} undertake to fulfill its obligation to meet the aforementioned requirement but within the
+                                                                                framework of the existing laws and regulations of this nation and constraints created by the very machine taken into contract-by
+                                                                                virtue of its manufacturer / supplier’s policies and practices.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding-top: 10px;">
+                                                                                {{CmpDetailsList[0].COMPANY_NAME}} now guarantees to reimburse the contract fee to the client deficiency of service if any when the
+                                                                                client points it out in clear and definite terms, and in writing.
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div>
+                                                                <table style="width: 100%; border-top: 2px solid #000; padding-top: 0rem; page-break-inside: avoid;">
+                                                                    <tbody>
+
+                                                                        <tr>
+                                                                            <td style="text-align:left;  padding-top:0rem;">
+                                                                                <div style="text-align:left"></div>
+                                                                                <div>
+                                                                                    @*<img src="~/Images/signture-stamp-img.jpg" style=" height: 100%; width:300px; max-width: 100%;" />*@
+                                                                                    <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                </div>
+
+                                                                            </td>
+                                                                            <td style="text-align:right;  padding-top:0rem;">
+                                                                                <div style="text-align:right"></div>
+                                                                                <div>
+                                                                                    &nbsp;
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align:left;  padding-top:0rem;">
+
+
+                                                                                <div style="font-size:16px; padding: 10px 0; ">
+                                                                                    <strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td style="text-align:right;  padding-top:0rem;">
+
+                                                                                <div>
+                                                                                    <strong>SEAL AND SIGNATURE OF CUSTOMER</strong>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group col-md-12">
+                                        <div class="noprint">
+                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print AMC" ng-click="Print('PrintAMC')" />
+                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="CMCDocument">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="PrintCMC" class="container">
+                                    <div class="wrapper" style="width: 100%; margin: 0 auto; font-size: 12px; font-family: 'Google Sans', 'Roboto', Arial, sans-serif">
+                                        <div class="container" style="border: 2px solid #000;">
+
+                                            <style>
+                                                .cover {
+                                                    object-fit: cover;
+                                                    width: 302px;
+                                                    height: 512px;
+                                                }
+
+                                                .page-header, .page-header-space {
+                                                    height: 210px;
+                                                }
+
+                                                .page {
+                                                    page-break-after: always;
+                                                    padding-bottom: 55px;
+                                                }
+
+                                                @@page {
+                                                    margin: 5mm
+                                                }
+
+                                                @@media print {
+                                                    .page-header {
+                                                        position: fixed;
+                                                        top: 0mm;
+                                                        width: 100%;
+                                                        height: 220px;
+                                                    }
+
+                                                    thead {
+                                                        display: table-header-group;
+                                                    }
+
+                                                    body {
+                                                        margin: 0;
+                                                    }
+                                                }
+                                            </style>
+
+                                            <div class="page-header" style="text-align: center">
+                                                <div class="header-section">
+                                                    <div class="table-responsive">
+                                                        <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td valign="top">
+                                                                        <div class="header-section" style="object-fit:contain;">
+                                                                            <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--<div class="header-section" style=" padding:10px 10px 0;">
+        <div class="table">
+            <table style="width: 100%; border:2px solid #000;">
+                <tbody>
+                    <tr>
+
+                        <td>
+                            <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>-->
+                                            @*<table style="margin-top:0px; width: 100%;">
+            <tbody>
+                <tr align="center">
+                    <td style="font-size: 16px; color: #000;">
+                        <span style="font-weight: 600; font-size:18px;">Admi. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
+                        <br /><br />
+                    </td>
+                </tr>
+            </tbody>
+        </table>*@
+                                            <!--</div>-->
+
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="page-header-space"></div>
+                                                        </td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr align="center">
+                                                        <td style="font-size: 16px; color: #000;">
+                                                            <span style="font-weight: 600; font-size:18px;">Admi. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
+                                                            <br /><br />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="quotation-heading-section" style="border-top: 2px solid #000; border-bottom: 2px solid #000; padding:10px 10px 0;">
+                                                                <p style="padding:0px 0 0;  margin: 0px; text-align: center; font-size:21px;  font-weight: 600; color: #000;">COMPREHENSIVE MAINTENANCE CONTRACT</p>
+                                                                <div class="col-lg-auto">
+                                                                    <table style="width:100%">
+                                                                        <tr style="width:100%">
+                                                                            <td>
+                                                                                <p style="padding:15px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000;">Date: {{CONTRACT_DETAILS.CONTRACT_DATE}} </p>
+                                                                            </td>
+                                                                            <td>
+                                                                                <p style="padding:15px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000; text-align:right;">Ref No: {{CONTRACT_DETAILS.CONTRACT_DOCUMENT_NO}}</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="address-section">
+                                                                <style>
+                                                                    .address-section {
+                                                                        padding: 10px;
+                                                                        background-color: #f5f5f5;
+                                                                        border-radius: 5px;
+                                                                        margin-bottom: 10px;
+                                                                        font-family: Arial, sans-serif;
+                                                                    }
+
+                                                                        .address-section table {
+                                                                            width: 100%;
+                                                                            border-collapse: collapse;
+                                                                        }
+
+                                                                        .address-section td {
+                                                                            font-size: 16px;
+                                                                            color: #000;
+                                                                            padding: 10px;
+                                                                        }
+
+                                                                    .r {
+                                                                        display: flex;
+                                                                        width: 100%;
+                                                                    }
+
+                                                                    .t {
+                                                                        display: flex;
+                                                                        width: 100%;
+                                                                    }
+
+                                                                    .s {
+                                                                        flex: 1;
+                                                                        padding: 5px;
+                                                                    }
+
+                                                                    .address-section strong {
+                                                                        display: inline-block;
+                                                                        margin-bottom: 5px;
+                                                                    }
+                                                                </style>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr valign="top">
+                                                                            <td>
+                                                                                <table width="100%">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <div class="row r">
+                                                                                                    <div class="col-md-12 t">
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            Customer Details
+                                                                                                        </div>
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            Machine Details
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <div class="row r">
+                                                                                                    <div class="col-md-12 t">
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            <b>{{CONTRACT_DETAILS.CUSTOMER_NAME}}</b> <br>
+                                                                                                            <b>{{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}</b> <br />
+                                                                                                            <div style="padding-right:10px;">
+                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
+                                                                                                            </div>
+                                                                                                            <span ng-if="CONTRACT_DETAILS.EMAIL">
+                                                                                                                <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}<br />
+                                                                                                            </span>
+                                                                                                            <span ng-if="CONTRACT_DETAILS.CONTACT_NO">
+                                                                                                                <strong>Mobile No:</strong> {{CONTRACT_DETAILS.CONTACT_NO}}
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                        <div class="col-md-6 s">
+                                                                                                            <strong>Product Name:</strong> {{CONTRACT_DETAILS.PRODUCT_NAME}}<br />
+                                                                                                            <strong>Model:</strong> {{CONTRACT_DETAILS.MODEL_NAME}}<br />
+                                                                                                            <strong>Make:</strong> {{CONTRACT_DETAILS.M_NAME}}<br />
+                                                                                                            <strong>Sr.No:</strong> {{CONTRACT_DETAILS.MODEL_SERIAL_NO}}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                            <div class="annaul-maintenance">
+                                                                <table style="width: 100%; border-top: 2px solid #000; border-bottom: 2px solid #000;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;">
+                                                                                <strong>Contract Type: </strong> Comprehensive Maintenance Contract <span ng-if="CONTRACT_DETAILS.CONTRACT_TYPE_DETAILS.length>0">({{CONTRACT_DETAILS.CONTRACT_TYPE_DETAILS}})</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr id="Comment1" style="display:none;">
+                                                                            <td style="font-size: 16px;"> <strong>Comment:</strong> {{CONTRACT_DETAILS.COMMENTS}}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Period of Contract From:</strong> {{CONTRACT_DETAILS.CONTRACT_FROM}} <b>To</b> {{CONTRACT_DETAILS.CONTRACT_TO}}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Yearly Visits: PMS - {{CONTRACT_DETAILS.PM_VISIT}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B/D - {{CONTRACT_DETAILS.CM_VISIT}}</strong>  </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;">
+                                                                                <strong style="float: left">Contract Fees:</strong>
+                                                                                <span id="ContractFees3" style="display:none;">{{CONTRACT_DETAILS.FEES}}/- </span>
+                                                                                <span id="ContractFees4" style="display:none;">{{CONTRACT_DETAILS.FEES_IN_GST}}/- Including GST @('@') 18 %.</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;"> <strong>Contract Fees In Word:</strong> {{amtInwords}}.</td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td style="font-size: 16px;">
+                                                                                <strong>Payment Details (Paid By): </strong>
+
+                                                                                <span>
+                                                                                    <span ng-if="CASH2 === 'true'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                                                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <span ng-if="CASH2 === 'false'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <label>Cash</label>
+
+                                                                                    <span ng-if="CHEQUE2 === 'true'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                                                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <span ng-if="CHEQUE2 === 'false'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <label>Cheque</label>
+
+                                                                                    <span ng-if="ONLINE_RTGS2 === 'true'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                                                                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <span ng-if="ONLINE_RTGS2 === 'false'">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    <label>Online/RTGS</label>
+                                                                                </span>
+                                                                                @*<br />*@
+                                                                                <p>
+                                                                                    <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/-  <strong>Balance Amount: </strong>{{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-
+                                                                                </p>
+
+                                                                            </td>
+                                                                        </tr>
+                                                                        @*<tr>
+                                        <td style="font-size: 16px;">
+                                        <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/-  <strong>Balance Amount: </strong>{{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-
+                                        </td>
+                                    </tr>*@
+
+                                                                    </tbody>
+                                                                </table>
+
+                                                                <div class="request">
+                                                                    <table style="width: 100%;">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td> <strong style="font-size:15px;">THE REQUEST</strong> </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="font-size:16px;">
+                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;Please accept My/Our  {{CONTRACT_DETAILS.MODEL_NAME}} into your Comprehensive Maintenance Contract. The machine is functional
+                                                                                    and in use. We have read and understood the full Terms & Conditions of the Contract as enshrined overleaf and in
+                                                                                    agreement of which I/We have signed and affixed My/Our stamp herein. 
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="text-align:right; padding-top:8rem;">
+                                                                                    <div style="text-align:right"></div>
+                                                                                    <strong>SEAL AND SIGNATURE OF CUSTOMER</strong>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="font-size: 16px;"> <strong>Sir / Madam,</strong> </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="font-size: 16px;">
+                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;We are pleased to accept your m/c into our Comprehensive Maintenance Contract CMC. Thank you for the trust
+                                                                                    reposed in us.
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="page-break-inside:avoid;">
+                                                                                <td style="text-align:right;  padding-top:0rem;">
+                                                                                    <div style="text-align:right"></div>
+                                                                                    <div>
+                                                                                        <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                    </div>
+                                                                                    <div style="font-size:16px; padding: 10px 0; ">
+                                                                                        <strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="terms-ssection">
+                                                                <table style="width:100%; border-top: 2px solid #000; border-bottom:2px solid #000; ">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="font-size: 20px; font-weight: 600; border-bottom:2px solid #000; padding: 10px 0;">  TERMS & CONDITIONS :  </td>
+                                                                        </tr>
+                                                                        <tr>
+
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                                                <span style="font-weight: 600;"> 1.</span> {{CmpDetailsList[0].COMPANY_NAME}} shall provide {{CONTRACT_DETAILS.PM_VISIT}} preventive maintenance services, for which no charges shall be incurred by the client for either service or breakdown.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">  <span style="font-weight: 600;"> 2. </span> Costs of all spares, replacement parts and components are to be paid by the {{CmpDetailsList[0].COMPANY_NAME}}.</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">  <span style="font-weight: 600;"> 3. </span>An Inspection Report and Estimate shall be provided before commencement of any repair work</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                                                <span style="font-weight: 600;"> 4.</span>All costs shall be paid by the client along with the work Order duly signed and stamped, in advance before the job is
+                                                                                undertaken.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 5. </span> a. The contract comes into effect if and only if the Contract Fee is realized by {{CmpDetailsList[0].COMPANY_NAME}} in total and in
+                                                                                advance and the machine is sealed by {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                                b. The contract and all obligations arising out of it shall be null and void if the seal so affixed is tampered with.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 6. </span> a. 1) A complaint shall be deemed to have been lodged by the client if and only if the complaint Reg. No. is taken down by
+                                                                                the client as given by {{CmpDetailsList[0].COMPANY_NAME}} upon receipt of complaint call.
+                                                                                2) All complaint shall in normal course be attended to within 48 hours, of registration of complaint subject to conditions
+                                                                                force Majeure. b. {{CmpDetailsList[0].COMPANY_NAME}} shall not be responsible for consequential losses arising out of delay in
+                                                                                attending to call and /or delay in repairs, non-availability of parts etc.
+                                                                                c. A complaint shall deemed to have been attended to if and only if the Call Attendance Sheet is prepared and submitted to
+                                                                                the Client for the signature and stamp immediately on entry at the Clients premises and the Client signs and stamps it. A
+                                                                                work shall be carried our only after such signature
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 7. </span> {{CmpDetailsList[0].COMPANY_NAME}}. a) Provide official acknowledgment for the machine and/or any part there of which will have to
+                                                                                be taken to the service centre for necessary repairs. b) {{CmpDetailsList[0].COMPANY_NAME}} not be responsible if the client does not
+                                                                                procure the acknowledgment in the official format duly signed and stamped by the attending personnel of {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                                c) Costs involved in taking material for repairs to service centre shall be borne by {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; "> <span style="font-weight: 600;"> 8. </span> Any damage due to natural disaster will not cover under contract. (eg. Earth Quake, Fire, Flood, Theft etc.)</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 9. </span> The Contract may be terminated, within the contract period, the services so far rendered by {{CmpDetailsList[0].COMPANY_NAME}}
+                                                                                shall be audited and all expenses deducted from the Contract Fee and balance amount if any shall be paid bank to the client.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 10. </span> The contract is for one machine of one particular owner, located at on particular owner, located at one particular place, and
+                                                                                not transferable without the written consent of {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 11. </span> Maximum liability of {{CmpDetailsList[0].COMPANY_NAME}}:
+                                                                                a. The maximum liability imposed and thrust upon {{CmpDetailsList[0].COMPANY_NAME}} under this Contract shall be limited only to
+                                                                                the amount of contract fee paid to and realized by {{CmpDetailsList[0].COMPANY_NAME}}.
+                                                                                b. 1) Should there be faults created by faulty workmanship and / or accidents caused as a direct result of the technical
+                                                                                personnel working of the machine, {{CmpDetailsList[0].COMPANY_NAME}} shall rectify that fault free of all cost to the client.
+                                                                                2) The Work Process Sheet shall at all times be the source of identification of cause of fault and proof conclusive as to the
+                                                                                causes of such incidence.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding: 10px 0; ">
+                                                                                <span style="font-weight: 600;"> 12. </span> All disputes arising out of this contract shall at the first instance be settled through negotiation failing which it shall be stetted
+                                                                                in a court of law at Nasik only.
+                                                                            </td>
+                                                                        </tr>
+
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div>
+                                                                <table style="width: 100%; padding: 20px 0; page-break-inside: avoid;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align:center; font-size:18px;  font-weight: 600; color: #000;"><strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding-top: 10px;">
+                                                                                Not with standing all the terms & conditions framed in this contract and at once without prejudice to them it is to deep the
+                                                                                machine in proper working condition and with the barest minimum of downtime that the client has entered into this contract
+                                                                                Medico Imaging Equipment
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding-top: 10px;">
+                                                                                There {{CmpDetailsList[0].COMPANY_NAME}} undertake to fulfill its obligation to meet the aforementioned requirement but within the
+                                                                                framework of the existing laws and regulations of this nation and constraints created by the very machine taken into contract-by
+                                                                                virtue of its manufacturer / supplier’s policies and practices.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="font-size:16px; padding-top: 10px;">
+                                                                                {{CmpDetailsList[0].COMPANY_NAME}} now guarantees to reimburse the contract fee to the client deficiency of service if any when the
+                                                                                client points it out in clear and definite terms, and in writing.
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div>
+                                                                <table style="width: 100%; border-top: 2px solid #000; padding-top: 0rem; page-break-inside: avoid;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align:left;  padding-top:0rem;">
+                                                                                <div style="text-align:left"></div>
+                                                                                <div>
+                                                                                    <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                </div>
+
+                                                                            </td>
+                                                                            <td style="text-align:right;  padding-top:0rem;">
+                                                                                <div style="text-align:right"></div>
+                                                                                <div>
+                                                                                    &nbsp;
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="text-align:left;  padding-top:0rem;">
+
+
+                                                                                <div style="font-size:16px; padding: 10px 0; ">
+                                                                                    <strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td style="text-align:right;  padding-top:0rem;">
+
+                                                                                <div>
+                                                                                    <strong>SEAL AND SIGNATURE OF CUSTOMER</strong>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group col-md-12">
+                                        <div class="noprint">
+                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print CMC" ng-click="Print('PrintCMC')" />
+                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="AMCMedtronicDocument">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="PrintMEDAMC" class="container">
+                                    <div style="font-family: 'Roboto', sans-serif;">
+                                        <div class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                            <div class="container" style="border: 2px solid #000;">
+
+                                                <div class="header-section" style=" padding:10px 10px 0;">
+                                                    <div class="table-responsive">
+                                                        <table style="width: 100%;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="address-section">
+                                                    <table style="padding: 10px 10px; width: 100%; page-break-inside: avoid;">
+                                                        <tbody>
+                                                            <tr valign="top">
+                                                                <td style="font-size: 16px; color: #000; ">
+                                                                    <table width="100%">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td colspan="2"><div style="text-align: right; float:right;"><strong>Date:</strong> {{CONTRACT_DETAILS.CONTRACT_DATE}}</div></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="2"> <div style="text-align: right; float:right;"><strong>Quot.No: </strong> {{CONTRACT_DETAILS.CONTRACT_DOCUMENT_NO}}</div> </td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td style="text-align: left; font-weight: 600;"></td>
+                                                                                <td style="text-align: right;"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="1" style="text-align: left; font-weight: 600; font-size: 20px; margin-top: 20px;">To,</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="1" style="text-align: left; font-weight: 600; width:30%">
+                                                                                    {{CONTRACT_DETAILS.CUSTOMER_NAME}} <br>
+                                                                                    {{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}<br>
+                                                                                    {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="description-section" style="padding:5px 10px 0;">
+                                                    <table width="100%">
+                                                        <tbody>
+                                                            <tr align="left">
+                                                                <td style="font-size: 16px; color: #000;">
+                                                                    <span style="font-weight: 600; font-size:18px; margin-left: 20px;">Sub: - AMC Quotation for {{CONTRACT_DETAILS.MODEL_NAME}}.</span>
+
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <div style="font-weight:600; color:#000; font-size:18px; margin-top:50px; margin-bottom:0px;">Dear Sir,</div>
+                                                                    <div style="color:#000; font-size:16px; line-height:30px; margin: 30px 0;">Please find below AMC Quotation for {{CONTRACT_DETAILS.MODEL_NAME}}.</div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="description-section" style="padding:5px 30px 0;">
+                                                    <table width="100%" style="border: 1px solid #000; border-collapse: collapse; page-break-inside: avoid;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">S.N</th>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">Description</th>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">Serial No</th>
+                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">AMC Amount</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="acc in AMCAccessories">
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">{{$index+1}}</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">{{acc.ACCESSORY_NAME}}</td>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">{{acc.SERIAL_NO}}</td>
+                                                                <td ng-if="$index+1==1" rowspan="{{AMCAccessories.length}}" style="border: 2px solid #000; font-size: 18px; padding: 5px 10px; text-align: right;">{{CONTRACT_DETAILS.FEES}}/-</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;"></td>
+                                                                <td colspan="2" style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: right;">GST {{CONTRACT_DETAILS.GST_PERCENTAGE}}%</td>
+                                                                <td style="border: 2px solid #000; font-size: 18px; padding: 5px 10px; text-align: right;">{{CONTRACT_DETAILS.FEES * (CONTRACT_DETAILS.GST_PERCENTAGE)/100}}/-</td>
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;"></td>
+                                                                <td colspan="2" style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: right;">Grand Total</td>
+                                                                <td style="border: 2px solid #000; font-size: 18px; padding: 5px 10px; text-align: right;">{{CONTRACT_DETAILS.FEES_IN_GST}}/-</td>
+
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                    <p style="font-size:18px; color: #000; font-weight: 600;">
+                                                        The total price for the Annual Maintenance Contract will be Rs. {{CONTRACT_DETAILS.FEES_IN_GST}}/-(Rupees
+                                                        {{amtInwords}}) Inclusive of GST.
+                                                    </p>
+                                                </div>
+
+                                                <div style="page-break-before:always">&nbsp;</div>
+
+                                                <div style="clear:both; display:block;"></div>
+                                                <div class="header-section" style=" padding:10px 10px 0;">
+                                                    <div class="table-responsive">
+                                                        <table style="width: 100%; page-break-inside: avoid;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                                <div style="page-break-inside: avoid;">
+                                                    <h3 style="font-size:18px; font-weight: 600; padding: 5px 10px;"> Terms & Conditions:</h3>
+                                                    <div style="padding:0 5px 10px;">
+                                                        <ol>
+                                                            <li style="font-size:18px; color: #000; font-weight:normal; line-height: 24px; padding-left: 20px;">Annual Maintenance Period will be - From : {{CONTRACT_DETAILS.CONTRACT_FROM}} To: {{CONTRACT_DETAILS.CONTRACT_TO}} </li>
+                                                            <li style="font-size:18px; color: #000; font-weight: normal; line-height: 24px; padding-left: 20px;">{{CONTRACT_DETAILS.PM_VISIT}} Preventive maintenance will be carried out in a year.</li>
+                                                            <li style="font-size:18px; color: #000; font-weight: normal; line-height: 24px; padding-left: 20px;">During AMC Period {{CmpDetailsList[0].COMPANY_NAME}} will attain {{CONTRACT_DETAILS.CM_VISIT}} number of breakdown calls.</li>
+                                                            <li style="font-size:18px; color: #000; font-weight: normal; line-height: 24px; padding-left: 20px;">
+                                                                If equipment is faulty and taken for repairs, India Medtronic Pvt. Ltd will provide standby
+                                                                equipment within 24 hours.
+                                                            </li>
+                                                            <li style="font-size:18px; color: #000; font-weight: normal; line-height: 24px; padding-left: 20px;">100% payment as advance against acceptance of the Annual Maintenance Contract.</li>
+                                                        </ol>
+                                                    </div>
+                                                    <div style="padding:5px 10px;">
+                                                        <table style="width: 100%; border-collapse: collapse; page-break-inside:avoid;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="font-size: 18px; padding:5px 10px; font-weight:bold; text-align: left;">Bank Details:</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>{{CmpDetailsList[0].ACC_HOLDER_NAME}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>{{CmpDetailsList[0].BANK_NAME}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>{{CmpDetailsList[0].BRANCH_NAME}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>{{CmpDetailsList[0].ACC_NO}}</strong></p>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>{{CmpDetailsList[0].IFSC_CODE}}</strong></p>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; margin-top:20px; font-weight: bold; ">
+                                                                            For {{CmpDetailsList[0].COMPANY_NAME}}<br>
+                                                                            <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="float:left;padding-right:0px;height:100%; width:250px; padding-top:0px;" />
+                                                                        </p>
+
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; font-weight: bold;">Authorized Signatory</p>
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group col-md-12">
+                                        <div class="noprint">
+                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print AMC" ng-click="Print('PrintMEDAMC')" />
+                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts
+{
+    <script src="~/AngularJs/AMCmaster.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $("#CONTRACT_FROM").datepicker({ changeMonth: true, changeYear: true, /*maxDate: 0 */ });
+            $("#CONTRACT_FROM").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#CONTRACT_FROM").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#CONTRACT_FROM").datepicker("option", "showMonthAfterYear", false);
+            $("#CONTRACT_FROM").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#CONTRACT_TO").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0 */ });
+            $("#CONTRACT_TO").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#CONTRACT_TO").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#CONTRACT_TO").datepicker("option", "showMonthAfterYear", false);
+            $("#CONTRACT_TO").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#CONTRACT_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0 */ });
+            $("#CONTRACT_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#CONTRACT_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#CONTRACT_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#CONTRACT_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+}

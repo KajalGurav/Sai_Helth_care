@@ -1,0 +1,386 @@
+﻿
+@{
+    ViewBag.Title = "ServiceCallAddUpdate";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+
+    #PAN {
+        text-transform: uppercase;
+    }
+
+    #GSTN {
+        text-transform: uppercase;
+    }
+
+    #TIN {
+        text-transform: uppercase;
+    }
+</style>
+<style>
+    .options-container {
+        z-index: 1000;
+        overflow: scroll;
+        position: absolute;
+        height: 150px;
+        background: #fff;
+        width: 550px;
+    }
+
+    li.ng-binding.ng-scope {
+        cursor: pointer;
+    }
+
+    .options-container {
+        z-index: 1000;
+        overflow: scroll;
+        position: absolute;
+        max-height: 150px;
+        background: #fff;
+        height: auto;
+        /*width: auto;*/
+        box-shadow: 1px 1px 4px 0px;
+    }
+</style>
+
+<script>
+    function validate(check) {
+        console.log(check);
+        var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
+        //var name = document.getElementById(id).value;
+        var name = check.value;
+        if (!regName.test(name)) {
+            alert('Please enter your full name (first & last name eg. John Doe).');
+            document.getElementById('name').focus();
+            return false;
+        } else {
+            alert('Valid name given.');
+            return true;
+        }
+    }
+</script>
+
+<section ng-controller="CustomerServiceCallCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h4 class="modal-title"><b>{{Action}} Service Call </b></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+
+                        <form name="AddServiceCall" ng-submit="AddServiceCall(AddServiceCall.$valid)" data-toggle="validator" role="form">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Service Call Number :</label>@*<label style="color:red;">*</label>*@
+                                    <input type="text" id="SERVICE_CALL_NUMBER" ng-model="SERVICE_CALL_NUMBER" name="SERVICE_CALL_NUMBER" class="form-control" readonly placeholder="Service Call Number" />
+
+                                </div>
+
+                                <div class="form-group col-md-6" ng-show="Admin_Action=='Update Service Call'">
+                                    <label class="control-label">Select Customer Name:</label><label style="color:red;">*</label>
+                                    <select id="CUSTOMER_ID" class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID"
+                                            ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in CustomerList"
+                                            ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-change="OnCustomerChange()" required ng-disabled="IS_DISABLE">
+                                        <option value="">Select Customer Name</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.CUSTOMER_ID.$invalid && ( AddServiceCall.CUSTOMER_ID.$touched || AddServiceCall.CUSTOMER_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.CUSTOMER_ID.$error.required">
+                                            Customer Name is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-6" ng-show="Admin_Action=='Add Service Call'">
+                                    <label class="control-label">Select Customer Name:</label><label style="color:red;">*</label>
+                                    <input type="text" placeholder="Search Customer Name" class="form-control"
+                                           autoComplete="on" ng-model="CUSTOMER_NAME" ng-focus="showOptions = true" />
+                                    <div class="options-container" ng-show="showOptions">
+                                        <ul class="options-list">
+                                            <li ng-repeat="Customer in CustomerList | filter:CUSTOMER_NAME |filter:search:strict" ng-click="selectaccs(Customer)">
+                                                {{Customer.CUSTOMER_NAME}}
+                                                <input type="hidden" ng-model="Customer.Customer_ID" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Select Firm Name:</label><label style="color:red;">*</label>
+                                    <select id="F_ID" class="form-control" name="F_ID" ng-model="F_ID"
+                                            ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in CustomerFirmList"
+                                            ng-selected="Customer.F_ID == F_ID" required>
+                                        <option value="">Select Firm Name</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.FIRM_ID.$invalid && ( AddServiceCall.FIRM_ID.$touched || AddServiceCall.FIRM_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.FIRM_ID.$error.required">
+                                            Firm Name is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Address:</label><label style="color:red;">*</label>
+                                    <textarea class="form-control" id="ADDRESS" ng-model="ADDRESS" placeholder="Enter Address" required></textarea>
+                                    <span ng-show="(AddServiceCall.ADDRESS.$invalid && ( AddServiceCall.ADDRESS.$touched || AddServiceCall.ADDRESS.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.ADDRESS.$error.required">
+                                            Address is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Call Assign Date:</label><label style="color:red;">*</label>
+                                    <input type="text" id="CALL_ASSIGN_DATE" ng-model="CALL_ASSIGN_DATE" class="form-control" placeholder="Call Assign Date." @*required*@ />
+                                    <span ng-show="(AddServiceCall.CALL_ASSIGN_DATE.$invalid && ( AddServiceCall.CALL_ASSIGN_DATE.$dirty || AddServiceCall.CALL_ASSIGN_DATE.$touched))">
+                                        <span class="error" ng-show="AddServiceCall.CALL_ASSIGN_DATE.$error.required">
+                                            Call Assign Date is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Schedule Call Date:</label><label style="color:red;">*</label>
+                                    <input type="text" id="SCHEDULE_CALL_DATE" ng-model="SCHEDULE_CALL_DATE" class="form-control" placeholder="Schedule Call Date." @*required*@ />
+                                    <span ng-show="(AddServiceCall.SCHEDULE_CALL_DATE.$invalid && (AddServiceCall.SCHEDULE_CALL_DATE.$dirty|| AddServiceCall.SCHEDULE_CALL_DATE.$touched))">
+                                        <span class="error" ng-show="AddServiceCall.SCHEDULE_CALL_DATE.$error.required">
+                                            Schedule Call Date is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div ng-hide="CUSTOMER_TYPE==='Medtronic'" class="form-group col-md-6">
+                                    <label class="control-label"> Select Category: </label><label style="color:red;">*</label>
+                                    <select ng-model="CAT_ID" id="CAT_ID" name="CAT_ID" class="form-control"
+                                            ng-options="cat.CAT_ID as cat.CAT_NAME for cat in CategoryList"
+                                            ng-selected="cat.CAT_ID == CAT_ID"
+                                            ng-change="OnCategoryChange()"
+                                            ng-required="CUSTOMER_TYPE!=='Medtronic'">
+                                        <option value="">Select Category</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.CAT_ID.$invalid && ( AddServiceCall.CAT_ID.$touched || AddServiceCall.CAT_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.CAT_ID.$error.required">
+                                            Category is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div ng-hide="CUSTOMER_TYPE==='Medtronic'" class="form-group col-md-6">
+                                    <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                    <select ng-model="M_ID" id="M_ID" name="M_ID" class="form-control"
+                                            ng-options="mfg.M_ID as mfg.M_NAME for mfg in ManufacturerList"
+                                            ng-selected="mfg.M_ID == M_ID"
+                                            ng-change="OnManufacturerChange()"
+                                            ng-required="CUSTOMER_TYPE!=='Medtronic'">
+                                        <option value="">Select Manufacturer</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.M_ID.$invalid && ( AddServiceCall.M_ID.$touched || AddServiceCall.M_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.M_ID.$error.required">
+                                            Manufacturer is required
+                                        </span>
+                                    </span>
+                                </div>
+
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Select Product Name/Model:</label><label style="color:red;">*</label>
+                                    <select ng-model="P_ID" id="P_ID" name="P_ID" class="form-control"
+                                            ng-options="prod.P_ID as prod.PRODUCT_NAME for prod in ProductList"
+                                            ng-selected="prod.P_ID == P_ID" ng-change="OnProductChange()" required>
+                                        <option value="">Select Product Name/Model</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.P_ID.$invalid && ( AddServiceCall.P_ID.$touched || AddServiceCall.P_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.P_ID.$error.required">
+                                            Product Name/Model is required
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div ng-hide="CUSTOMER_TYPE!=='Medtronic'" class="form-group col-md-6">
+                                    <label class="control-label">Service For:</label>
+                                    <select name="Service_For" class="form-control" ng-model="Service_For">
+                                        <option value="MAIN SYSTEM">Main System</option>
+                                        <option value="ATTACHMENTS">Attachments</option>
+                                        <option value="TOOLS">Tools</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6" ng-show="Service_For === 'MAIN SYSTEM'">
+                                    <label class="control-label">Main System:</label><label style="color:red;">*</label>
+                                    <select ng-model="MED_ACC_ID" id="MED_ACC_ID1" name="MED_ACC_ID1" class="form-control"
+                                            ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict"
+                                            ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                        <option value="">Select Main System</option>
+                                    </select>
+                                    <span ng-show="IsMainSystemSelected == 'No'" style="color:red">Please select Main System</span>
+                                </div>
+                                <div class="form-group col-md-6" ng-show="Service_For === 'ATTACHMENTS'">
+                                    <label class="control-label">Attachments:</label><label style="color:red;">*</label>
+                                    <select ng-model="MED_ACC_ID" id="MED_ACC_ID2" name="MED_ACC_ID2" class="form-control"
+                                            ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict"
+                                            ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                        <option value="">Select Attachments</option>
+                                    </select>
+                                    <span ng-show="IsAttachmentsSelected == 'No'" style="color:red">Please select Attachments</span>
+                                </div>
+                                <div class="form-group col-md-6" ng-show="Service_For === 'TOOLS' ">
+                                    <label class="control-label">Tools:</label><label style="color:red;">*</label>
+                                    <select ng-model="MED_ACC_ID" id="MED_ACC_ID3" name="MED_ACC_ID3" class="form-control"
+                                            ng-options="accs.MED_ACC_ID as accs.ACCESSORY_NAME for accs in AccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict"
+                                            ng-selected="accs.MED_ACC_ID == MED_ACC_ID">
+                                        <option value="">Select Tools</option>
+                                    </select>
+                                    <span ng-show="IsToolsSelected == 'No'" style="color:red">Please select Tools</span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Select service Engineer:</label>
+                                    <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                            ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                            ng-selected="emp.EMP_ID == EMP_ID">
+                                        <option value="">Select Engineer</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.EMP_ID.$invalid && ( AddServiceCall.EMP_ID.$touched || AddServiceCall.EMP_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.EMP_ID.$error.required">
+                                            Engineer is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Contract Type:</label><label style="color:red;">*</label>
+                                    <select ng-model="CONTRACT_TYPE_ID" id="CONTRACT_TYPE_ID" name="CONTRACT_TYPE_ID" class="form-control"
+                                            ng-options="ct.CONTRACT_TYPE_ID as ct.CONTRACT_TYPE_NAME for ct in ContractTypeList"
+                                            ng-selected="ct.CONTRACT_TYPE_ID == CONTRACT_TYPE_ID" required>
+                                        <option value="">Select Contract Type</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.CONTRACT_TYPE_ID.$invalid && ( AddServiceCall.CONTRACT_TYPE_ID.$touched || AddServiceCall.CONTRACT_TYPE_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.CONTRACT_TYPE_ID.$error.required">
+                                            Contract Type is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Service type:</label><label style="color:red;">*</label>
+                                    <select ng-model="SERVICE_TYPE_ID" id="SERVICE_TYPE_ID" name="SERVICE_TYPE_ID" class="form-control"
+                                            ng-options="st.SERVICE_TYPE_ID as st.SERVICE_TYPE_NAME for st in ServiceTypeList"
+                                            ng-selected="st.SERVICE_TYPE_ID == SERVICE_TYPE_ID" required>
+                                        <option value="">Select Service type</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.SERVICE_TYPE_ID.$invalid && ( AddServiceCall.SERVICE_TYPE_ID.$touched || AddServiceCall.SERVICE_TYPE_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.SERVICE_TYPE_ID.$error.required">
+                                            Service type is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Call Priority Type:</label><label style="color:red;">*</label>
+                                    <select id="CALL_PRIORITY_TYPE_ID" class="form-control" name="CALL_PRIORITY_TYPE_ID" ng-model="CALL_PRIORITY_TYPE_ID"
+                                            ng-options="priority.CALL_PRIORITY_TYPE_ID as priority.CALL_PRIORITY_TYPE_NAME for priority in CallPriorityList"
+                                            ng-selected="priority.CALL_PRIORITY_TYPE_ID == CALL_PRIORITY_TYPE_ID" required>
+                                        <option value="">Select Priority Type</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.CALL_PRIORITY_TYPE_ID.$invalid && ( AddServiceCall.CALL_PRIORITY_TYPE_ID.$touched || AddServiceCall.CALL_PRIORITY_TYPE_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.CALL_PRIORITY_TYPE_ID.$error.required">
+                                            Priority Type is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Call Status:</label><label style="color:red;">*</label>
+                                    <select id="CALL_STATUS" class="form-control" name="CALL_STATUS" ng-model="CALL_STATUS"
+                                            ng-options="status.STATUS_NAME as status.STATUS_NAME for status in CallStatusList"
+                                            ng-selected="status.STATUS_NAME == CALL_STATUS" required>
+                                        <option value="">Select Call Status</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.CALL_STATUS.$invalid && ( AddServiceCall.CALL_STATUS.$touched || AddServiceCall.CALL_STATUS.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.CALL_STATUS.$error.required">
+                                            Call Status is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Description about call / Customer Issue:</label>
+                                    <textarea class="form-control" id="DESCRIPTION" name="DESCRIPTION" ng-model="DESCRIPTION" placeholder="Enter Description"></textarea>
+                                    <span ng-show="(AddServiceCall.DESCRIPTION.$invalid && ( AddServiceCall.DESCRIPTION.$touched || AddServiceCall.DESCRIPTION.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.DESCRIPTION.$error.required">
+                                            Description is required
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Select Company Bank Details(to print on Service Report):</label><label style="color:red;">*</label>
+                                    <select id="BANK_ID" class="form-control" name="BANK_ID" ng-model="BANK_ID"
+                                            ng-options="Bank.B_ID as Bank.BANK_AND_ACCNO for Bank in CompanyBankList"
+                                            ng-selected="Bank.B_ID == BANK_ID" required>
+                                        <option value="">Select Bank Details</option>
+                                    </select>
+                                    <span ng-show="(AddServiceCall.BANK_ID.$invalid && (AddServiceCall.BANK_ID.$touched || AddServiceCall.BANK_ID.$dirty))">
+                                        <span class="error" ng-show="AddServiceCall.BANK_ID.$error.required">Company Bank Details are required</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="submit" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddServiceCall.$invalid" ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/CustomerServiceCallAddUpdate.js"></script>
+    <script src="~/AngularJs/UpcomingPmCm.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $("#CALL_ASSIGN_DATE").datepicker({ changeMonth: true, changeYear: true});
+            $("#CALL_ASSIGN_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#CALL_ASSIGN_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#CALL_ASSIGN_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#CALL_ASSIGN_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#SCHEDULE_CALL_DATE").datepicker({ changeMonth: true, changeYear: true});
+            $("#SCHEDULE_CALL_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#SCHEDULE_CALL_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#SCHEDULE_CALL_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#SCHEDULE_CALL_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+}

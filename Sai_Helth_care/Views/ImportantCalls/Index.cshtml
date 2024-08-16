@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Important Call</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" data-target="#Importantcall">Add Important Call</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Important Call" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr.No</th>
+                                    <th>DSR No</th>
+                                    <th>DSR Date</th>
+                                    <th>Sales Person Name</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    <th>Address</th>
+                                    <th>Location</th>
+                                    <th>Modility</th>
+                                    <th>Buy %</th>
+                                    <th>Projected model</th>
+                                    <th>Forcasted Month</th>
+                                    <th>Price(IN Lac)</th>
+                                    <th>Enquiry Type</th>
+                                    <th>Reg Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>SMS/DSR/1150</td>
+                                    <td>22/05/2021</td>
+                                    <td>Sagar Tandle</td>
+                                    <td>Dr Jitesh Munot</td>
+                                    <td>NDC diagnostic centre</td>
+                                    <td>Khopat thane</td>
+                                    <td>Thane</td>
+                                    <td>5</td>
+                                    <td>10%</td>
+                                    <td>DC30</td>
+                                    <td>March</td>
+                                    <td>19.5</td>
+                                    <td>HOT</td>
+                                    <td>Active</td>
+                                    <td>
+                                        <a data-toggle="modal" data-target="#Importantcall" title="Add Language" class="btn btn-xs btn-success">Edit </a>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal fade" id="Importantcall">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ Add Important Call</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DSR No:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" readonly placeholder="Enter DSR No" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DSR Date:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" readonly placeholder="Enter DSR Date" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Select Customer Name:</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                    <option value="">Select Customer Name</option>
+                                                    <option value="MANOJ RATHOD">MANOJ RATHOD</option>
+                                                    <option value="Prasad Sunil Sahane">MANOJ Kumar</option>
+                                                    <option value="Akash Agale">Akash Agale</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                    <option value="">Select Customer Firm Name</option>
+                                                    <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                    <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTDS">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                    <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Place (City)</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Place (City)" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Firm Address</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Firm Address" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Mobile No</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Mobile No" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Modality</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Modality" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Competition & Model</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Competition & Model" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Email Id</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Email Id" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Projected Model</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Projected Model" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Employee Name</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Employee Name" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Requirments of Customer</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Requirments of Customer" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Sales Person Commitments</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Sales Person Commitments" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Forcasted Month</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control" placeholder="Enter Forcasted Month" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Price (In Lac)</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control"  placeholder="Enter Price (In Lac)" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Buy %</label><label style="color:red;">*</label>
+                                                <input type="number" name="Service" class="form-control"  placeholder="Enter Buy %" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Select Enquiry Type</label><label style="color:red;">*</label>
+                                                <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                    <option value="">Select Customer Firm Name</option>
+                                                    <option value="HOT">HOT</option>
+                                                    <option value="COLD">COLD</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Important Call" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/Customermaster.js"></script>
+}
+
+

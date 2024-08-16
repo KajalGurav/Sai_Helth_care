@@ -1,0 +1,623 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+
+@*<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>*@
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<style>
+    .options-container {
+        z-index: 1000;
+        overflow: scroll;
+        position: absolute;
+        height: 150px;
+        background: #fff;
+        width: 550px;
+    }
+
+    li.ng-binding.ng-scope {
+        cursor: pointer;
+    }
+
+    .options-container {
+        z-index: 1000;
+        overflow: scroll;
+        position: absolute;
+        max-height: 150px;
+        background: #fff;
+        height: auto;
+        /*width: auto;*/
+        box-shadow: 1px 1px 4px 0px;
+    }
+</style>
+
+<section ng-controller="SparePartStockCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9" style="text-align:left;">
+                                <h3 class="card-title"><b>Spare Part Management</b></h3>
+                            </div>
+                            @*<div class="col-lg-2 col-md-2 col-sm-2">
+                        <a data-toggle="modal" data-target="#Stock_Add" title="Add Stock" ng-click="AddStock()" class="btn btn-xs btn-success">Add Stock</a>
+                    </div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" ng-show="STOCK_NO=='NULL'">
+                    <a data-target="#stockEntryCard" data-toggle="collapse" class="btn btn-primary btn-sm" title="Show/Hide Add Stock Form">Show/Hide Add Stock Form</a>
+                    <div id="stockEntryCard" class="card collapse">
+                        <div class="card-body">
+                            <form name="SPM" ng-submit="SPM(SPM.$valid)" data-toggle="validator" role="form">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Select Product Type:</label><label style="color:red;">*</label>
+                                        <select class="form-control" ng-model="PRODUCT_TYPE" ng-change="GetProductTypeChange()" required>
+                                            <option value="">Select Product Type</option>
+                                            <option value="Regular">Regular</option>
+                                            <option value="Mindray">Mindray</option>
+                                            <option value="Medtronic">Medtronic</option>
+                                        </select>
+                                    </div>
+                                    <div ng-show="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'" class="form-group col-md-4">
+                                        <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
+                                        <select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()"
+                                                ng-options="Category.CAT_ID as Category.CAT_NAME for Category in CategoryList"
+                                                ng-selected="Category.CAT_ID == CAT_ID"
+                                                ng-required="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'">
+                                            <option value="">Select Product Category</option>
+
+                                        </select>
+                                    </div>
+                                    <div ng-show="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'" class="form-group col-md-4">
+                                        <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                        <select ng-model="M_ID" id="M_ID" class="form-control" ng-change="GetProductChange()"
+                                                ng-options="Manufac.M_ID as Manufac.M_NAME for Manufac in ManufacturerList"
+                                                ng-selected="Manufac.M_ID == M_ID"
+                                                ng-required="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'">
+                                            <option value="">Select Manufacturer</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Select Product/Model:</label><label style="color:red;">*</label>
+                                        <select ng-model="P_ID" id="P_ID" class="form-control" ng-change="GetPartTypeChange(P_ID)"
+                                                ng-options="Product.P_ID as Product.PRODUCT_NAME for Product in ProductList"
+                                                ng-selected="Product.P_ID == P_ID" required>
+                                            <option value="">Select Product</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Product Serial No:</label><label style="color:red;"> (Avl Qty: {{StockProductSerialNoList.length}})</label>
+                                        <select ng-model="P_STOCK_ID" id="PSERIAL_NO_ID" name="PSERIAL_NO_ID" ng-change="SelectProductSerialNo()" class="form-control"
+                                                ng-selected="srno.P_STOCK_ID == PSERIAL_NO_ID">
+                                            <option value="">Select Product Serial No</option>
+                                            <option ng-repeat="srno in StockProductSerialNoList" ng-value="{{srno.P_STOCK_ID}}">{{srno.P_SERIAL_NO}}</option>
+                                        </select>
+                                    </div>
+
+
+
+
+                                    <div class="form-group col-md-6" ng-show="PRODUCT_TYPE === 'Medtronic'">
+                                        <label class="control-label">Batch No:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Batch No" class="form-control" ng-model="BATCH_NO" placeholder="Enter Batch No" ng-required="PRODUCT_TYPE == 'Medtronic'" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Select Part Type:</label><label style="color:red;">*</label>
+                                        <select ng-model="PART_TYPE_ID" id="PART_TYPE_ID" class="form-control" ng-change="GetPartChange()"
+                                                ng-options="type.PART_TYPE_ID as type.PART_TYPE_NAME for type in PartTypeList"
+                                                ng-selected="type.PART_TYPE_ID == PART_TYPE_ID" required>
+                                            <option value="">Select Part Type</option>
+
+                                        </select>
+                                    </div>
+                                    @*<div class="form-group col-md-6">
+                            <label class="control-label">Part Name:</label><label style="color:red;">*</label>
+                            <select ng-model="PART_ID" id="PART_ID" name="PART_ID" class="form-control"
+                                    ng-options="part.PART_ID as part.PART_NAME for part in PartList"
+                                    ng-selected="part.PART_ID == PART_ID" required>
+                                <option value="">Select Part Name</option>
+                            </select>
+                        </div>*@
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Select Part Name:</label><label style="color:red;">*</label>
+                                        <input type="text" placeholder="Search Part Name" class="form-control"
+                                               autoComplete="on" ng-model="PART_NAME" ng-focus="showOptions = true" />
+                                        <div class="options-container" ng-show="showOptions">
+                                            <ul class="options-list">
+                                                <li ng-repeat="part in PartList | filter:PART_NAME |filter:search:strict" ng-click="selectaccs(part)">
+                                                    {{part.PART_NAME}}
+                                                    <input type="hidden" ng-model="part.PART_ID" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Part Serial No:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Part Serial No" class="form-control" ng-model="PART_SERIAL_NO" placeholder="Enter Part Serial No" required />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Part No:</label>
+                                        <input type="text" name="Part No" class="form-control" ng-model="PART_NO" placeholder="Enter Part No" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Author Name" class="form-control" ng-model="PART_QTY" placeholder="Enter Quantity" required />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Stock Entry Date:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Stock Entry Date" class="form-control" ng-model="STOCK_ENTRY_DATE" id="STOCK_ENTRY_DATE" placeholder="Enter Stock Entry Date" />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Status:</label><label style="color:red;">*</label>
+                                        <select class="form-control" ng-model="STATUS" required>
+                                            <option value="">Select Status</option>
+                                            <option value="NA">NA</option>
+                                            <option value="Need To Check">Need To Check</option>
+                                            <option value="Defective">Defective</option>
+                                            <option value="Working">Working</option>
+                                            <option value="Not Working">Not Working</option>
+                                            <option value="Scrap">Scrap</option>
+
+                                        </select>
+
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Part Price:</label><label style="color:red;">*</label>
+                                        <input type="text" name="PART_PRICE" class="form-control" ng-pattern="/^(0*([1-9]\d*?|0)(\.\d{1,2})?)$/" ng-model="PART_PRICE" placeholder="Enter Part Price" required />
+                                        <span style="color:red" ng-if="SPM.PART_PRICE.$error.pattern">Please enter valid number</span>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Location:</label>
+                                        <input type="text" name="Location" class="form-control" ng-model="LOCATION" placeholder="Enter Location" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">HSN No:</label>
+                                        <input type="text" name="HSN No" class="form-control" ng-model="HSN_CODE" placeholder="Enter HSN No" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Remark:</label><label style="color:red;">*</label>
+                                        <textarea type="text" name="Remark" class="form-control" ng-model="REMARK" placeholder="Enter Remark" required></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <div class="form-group col-md-12">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="SPM.$invalid" ng-click="AddUpdateAdmin('ADD')" value="Add Stock" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="START_DATE" name="START_DATE" id="START_DATE" autocomplete="off" placeholder="Select From Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="END_DATE" name="END_DATE" id="END_DATE" autocomplete="off" placeholder="Select To Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="Getdata()">Get Data</button>
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="exportToExcel()">Export</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <input type="text" class="form-control" placeholder="Search Part" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-responsive" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; text-align: center; ">
+                                    <th>Sr. No.</th>
+                                    <th>Part Stock Id</th>
+                                    <th>Part Name</th>
+                                    <th>Part Serial No</th>
+                                    <th>Part No</th>
+                                    <th>Quantity</th>
+                                    <th>Entry Date</th>
+                                    <th>Status</th>
+                                    <th>Part Price</th>
+                                    <th>Location</th>
+                                    <th>HSN No</th>
+                                    <th>Remark</th>
+                                    <th>Pending Qty</th>
+                                    <th>Batch No</th>
+                                    <th>Product Serial No</th>
+                                    <th>Customer Invoice Number</th>
+                                    <th>Customer Name</th>
+                                    <th>Customer Type</th>
+                                    <th>Invoice Assign Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="stock in StockEntryList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <th>{{stock.SP_STOCK_NO}}</th>
+                                    <td>{{stock.PART_NAME}}</td>
+                                    <td>{{stock.PART_SERIAL_NO}}</td>
+                                    <td>{{stock.PART_NO}}</td>
+                                    <td>{{stock.PART_QTY}}</td>
+                                    <td>{{stock.STOCK_ENTRY_DATE}}</td>
+                                    <td>{{stock.STATUS}}</td>
+                                    <td>{{stock.PART_PRICE}}</td>
+                                    <td>{{stock.LOCATION}}</td>
+                                    <td>{{stock.HSN_CODE}}</td>
+                                    <td>{{stock.REMARK}}</td>
+                                    <td>{{stock.PENDING_QTY}}</td>
+                                    <td>{{stock.BATCH_NO}}</td>
+                                    <td>{{stock.P_SERIAL_NO}}</td>
+                                    <td>{{stock.INVOICE_NUMBER}}</td>
+                                    <td>{{stock.CUSTOMER_NAME}}</td>
+                                    <td>{{stock.CUSTOMER_TYPE}}</td>
+                                    <td>{{stock.ASSIGN_ON_DATE}}</td>
+                                    <td>
+                                        <a data-toggle="modal" data-target="#Stock_Edit" title="Edit Stock" ng-click="getForUpdate(stock)" class="btn btn-xs btn-success">Edit</a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="20" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+              
+
+                <div class="modal fade" id="Stock_Edit">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ Edit Stock </b></h4>
+                                <button type="button" class="close" ng-click="ClearEdit()" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="SPM2" ng-submit="SPM2(SPM2.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div>
+                                                <input hidden ng-model="SP_STOCK_ID" />
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Part Stock Id:</label>
+                                                <textarea type="text" class="form-control" readonly ng-model="SP_STOCK_NO"></textarea>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Product Serial No:</label><label style="color:red;"> (Avl Qty: {{StockProductSerialNoListUpdate.length}})</label>
+                                                <select ng-model="NEW_P_STOCK_ID" id="NEW_PSERIAL_NO_ID" name="NEW_PSERIAL_NO_ID" ng-change="SelectProductSerialNoUpdate()" class="form-control"
+                                                        ng-selected="srno.P_STOCK_ID == NEW_PSERIAL_NO_ID">
+                                                    <option value="">Select Product Serial No</option>
+                                                    <option ng-repeat="srno in StockProductSerialNoListUpdate" ng-value="{{srno.P_STOCK_ID}}">{{srno.P_SERIAL_NO}}</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6" ng-show="NEW_PRODUCT_TYPE === 'Medtronic'">
+                                                <label class="control-label">Batch No:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Batch No" class="form-control" ng-model="NEW_BATCH_NO" placeholder="Enter Batch No" ng-required="NEW_PRODUCT_TYPE == 'Medtronic'" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Part Serial No:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Part Serial No" class="form-control" ng-model="NEW_PART_SERIAL_NO" placeholder="Enter Part Serial No" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Part No:</label>
+                                                <input type="text" name="Part No" class="form-control" ng-model="NEW_PART_NO" placeholder="Enter Part No" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Author Name" class="form-control" ng-model="NEW_PART_QTY" placeholder="Enter Quantity" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Pending Quantity:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Author Name" class="form-control" ng-model="NEW_PENDING_QTY" placeholder="Enter Pending Quantity" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Stock Entry Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Stock Entry Date" class="form-control" ng-model="NEW_STOCK_ENTRY_DATE" id="STOCK_ENTRY_DATE2" placeholder="Enter Stock Entry Date" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Status:</label><label style="color:red;">*</label>
+                                                <select class="form-control" ng-model="NEW_STATUS" required>
+                                                    <option value="">Select Status</option>
+                                                    <option value="NA">NA</option>
+                                                    <option value="Need To Check">Need To Check</option>
+                                                    <option value="Defective">Defective</option>
+                                                    <option value="Working">Working</option>
+                                                    <option value="Not Working">Not Working</option>
+                                                    <option value="Scrap">Scrap</option>
+
+                                                </select>
+
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Part Price:</label><label style="color:red;">*</label>
+                                                <input type="text" name="NEW_PART_PRICE" id="NEW_PART_PRICE" class="form-control" ng-pattern="/^(0*([1-9]\d*?|0)(\.\d{1,2})?)$/" ng-model="NEW_PART_PRICE" placeholder="Enter Part Price" required />
+                                                <span style="color:red" ng-if="SPM2.NEW_PART_PRICE.$error.pattern">Please enter valid number</span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Location:</label>
+                                                <input type="text" name="Location" class="form-control" ng-model="NEW_LOCATION" placeholder="Enter Location" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">HSN No:</label>
+                                                <input type="text" name="HSN No" class="form-control" ng-model="NEW_HSN_CODE" placeholder="Enter HSN No" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Remark:</label><label style="color:red;">*</label>
+                                                <textarea type="text" name="Remark" class="form-control" ng-model="NEW_REMARK" placeholder="Enter Remark" required></textarea>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="SPM2.$invalid" ng-click="AddUpdateAdmin('UPDATE')" value="Edit Stock" />
+                                    <input type="button" value="Cancel" ng-click="ClearEdit()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body" ng-show="STOCK_NO!='NULL'">
+                    <div>
+                        <div class="card-body">
+                            <form>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Select Product Type:</label><label style="color:red;">*</label>
+                                        <select class="form-control" ng-model="PRODUCT_TYPE" ng-change="GetProductTypeChange()" required>
+                                            <option value="Regular">Regular</option>
+                                            <option value="Mindray">Mindray</option>
+                                            <option value="Medtronic">Medtronic</option>
+                                        </select>
+                                    </div>
+                                    <div ng-show="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'" class="form-group col-md-4">
+                                        <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
+                                        <select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()"
+                                                ng-options="Category.CAT_ID as Category.CAT_NAME for Category in CategoryList"
+                                                ng-selected="Category.CAT_ID == CAT_ID"
+                                                ng-required="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'">
+                                            <option value="">Select Product Category</option>
+
+                                        </select>
+                                    </div>
+                                    <div ng-show="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'" class="form-group col-md-4">
+                                        <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                        <select ng-model="M_ID" id="M_ID" class="form-control" ng-change="GetProductChange()"
+                                                ng-options="Manufac.M_ID as Manufac.M_NAME for Manufac in ManufacturerList"
+                                                ng-selected="Manufac.M_ID == M_ID"
+                                                ng-required="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'">
+                                            <option value="">Select Manufacturer</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Select Product/Model:</label><label style="color:red;">*</label>
+                                        <select ng-model="P_ID" id="P_ID" class="form-control" ng-change="GetPartTypeChange(P_ID)"
+                                                ng-options="Product.P_ID as Product.PRODUCT_NAME for Product in ProductList"
+                                                ng-selected="Product.P_ID == P_ID" required>
+                                            <option value="">Select Product</option>
+                                        </select>
+                                    </div>
+
+                                    @*<div class="form-group col-md-4">
+                                        <label class="control-label">Product Serial No:</label><label style="color:red;"> (Avl Qty: {{StockProductSerialNoList.length}})</label>
+                                        <select ng-model="P_STOCK_ID" id="PSERIAL_NO_ID" name="PSERIAL_NO_ID" ng-change="SelectProductSerialNo()" class="form-control"
+                                                ng-selected="srno.P_STOCK_ID == PSERIAL_NO_ID">
+                                            <option value="">Select Product Serial No</option>
+                                            <option ng-repeat="srno in StockProductSerialNoList" ng-value="{{srno.P_STOCK_ID}}">{{srno.P_SERIAL_NO}}</option>
+                                        </select>
+                                    </div>*@
+
+                                    <div class="form-group col-md-6" ng-show="STOCK_NO!='NULL'">
+                                        <label class="control-label">Product Serial No:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Product Serial No" class="form-control" ng-model="P_SERIAL_NO" placeholder="Product Serial No" />
+                                    </div>
+
+                                    <div class="form-group col-md-6" ng-show="PRODUCT_TYPE === 'Medtronic'">
+                                        <label class="control-label">Batch No:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Batch No" class="form-control" ng-model="BATCH_NO" placeholder="Enter Batch No" ng-required="PRODUCT_TYPE == 'Medtronic'" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Select Part Type:</label><label style="color:red;">*</label>
+                                        <select ng-model="PART_TYPE_ID" id="PART_TYPE_ID" class="form-control" ng-change="GetPartChange()"
+                                                ng-options="type.PART_TYPE_ID as type.PART_TYPE_NAME for type in PartTypeList"
+                                                ng-selected="type.PART_TYPE_ID == PART_TYPE_ID" required>
+                                            <option value="">Select Part Type</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Part Name:</label><label style="color:red;">*</label>
+                                        <select ng-model="PART_ID" id="PART_ID" name="PART_ID" class="form-control"
+                                                ng-options="part.PART_ID as part.PART_NAME for part in PartList"
+                                                ng-selected="part.PART_ID == PART_ID" required>
+                                            <option value="">Select Part Name</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Part Serial No:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Part Serial No" class="form-control" ng-model="PART_SERIAL_NO" placeholder="Enter Part Serial No" required />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Part No:</label>
+                                        <input type="text" name="Part No" class="form-control" ng-model="PART_NO" placeholder="Enter Part No" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Author Name" class="form-control" ng-model="PART_QTY" placeholder="Enter Quantity" required />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Stock Entry Date:</label><label style="color:red;">*</label>
+                                        <input type="text" name="Stock Entry Date" class="form-control" ng-model="STOCK_ENTRY_DATE" id="STOCK_ENTRY_DATE" placeholder="Enter Stock Entry Date" />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Status:</label><label style="color:red;">*</label>
+                                        <select class="form-control" ng-model="STATUS" required>
+                                            <option value="">Select Status</option>
+                                            <option value="NA">NA</option>
+                                            <option value="Need To Check">Need To Check</option>
+                                            <option value="Defective">Defective</option>
+                                            <option value="Working">Working</option>
+                                            <option value="Not Working">Not Working</option>
+                                            <option value="Scrap">Scrap</option>
+
+                                        </select>
+
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Part Price:</label><label style="color:red;">*</label>
+                                        <input type="text" name="PART_PRICE" class="form-control" ng-pattern="/^(0*([1-9]\d*?|0)(\.\d{1,2})?)$/" ng-model="PART_PRICE" placeholder="Enter Part Price" required />
+                                        <span style="color:red" ng-if="SPM.PART_PRICE.$error.pattern">Please enter valid number</span>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Location:</label>
+                                        <input type="text" name="Location" class="form-control" ng-model="LOCATION" placeholder="Enter Location" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">HSN No:</label>
+                                        <input type="text" name="HSN No" class="form-control" ng-model="HSN_CODE" placeholder="Enter HSN No" />
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Remark:</label><label style="color:red;">*</label>
+                                        <textarea type="text" name="Remark" class="form-control" ng-model="REMARK" placeholder="Enter Remark" required></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <div class="form-group col-md-12">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="SPM.$invalid" ng-click="AddUpdateAdmin('ADD')" value="Add Stock" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+@section scripts
+{
+    <script src="~/AngularJs/SparePartStock.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#STOCK_ENTRY_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#STOCK_ENTRY_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STOCK_ENTRY_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STOCK_ENTRY_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#STOCK_ENTRY_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+        $(function () {
+            $("#STOCK_ENTRY_DATE2").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#STOCK_ENTRY_DATE2").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STOCK_ENTRY_DATE2").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STOCK_ENTRY_DATE2").datepicker("option", "showMonthAfterYear", false);
+            $("#STOCK_ENTRY_DATE2").datepicker("option", "yearRange", "2000:2060");
+        });
+
+        $("#START_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#START_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#START_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#START_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#START_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#END_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#END_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#END_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#END_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#END_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+
+}

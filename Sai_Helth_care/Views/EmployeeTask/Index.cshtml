@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+
+<section ng-controller="EmployeeTaskCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color:green;color:white"><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-10" style="text-align:left;">
+                                <h3 class="card-title"><b>Employee Task</b></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="START_DATE" name="START_DATE" id="START_DATE" autocomplete="off" placeholder="Select From Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="END_DATE" name="END_DATE" id="END_DATE" autocomplete="off" placeholder="Select To Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <select class="form-control" ng-model="EmployeeType" ng-change="getData()" id="EmployeeType" name="EmployeeType"
+                                        ng-options="type for type in EmployeeTypeList">
+                                    <option value="">Select Employee Type</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <select class="form-control" ng-model="EMPLOYEE_ID" ng-change="getData()" id="EMPLOYEE_ID" name="EMPLOYEE_ID">
+                                    <option value="">Select Employee</option>
+                                    <option ng-repeat="Employee in EmployeeList" value="{{Employee.EMP_ID}}">{{Employee.EMP_NAME}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="getData()">Get Data</button>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2" style="text-align:right">
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="exportToExcel()">Export</button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; text-align: center; ">
+                                    <th>Sr No.</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee Type</th>
+                                    <th>Todays work</th>
+                                    <th>Location</th>
+                                    <th>Remark</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Reg Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="ets in EmployeeTaskList" style=" font-size: 11px;">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td><a href="~/EmployeeTask/Details?TaskId={{ets.EmployeeTaskID}}">{{ets.EMP_NAME}}</a> </td>
+
+                                    @*<td>{{ets.EMP_NAME}}</td>*@
+                                    <td>{{ets.EmployeeType}}</td>
+                                    <td>{{ets.TodaysWork}}</td>
+                                    <td>{{ets.Location}}</td>
+                                    <td>{{ets.Remark}}</td>
+                                    <td style="color:green;">{{ets.Status}}</td>
+                                    <td>{{ets.Date}}</td>
+                                    <td>{{ets.RegDate}}</td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="22" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+@section Scripts{
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <script src="~/AngularJs/EmployeeTask.js"></script>
+
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $("#START_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#START_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#START_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#START_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#START_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#END_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#END_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#END_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#END_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#END_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+}

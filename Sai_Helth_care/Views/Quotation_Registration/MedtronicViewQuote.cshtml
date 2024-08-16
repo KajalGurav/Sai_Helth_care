@@ -1,0 +1,1950 @@
+﻿
+@{
+    ViewBag.Title = "MedtronicViewQuote";
+}
+
+
+<style>
+    .catStyle_Desc {
+        color: black;
+        cursor: pointer;
+        font-size: 15px;
+        border: 1px solid green;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .catStyle_active_Desc {
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: 1px solid green;
+        border-radius: 5px;
+    }
+
+    .wrapper.overflow {
+        overflow-y: scroll;
+        display: inline-block;
+    }
+</style>
+
+<style type="text/css" media="print">
+    .noprint {
+        display: none;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid;
+    }
+
+    ul.no-bullets {
+        list-style-type: none;
+        margin: 1px;
+        padding: 5px;
+        align-content: center;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+
+<div class="page-content fade-in-up" ng-controller="RegularQuotationCtrl">
+    <input type="hidden" id="tempCustId" />
+    <div class="ibox">
+        <div class="ibox-body">
+            <div class="card">
+                <div class="col-md-12" style="margin-top:10px;">
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color:green;color:white"><span class="fa fa-arrow-left"></span></a>
+                        </div>
+                        <div class="col-md-11" style="margin-left:-50px;"><h6><b>View Quotation</b></h6></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="overflow-y:auto">
+                        <table class="table table-striped table-bordered table-hover" id="example-table1" cellspacing="0" width="100%">
+                            <thead style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; ">
+                                <tr>
+                                    <th>Quote No.</th>
+                                    <th>Quot Type</th>
+                                    <th>Quote. Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    @*<th>Product Name</th>*@
+                                    <th> PNDT Status</th>
+                                    @*<th>Model No/Name.</th>*@
+                                    <th>Status</th>
+                                    @*<th>Quotation For</th>*@
+                                    @*<th>P.O.Date </th>*@
+                                </tr>
+                            </thead>
+                            <tbody style="color:black;">
+                                <tr ng-repeat="Quotation in QuotationList">
+                                    <td>{{Quotation.QUOTATION_NO}}</td>
+                                    <td>{{Quotation.QUOTATION_TYPE}}</td>
+                                    <td>{{Quotation.QUOTATION_DATE}}</td>
+                                    <td>{{Quotation.CUSTOMER_NAME}}</td>
+                                    <td>{{Quotation.FIRM_NAME}}</td>
+                                    <td>{{Quotation.PNDT_STATUS}}</td>
+                                    <td>{{Quotation.STATUS}}</td>
+                                    @*<td>{{Quotation.PO_DATE}}</td>*@
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div style="overflow: auto; white-space: nowrap; padding:15px 0px;">
+                            <center>
+                                <span>
+                                    <span class="catmenu_button_Desc catStyle_active_Desc" id="1_catId_Desc" ng-click="OnCategoryClick('1')" style="padding:5px; margin:5px;font-size:12px;"><b>Quotation Product</b></span>
+                                </span>
+                                @*<span>
+                                        <span class="catmenu_button_Desc catStyle_Desc" id="0_catId_Desc" ng-click="OnCategoryClick('0')" style="padding:5px; margin:5px;font-size:12px;"><b>Edit Quotation </b></span>
+                                    </span>*@
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="card-body" id="Demoexample_1">
+                <div class="ibox-body" style="height:700px; overflow-y:auto;">
+                    <div class="col-lg-12" style="margin-bottom:15px;">
+                        <div class="row">
+                            <div id="example-table2" data-myval="5" class="table-responsive col-lg-6" style="background-color: white; height: 340px; overflow-y: scroll;">
+
+                                <table class="table table-striped table-bordered table-hover " id="example-table3" cellspacing="0">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Product Detail</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                @*<input style="width:150PX" id="searchInTb" class="form-control" type="text" placeholder="Search Product" />*@
+
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <input style="width:150PX" id="searchInTb" class="form-control" type="text" placeholder="Search Product" />
+                                                        </div>
+                                                        @*<div class="col-md-6">
+                                                                <select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()">
+                                                                    <option value="">Select Category</option>
+                                                                    <option ng-repeat="Category in CategoryList" value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
+                                                                </select>
+                                                            </div>*@
+                                                    </div>
+                                                </div>
+
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;">
+                                        <tr ng-repeat="Product in ProductList">
+                                            <td>{{Product.PRODUCT_NAME}}</td>
+                                            @*<td>{{Product.P_ID}}</td>*@
+                                            <td>
+                                                <a href="" title="Add" ng-click="Getspare(Product)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Add </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive col-lg-6" style="background-color: white; height: 340px; overflow-y: scroll;">
+                                <table class="table table-striped table-bordered table-hover " id="example-table4" cellspacing="0" width="50%">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr><td colspan="6"><strong>*Note: If main product is removed all spare parts and std accessories will be removed</strong></td></tr>
+                                    </thead>
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Product Name</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;" ng-repeat="P in QuotationProductList">
+
+                                        <tr>
+                                            <td>{{$index+1}}</td>
+                                            <td>{{P.PRODUCT_NAME}}</td>
+                                            <td>{{P.QUANTITY}}</td>
+                                            <td>{{P.BASIC_PRICE}}</td>
+                                            <td>
+                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict"
+                                            @*ng-if="Acc.ACCESSORY_NAME!='' && Acc.BASIC_PRICE!=0"*@>
+                                            <td colspan="4"><b>Main System:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b>Basic Price:</b>{{Acc.BASIC_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.QUANTITY}}&nbsp; <b>Total:</b>{{Acc.PART_TOTAL_AMOUNT}}&nbsp; </td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict"
+                                            @*ng-if="Acc.ACCESSORY_NAME!='' && Acc.BASIC_PRICE!=0"*@>
+                                            <td colspan="4"><b>Attachment:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b>Basic Price:</b>{{Acc.BASIC_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.QUANTITY}}&nbsp;<b>Total:</b>{{Acc.PART_TOTAL_AMOUNT}}&nbsp; </td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict"
+                                            @*ng-if="Acc.ACCESSORY_NAME!='' && Acc.BASIC_PRICE!=0"*@>
+                                            <td colspan="4"><b>Tool:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b>Basic Price:</b>{{Acc.BASIC_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.QUANTITY}}&nbsp;<b>Total:</b>{{Acc.PART_TOTAL_AMOUNT}}&nbsp; </td>
+                                            <td>
+                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 " style="margin-bottom:10px">
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Total Amount:</label>
+                                <input class="form-control" readonly type="text" ng-model="final" />
+                            </div>
+
+                            <div ng-hide="QuotationList[0].QUOTATION_TYPE=='SpareParts'" class="form-group col-md-4">
+                                <label class="control-label">Including All Taxes:</label>
+                                <label style="color:red;">*</label>
+                                <input type="radio" id="contactChoice1" name="contact" value="Yes" ng-model="result" ng-change="IsIncludeTax(result)" />
+                                <label for="contactChoice1">Yes</label>
+                                <input type="radio" id="contactChoice2" name="contact" value="No" ng-model="result" ng-change="IsIncludeTax(result)" />
+                                <label for="contactChoice2">No</label><br>
+                                @*<span id="taxNote" style="color :red; display:none;"></span>*@
+                            </div>
+
+
+                            <div ng-hide="QuotationList[0].QUOTATION_TYPE=='SpareParts'" class="col-lg-4">
+                                <label class="control-label">GST(%):</label>
+                                <input class="form-control" type="text" ng-model="gstamt" readonly id="gstamt" name="gstamt" />
+                                @*<select class="form-control" id="gstamt" name="gstamt" ng-disabled="IsDisabled" ng-model="gstamt" ng-change="calTax(gstamt)">
+                                        <option value="0">0</option>
+                                        <option value="5">5</option>
+                                        <option value="12">12</option>
+                                        <option value="18">18</option>
+                                        <option value="28">28</option>
+                                    </select>*@
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Tax Amount:</label>
+                                <input class="form-control" readonly type="text" placeholder="Enter Tax Amount" ng-model="Ttax" />
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Amount Inc. Tax:</label>
+                                <input class="form-control" readonly type="text" placeholder="Enter Amount Inc Tax" ng-model="AItax" />
+                            </div>
+
+                            <div ng-hide="QuotationList[0].QUOTATION_TYPE=='Service' || QuotationList[0].QUOTATION_TYPE=='SpareParts'" class="col-lg-4">
+                                <label class="control-label">Warranty (Days or Months or Years):</label>
+                                <select ng-model="WARRANTY_PERIOD" id="WARRANTY_PERIOD" name="WARRANTY_PERIOD" class="form-control" value="Months">
+                                    <option value="">Select Warranty Period</option>
+                                    <option value="Days">Days</option>
+                                    <option value="Months">Months</option>
+                                    <option value="Years">Years</option>
+                                </select>
+                                <input ng-model="WARRANTY_VALUE" id="WARRANTY_VALUE" name="WARRANTY_VALUE" class="form-control" value="0" type="text" placeholder="Enter Warranty" />
+                            </div>
+
+                            <div ng-show="False" class="form-group col-md-12">
+                                <label class="control-label">Show Special Warranty:</label>
+                                <label ng-show="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label>@*<label style="color:red">(Don't add For SpareParts Quotation)</label>*@<br>
+                                <input type="radio" id="SpecialWarranty1" name="SpecialWarranty" value="Yes" ng-model="SPL_WARRANTY" />
+                                <label for="SpecialWarranty1">Yes</label>
+                                <input type="radio" id="SpecialWarranty2" name="SpecialWarranty" value="No" ng-model="SPL_WARRANTY" />
+                                <label for="SpecialWarranty2">No</label>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Subject:</label>
+                                <input class="form-control" type="text" placeholder="Enter Subject" ng-model="SUBJECT" />
+                            </div>
+
+                            <div class="col-lg-12">
+                                <label class="control-label">Payment Terms Details/Note:</label>@*<label style="color:red">(Dont add For SpareParts Quotation)</label>*@
+                                <textarea ng-model="REMARKS" id="REMARKS" class="form-control" @*rows="3"*@ type="text" placeholder="Enter Note"></textarea>
+                                @*<input ng-model="REMARKS" id="REMARKS" name="REMARKS" class="form-control" value="" type="text" placeholder="Enter Remarks" />*@
+                            </div>
+                            <!--<div style="margin-left:40%;margin-top:11px;">-->
+                            @*<input class="form-control" type="button" value="Total Calculate" style="background-color:red;color:white" />*@
+                            <!--</div>-->
+                        </div>
+                        <div class="flex-row" style="margin-left: 45%; margin-right: 45%; margin-top: 11px; display: flex; ">
+                            <div class="flex-col" style="flex: 1; margin-right: 20px;">
+                                <input id="SaveQuotation" class="form-control" type="button" @*data-toggle="modal" data-target="#QUotationAdd"*@ value="Save" style="background-color:green;color:black" ng-click="SaveQuotDetails()" />
+                            </div>
+                            <div class="flex-col" style="flex: 1;">
+                                <input id="PrintQuotation" class="form-control" type="button" @*data-toggle="modal" data-target="#QUotationAdd"*@ value="Print" style="background-color:aquamarine;color:black" ng-click="numTowords()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="AddProductAccessories">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:gray; color: white; padding: 10px; ">
+                            <h4 class="modal-title">
+                                <b> Add Product Accessories </b>
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form name="AddProductParts" ng-submit="AddProductParts(AddProductParts.$valid)" data-toggle="validator" role="form">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <div class="col-12">
+                                            <div class="row">
+                                                @*<div class="form-group col-md-4">
+                                                        <label class="control-label">Product Name:</label><label style="color:red;">*</label>
+                                                       <input class="form-control" type="text" ng-model="{{Product.PRODUCT_NAME}}" />
+                                                    </div>*@
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">Quantity:<label ng-if="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label></label>
+
+                                                    <input id="prodQuant" class="form-control" type="number" name="PRODUCT_QUANTITY" ng-model="PRODUCT_QUANTITY" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" />
+                                                    <span ng-show="(AddProductParts.PRODUCT_QUANTITY.$invalid && (AddProductParts.PRODUCT_QUANTITY.$touched || AddProductParts.PRODUCT_QUANTITY.$dirty))">
+                                                        <span class="error" ng-show="AddProductParts.PRODUCT_QUANTITY.$error.required">Quantity is required</span>
+                                                        <span class="error" ng-show="AddProductParts.PRODUCT_QUANTITY.$error.number">Please enter a valid Quantity</span>
+                                                    </span>
+                                                </div>
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">Product GST:<label ng-if="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label></label>
+
+                                                    <input id="prodGST" class="form-control" type="number" name="PRODUCT_GST" ng-model="PRODUCT_GST" value="{{PRODUCT_GST}}" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" />
+                                                    <span ng-show="(AddProductParts.PRODUCT_GST.$invalid && (AddProductParts.PRODUCT_GST.$touched || AddProductParts.PRODUCT_GST.$dirty))">
+                                                        <span class="error" ng-show="AddProductParts.PRODUCT_GST.$error.required">GST is required</span>
+                                                        <span class="error" ng-show="AddProductParts.PRODUCT_GST.$error.number">Please enter valid GST</span>
+                                                    </span>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label class="control-label">Product Basic Price:<label ng-if="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label></label>
+
+                                                    <input id="prodPrice" class="form-control" type="number" name="PRODUCT_PRICE" ng-model="PRODUCT_PRICE" value="{{PRODUCT_PRICE}}" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" />
+                                                    <span ng-show="(AddProductParts.PRODUCT_PRICE.$invalid && (AddProductParts.PRODUCT_PRICE.$touched || AddProductParts.PRODUCT_PRICE.$dirty))">
+                                                        <span class="error" ng-show="AddProductParts.PRODUCT_PRICE.$error.required">Basic Price is required</span>
+                                                        <span class="error" ng-show="AddProductParts.PRODUCT_PRICE.$error.number">Please enter valid Basic Price</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style="overflow-y:auto;height:200px;margin-top:10px;">
+                                            <table ng-hide="QuotationList[0].QUOTATION_TYPE==='SpareParts'" id="AccTable1" class="table table-bordered" style="font-size: 0.9rem;color:black;">
+
+                                                <thead>
+                                                    <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                        <th>
+                                                            <input id="checkAllChkbox1" type="checkbox" value="false" onclick="CheckALLMainSystem()" />
+                                                        </th>
+                                                        <th>Main System</th>
+                                                        <th>Acc. Code</th>
+                                                        <th style="width:130px;">MRP</th>
+                                                        <th style="width:100px;">Discount</th>
+                                                        <th style="width:130px;">Basic Price</th>
+                                                        <th style="width:90px;">Qty</th>
+                                                        <th style="width:150px;">Total</th>
+                                                        <th style="width:100px;">GST%</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>
+                                                            @*<input type="text" class="form-control" ng-model="searchAccName1" placeholder="Search Name">*@
+                                                            <input id="searchAccName1" class="form-control" type="text" placeholder="Search" />
+                                                        </th>
+                                                        <th>
+                                                            @*<input type="text" class="form-control" ng-model="searchAccCode1" placeholder="Search Code">*@
+                                                            <input id="searchAccCode1" class="form-control" type="text" placeholder="Search" />
+                                                        </th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="ms in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} | filter: {'ACCESSORY_NAME' : searchAccName1} | filter: {'ACCESSORY_CODE' : searchAccCode1}">
+                                                        <td scope="row" class="checkbox_th">
+                                                            <input id="prodSpare" class="MainSystem" value="{{ms.MED_ACC_ID}}" ng-model="MAIN_SYSTEM_ID" type="checkbox" />
+                                                        </td>
+                                                        <td>{{ms.ACCESSORY_NAME}}</td>
+                                                        <td>{{ms.ACCESSORY_CODE}}</td>
+                                                        <td><input class="form-control priceid" type="number" name="MRP{{ms.MED_ACC_ID}}" id="MRP{{ms.MED_ACC_ID}}" value="{{ms.MRP}}" readonly @*step="0.01" min="0"  onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control priceid" type="number" name="DISCOUNT{{ms.MED_ACC_ID}}" id="DISCOUNT{{ms.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(ms)" value="0" step="1" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                        <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{ms.MED_ACC_ID}}" id="BASIC_PRICE{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly @*value="{{ms.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control qid" type="number" name="Q{{ms.MED_ACC_ID}}" id="Q{{ms.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(ms)" value="1" min="1" max="500" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                        <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly @*value="{{ms.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{ms.MED_ACC_ID}}" id="GST_PERCENTAGE{{ms.MED_ACC_ID}}" value="{{ms.GST_PERCENTAGE}}" readonly @*step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }"*@ /></td>
+
+                                                        @*<td><input class="form-control qid" type="number" name="Q{{ms.MED_ACC_ID}}" id="Q{{ms.MED_ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="MRP{{ms.MED_ACC_ID}}" id="MRP{{ms.MED_ACC_ID}}" value="{{ms.MRP}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{ms.MED_ACC_ID}}" id="BASIC_PRICE{{ms.MED_ACC_ID}}" value="{{ms.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{ms.MED_ACC_ID}}" id="GST_PERCENTAGE{{ms.MED_ACC_ID}}" value="{{ms.GST_PERCENTAGE}}" step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>*@
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                        <div style="overflow-y: auto; height: 200px; margin-top: 10px;">
+
+                                            <table class="table table-bordered" id="Attachments" style="font-size: 0.9rem;color:black;">
+
+                                                <thead>
+                                                    <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                        <th>
+                                                            <input id="checkAllChkbox2" type="checkbox" value="false" onclick="CheckALLAttachments()" />
+                                                        </th>
+                                                        <th>Attachments</th>
+                                                        <th>Acc. Code</th>
+                                                        <th style="width:130px;">MRP</th>
+                                                        <th style="width:100px;">Discount</th>
+                                                        <th style="width:130px;">Basic Price</th>
+                                                        <th style="width:90px;">Qty</th>
+                                                        <th style="width:150px;">Total</th>
+                                                        <th style="width:100px;">GST%</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        @*<th><input type="text" class="form-control" ng-model="searchAccName2" placeholder="Search Name"></th>
+                                                            <th><input type="text" class="form-control" ng-model="searchAccCode2" placeholder="Search Code"></th>*@
+                                                        <th>
+                                                            <input id="searchAccName2" class="form-control" type="text" placeholder="Search" />
+                                                        </th>
+                                                        <th>
+                                                            <input id="searchAccCode2" class="form-control" type="text" placeholder="Search" />
+                                                        </th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="attachment in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} | filter: {'ACCESSORY_NAME' : searchAccName2} | filter: {'ACCESSORY_CODE' : searchAccCode2}">
+                                                        <td scope="row" class="checkbox_th">
+                                                            <input id="prodSpare" class="Attachments" value="{{attachment.MED_ACC_ID}}" ng-model="ATTACHMENTS_ID" type="checkbox" />
+                                                        </td>
+                                                        <td>{{attachment.ACCESSORY_NAME}}</td>
+                                                        <td>{{attachment.ACCESSORY_CODE}}</td>
+                                                        <td><input class="form-control priceid" type="number" name="MRP{{attachment.MED_ACC_ID}}" id="MRP{{attachment.MED_ACC_ID}}" value="{{attachment.MRP}}" readonly @*step="0.01" min="0"  onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control priceid" type="number" name="DISCOUNT{{attachment.MED_ACC_ID}}" id="DISCOUNT{{attachment.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(attachment)" value="0" step="1" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                        <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{attachment.MED_ACC_ID}}" id="BASIC_PRICE{{attachment.MED_ACC_ID}}" value="{{Math.round((attachment.MRP * 100) / (attachment.GST_PERCENTAGE + 100))}}" readonly @*value="{{attachment.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control qid" type="number" name="Q{{attachment.MED_ACC_ID}}" id="Q{{attachment.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(attachment)" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                        <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{attachment.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{attachment.MED_ACC_ID}}" value="{{Math.round((attachment.MRP * 100) / (attachment.GST_PERCENTAGE + 100))}}" readonly @*value="{{attachment.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" id="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" value="{{attachment.GST_PERCENTAGE}}" readonly @*step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }"*@ /></td>
+
+                                                        @*<td><input class="form-control qid" type="number" name="Q{{attachment.MED_ACC_ID}}" id="Q{{attachment.MED_ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="MRP{{attachment.MED_ACC_ID}}" id="MRP{{attachment.MED_ACC_ID}}" value="{{attachment.MRP}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{attachment.MED_ACC_ID}}" id="BASIC_PRICE{{attachment.MED_ACC_ID}}" value="{{attachment.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" id="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" value="{{attachment.GST_PERCENTAGE}}" step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>*@
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                        <div style="overflow-y: auto; height: 200px; margin-top: 10px;">
+
+                                            <table class="table table-bordered" id="Tools" style="font-size: 0.9rem;color:black;">
+
+                                                <thead>
+                                                    <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                        <th>
+                                                            <input id="checkAllChkbox3" type="checkbox" value="false" onclick="CheckALLTools()" />
+                                                        </th>
+                                                        <th>Tools</th>
+                                                        <th>Acc. Code</th>
+                                                        <th style="width:130px;">MRP</th>
+                                                        <th style="width:100px;">Discount</th>
+                                                        <th style="width:130px;">Basic Price</th>
+                                                        <th style="width:90px;">Qty</th>
+                                                        <th style="width:150px;">Total</th>
+                                                        <th style="width:100px;">GST%</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        @*<th><input type="text" class="form-control" ng-model="searchAccName3" placeholder="Search Name"></th>
+                                                            <th><input type="text" class="form-control" ng-model="searchAccCode3" placeholder="Search Code"></th>*@
+                                                        <th>
+                                                            <input id="searchAccName3" class="form-control" type="text" placeholder="Search" />
+                                                        </th>
+                                                        <th>
+                                                            <input id="searchAccCode3" class="form-control" type="text" placeholder="Search" />
+                                                        </th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="tools in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} | filter: {'ACCESSORY_NAME' : searchAccName3} | filter: {'ACCESSORY_CODE' : searchAccCode3}">
+                                                        <td scope="row" class="checkbox_th">
+                                                            <input id="prodSpare" class="Tools" value="{{tools.MED_ACC_ID}}" ng-model="TOOLS_ID" type="checkbox" />
+                                                        </td>
+                                                        <td>{{tools.ACCESSORY_NAME}}</td>
+                                                        <td>{{tools.ACCESSORY_CODE}}</td>
+                                                        <td><input class="form-control priceid" type="number" name="MRP{{tools.MED_ACC_ID}}" id="MRP{{tools.MED_ACC_ID}}" value="{{tools.MRP}}" readonly @*step="0.01" min="0"  onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control priceid" type="number" name="DISCOUNT{{tools.MED_ACC_ID}}" id="DISCOUNT{{tools.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(tools)" value="0" step="1" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                        <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{tools.MED_ACC_ID}}" id="BASIC_PRICE{{tools.MED_ACC_ID}}" value="{{Math.round((tools.MRP * 100) / (tools.GST_PERCENTAGE + 100))}}" readonly @*value="{{tools.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control qid" type="number" name="Q{{tools.MED_ACC_ID}}" id="Q{{tools.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(tools)" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                        <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{tools.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{tools.MED_ACC_ID}}" value="{{Math.round((tools.MRP * 100) / (tools.GST_PERCENTAGE + 100))}}" readonly @*value="{{tools.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
+                                                        <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{tools.MED_ACC_ID}}" id="GST_PERCENTAGE{{tools.MED_ACC_ID}}" value="{{tools.GST_PERCENTAGE}}" readonly @*step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }"*@ /></td>
+
+
+                                                        @*<td><input class="form-control qid" type="number" name="Q{{tools.MED_ACC_ID}}" id="Q{{tools.MED_ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="MRP{{tools.MED_ACC_ID}}" id="MRP{{tools.MED_ACC_ID}}" value="{{tools.MRP}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{tools.MED_ACC_ID}}" id="BASIC_PRICE{{tools.MED_ACC_ID}}" value="{{tools.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{tools.MED_ACC_ID}}" id="GST_PERCENTAGE{{tools.MED_ACC_ID}}" value="{{tools.GST_PERCENTAGE}}" step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>*@
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="form-group col-md-12">
+                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" @*ng-disabled="AddProductParts.$invalid"*@ ng-click="AddProduct(Sparepart)" value="Add Product" />
+                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" @*data-dismiss="modal"*@ />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="QuotationMedtronic">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintMedtronic" style="border: 0px solid #000; font-family:'Google Sans', 'Roboto', Arial, sans-serif">
+                                    <style>
+                                        .cover {
+                                            object-fit: cover;
+                                            width: 512px;
+                                            height: 512px;
+                                        }
+
+                                        .page-header, .page-header-space {
+                                            height: 200px;
+                                        }
+
+                                        .page {
+                                            page-break-after: always;
+                                            padding-bottom: 55px;
+                                        }
+
+                                        @@page {
+                                            margin: 5mm
+                                        }
+
+                                        @@media print {
+                                            .page-header {
+                                                position: fixed;
+                                                top: 0mm;
+                                                width: 100%;
+                                                height: 220px;
+                                            }
+
+                                            thead {
+                                                display: table-header-group;
+                                            }
+
+                                            body {
+                                                margin: 0;
+                                            }
+                                        }
+                                    </style>
+
+                                    <div class="page-header" style="text-align: center">
+                                        <div class="header-section">
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                <div class="header-section" style="object-fit:contain;">
+                                                                    <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <div class="page-header-space"></div>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div style="font-family: 'Roboto', sans-serif;">
+                                                        <div class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                                            <div class="container" style="border: 0px solid #000;">
+                                                                <div class="address-section">
+                                                                    <table style="padding: 10px 10px; width: 100%;">
+                                                                        <tbody>
+                                                                            <tr valign="top">
+                                                                                <td style="font-size: 16px; color: #000; ">
+                                                                                    <table width="100%">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="text-align: right;"> <strong>Date:</strong> {{QuotationList[0].QUOTATION_DATE}}</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="text-align: right;"> <strong> Quotation No: </strong> {{QuotationList[0].QUOTATION_NO}}</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="text-align: left; font-weight: 600;"></td>
+                                                                                                <td style="text-align: right;"></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: left; font-weight: 600; font-size: 20px; margin-top: 20px;">To,</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: left; font-weight: 600;">
+                                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].CUSTOMER_NAME}}<br>{{QuotationList[0].FIRM_NAME}},</p>
+                                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].FIRM_ADDRESS}}-{{QuotationList[0].ZIP_CODE}}</p>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="description-section" style="padding:5px 10px 0;">
+                                                                    <table width="100%">
+                                                                        <tbody>
+                                                                            <tr align="left">
+                                                                                <td style="font-size: 16px; color: #000;">
+                                                                                    <span style="font-weight: 600; font-size:18px; margin-left: 20px;">Sub: {{SUBJECT}} @*Quotation for {{QuotationProductList[0].PRODUCT_NAME}}.*@</span>
+
+                                                                                </td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <table width="100%" style="border: 1px solid #000;  border-collapse: collapse;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">S.N.</th>
+                                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">DESCRIPTION</th>
+                                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">QTY</th>
+                                                                                <th style="border:2px solid #000; font-size: 18px; padding:5px 10px;">BASIC PRICE (Rs.)</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr ng-repeat="P in QuotationProductList">
+                                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">{{$index+1}}</td>
+                                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">{{P.PRODUCT_NAME}}</td>
+                                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">{{P.QUANTITY}}</td>
+                                                                                <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: right;">{{P.BASIC_PRICE}}/- + GST@('@'){{P.GST_PERCENTAGE}}%</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+
+                                                                <div style="clear:both; display:block;">
+                                                                    <div>
+                                                                        <table style="width:100%">
+                                                                            <tbody>
+                                                                                <tr align="left">
+                                                                                    <td style="font-weight: 600; font-size:16px; padding-top: 20px; padding-left:30px;"><strong>NOTE:</strong>Quoted price as per Configuration attached in Annexure I for {{QuotationProductList[0].PRODUCT_NAME}}</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="font-size: 24px; text-align: center; text-decoration: underline; padding: 20px 0;">ANNEXURE I</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="font-size: 24px; text-align: center; padding: 20px 0 0; font-weight: 700;">
+                                                                                        {{QuotationProductList[0].PRODUCT_NAME}}
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+
+                                                                    </div>
+                                                                    <div style="padding:5px 10px 0;">
+                                                                        <table style="width: 100%; border-collapse: collapse;">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Sr.No.</th>
+                                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Cat. No.</th>
+                                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Description</th>
+                                                                                    <th style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight: 700;">Qty.</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody ng-repeat="P in QuotationProductList">
+                                                                                <tr ng-if="(P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length>0">
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> &nbsp;</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:bold; text-align: center; text-decoration: underline;">MAIN SYSTEM</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                                </tr>
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict">
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                </tr>
+                                                                                <tr ng-if="(P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length>0">
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> &nbsp;</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:bold; text-align: center; text-decoration: underline;">ATTACHMENTS</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                                </tr>
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict">
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                </tr>
+                                                                                <tr ng-if="(P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length>0">
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;"> &nbsp;</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:bold; text-align: center; text-decoration: underline;">TOOLS</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">&nbsp;</td>
+                                                                                </tr>
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict">
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div style="clear:both; display:block;"></div>
+                                                                <br />
+                                                                <div>
+                                                                    <div style="padding: 5px 10px; page-break-inside: avoid;">
+                                                                        <h3 style="font-size:18px; font-weight: 600; padding: 5px 10px;"> Terms & Conditions:</h3>
+                                                                        <table style="width: 100%; border-collapse: collapse; ">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">ORDER</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">Order In Favor Of:</p>
+                                                                                        <p style="padding: 0px; margin: 0px;"><strong> {{cbd[0].COMPANY_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px;">
+                                                                                            {{cbd[0].COMPANY_REG_ADDRESS}} - {{cbd[0].ZIP_CODE}}
+                                                                                        </p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">PAYMENT TERMS</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+
+                                                                                        <label style="align-content: start; vertical-align: top; text-align: left; font-size: 16px; white-space: pre-wrap; " id="QRemarks">@*{{REMARKS}}*@</label>
+
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">GUARANTEE/WARRANTY</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">
+                                                                                            {{WARRANTY_VALUE}} {{WARRANTY_PERIOD}} from the date of delivery / installation
+                                                                                            against manufacturing defects / workmanship.
+                                                                                            Warranty does not include consumables (tools,
+                                                                                            burs, blades etc) warranty subjected to use of
+                                                                                            equipment according to manufacturer’s
+                                                                                            instructions.
+                                                                                        </p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">GST</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">{{IncludingTaxes}}</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">SUPPLY</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">To your Stores / Dept. as specified in the Purchase Order.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">DELIVERY PERIOD</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">6 to 8 Weeks.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        INSURANCE CHARGES, FREIGHT,
+                                                                                        PACKING & FORWARDING CHARGES
+                                                                                    </td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">Shall be borne by us.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">INSTALLATION CHARGES</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">Free of Cost. </p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">VALIDITY OF THE OFFER</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">For 30 Days</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div style="padding:5px 10px;">
+                                                                        <table style="width: 100%; border-collapse: collapse; page-break-inside:avoid;">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td style="font-size: 18px; padding:5px 10px; font-weight:bold; text-align: left;">Bank Details:</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    @*<td>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>	Sai Imaging Healthcare Pvt. Ltd.</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>Kotak Mahindra Bank</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>Dwarka, Nashik.</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>7020201580</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>KKBK0001915</strong></p>
+                                                                                        </td>*@
+                                                                                    <td>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>{{cbd[0].ACC_HOLDER_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>{{cbd[0].BANK_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>{{cbd[0].BRANCH_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>{{cbd[0].ACC_NO}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>{{cbd[0].IFSC_CODE}}</strong></p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+
+                                                                                        <div>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; margin-top:20px; font-weight: bold; ">For {{cbd[0].COMPANY_NAME}} </p>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            @*<img src="~/Images/Sai-ImagingServices-stamp.png" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
+                                                                                            <img src="{{cbd[0].COMPANY_SEAL}}" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; font-weight: bold;">Authorized Signatory</p>
+                                                                                        </div>
+                                                                                        <!--<div>
+                                                                                        <table style="margin-top:30px; width: 100%;">
+                                                                                            <tbody>
+                                                                                                <tr align="center">
+                                                                                                    <td style="font-size: 16px; color: #1f497d;">
+                                                                                                        <span style="font-weight: 600; font-size:18px;">Admi. Office:</span> Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001-->
+                                                                                        @*405-406 ShreejiBizzworld, Opp. Camel House, Near KatheGali Signal, Dwarka, Nashik – 422 011{{cbd[0].COMPANY_REG_ADDRESS}} – {{cbd[0].ZIP_CODE}}*@
+                                                                                        <!--.
+
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                </tbody>
+                                                                                            </table>
+                                                                                        </div>-->
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--<div style="position: fixed; width: 100%; bottom: 0px; margin-top: 0px; text-align: center;">
+                                                    <table style="margin-top:30px; width: 100%;">
+                                                        <tbody>
+                                                            <tr align="center">
+                                                                <td style="font-size: 16px; color: #1f497d;">
+                                                                    <span style="font-weight: 600; font-size:18px;">Admi. Office:</span> Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001-->
+                                                    @*405-406 ShreejiBizzworld, Opp. Camel House, Near KatheGali Signal, Dwarka, Nashik – 422 011{{cbd[0].COMPANY_REG_ADDRESS}} – {{cbd[0].ZIP_CODE}}*@
+                                                    <!--.
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>-->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintMedtronic')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="QuotationMedtronicSparePart">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintMedtronicSparePart" style="border: 0px solid #000; font-family:'Google Sans', 'Roboto', Arial, sans-serif">
+                                    <style>
+                                        .cover {
+                                            object-fit: cover;
+                                            width: 512px;
+                                            height: 512px;
+                                        }
+
+                                        .page-header, .page-header-space {
+                                            height: 200px;
+                                        }
+
+                                        /*.page-footer, .page-footer-space {
+                                                                                      height: 50px;
+
+                                                                                    }
+                                        */
+                                        /*.page-footer {
+                                                                                      position: absolute;
+                                                                                      bottom: 0;
+                                                                                      width: 100%;
+
+                                                                                    }*/
+
+
+                                        .page {
+                                            page-break-after: always;
+                                            padding-bottom: 55px;
+                                        }
+
+                                        @@page {
+                                            margin: 5mm
+                                        }
+
+                                        @@media print {
+                                            .page-header {
+                                                position: fixed;
+                                                top: 0mm;
+                                                width: 100%;
+                                                height: 220px;
+                                            }
+                                            /*.page-footer {
+                                                                                            position: fixed;
+                                                                                            bottom: 0mm;
+                                                                                            width: 100%;
+
+                                                                                        }*/
+                                            thead {
+                                                display: table-header-group;
+                                            }
+                                            /*tfoot {display: table-footer-group;}*/
+
+                                            body {
+                                                margin: 0;
+                                            }
+                                        }
+                                    </style>
+                                    <div class="page-header" style="text-align: center">
+                                        <div class="header-section">
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                <div class="header-section" style="object-fit:contain;">
+                                                                    @*<img src="~/Images/Quotation/HeaderImages/SaiHealthCareMindrayHeader.png" style="width:100%">*@
+                                                                    <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <table>
+
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <!--place holder for the fixed-position header-->
+                                                    <div class="page-header-space"></div>
+                                                </td>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div style="font-family: 'Roboto', sans-serif;">
+                                                        <div class="wrapper" style="width:100%; font-size:13px;">
+                                                            <div class="container" style="border: 0px solid #000;">
+
+                                                                <div class="address-section">
+                                                                    <table style="padding: 10px 10px; width: 100%;">
+                                                                        <tbody>
+                                                                            <tr valign="top">
+                                                                                <td style="font-size: 16px; color: #000; ">
+                                                                                    <table width="100%">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="text-align: right;"> <strong>Date:</strong> {{QuotationList[0].QUOTATION_DATE}}</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="text-align: right;"> <strong> Quotation No: </strong> {{QuotationList[0].QUOTATION_NO}}</td>
+                                                                                            </tr>
+
+                                                                                            <tr>
+                                                                                                <td style="text-align: left; font-weight: 600;"></td>
+                                                                                                <td style="text-align: right;"></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: left; font-weight: 600; font-size: 20px; margin-top: 20px;">To,</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: left; font-weight: 600;">
+                                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].CUSTOMER_NAME}}<br>{{QuotationList[0].FIRM_NAME}},</p>
+                                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].FIRM_ADDRESS}}-{{QuotationList[0].ZIP_CODE}}</p>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td><p><br /></p></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: center; font-size: 16px;  ">
+                                                                                                    <span style="font-weight: 600; font-size: 16px;">Sub: -</span> {{SUBJECT}} @*Quotation for {{QuotationProductList[0].PRODUCT_NAME}}*@
+                                                                                                    @*<span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict">
+                                                                                                                <span ng-if="$index+1 === 1">Attachments</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="(P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length>0 && (P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length>0">
+                                                                                                                <span ng-if="$index+1 === 1">and</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict">
+                                                                                                                <span ng-if="$index+1 === 1">Tools</span>
+                                                                                                            </span>
+                                                                                                        </span>.*@
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div style="clear:both; display:block;">
+                                                                    <div style="padding:5px 10px 0;">
+                                                                        <table style="width:100%; margin-top:10px; padding-top: 30px; border-collapse: collapse;">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">S.N.</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">Cat No.</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">Description </th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">Qty</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">MRP</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">Basic Price</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">GST 12 % Amount</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">Total Amount</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody ng-repeat="P in QuotationProductList">
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict">
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding:5px;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.MRP}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.BASIC_PRICE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{(Acc.BASIC_PRICE * Acc.GST_PERCENTAGE/100).toFixed(0)}}</td>
+                                                                                    @*<td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"><span ng-if="IncludingTaxes==='Including'">{{Acc.PART_TOTAL_AMOUNT}}</span><span ng-if="IncludingTaxes==='Excluding'">{{(Acc.PART_TOTAL_AMOUNT + ((Acc.PART_TOTAL_AMOUNT * Acc.GST_PERCENTAGE)/100)).toFixed(0)}}</span></td>*@
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{(Acc.PART_TOTAL_AMOUNT + ((Acc.PART_TOTAL_AMOUNT * Acc.GST_PERCENTAGE)/100)).toFixed(0)}}</td>
+                                                                                </tr>
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict">
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding:5px;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.MRP}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.BASIC_PRICE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{(Acc.BASIC_PRICE * Acc.GST_PERCENTAGE/100).toFixed(0)}}</td>
+                                                                                    @*<td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"><span ng-if="IncludingTaxes==='Including'">{{Acc.PART_TOTAL_AMOUNT}}</span><span ng-if="IncludingTaxes==='Excluding'">{{(Acc.PART_TOTAL_AMOUNT + ((Acc.PART_TOTAL_AMOUNT * Acc.GST_PERCENTAGE)/100)).toFixed(0)}}</span></td>*@
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{(Acc.PART_TOTAL_AMOUNT + ((Acc.PART_TOTAL_AMOUNT * Acc.GST_PERCENTAGE)/100)).toFixed(0)}}</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"></td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"></td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"></td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"></td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">Total:</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{TOTAL_BASIC_PRICE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{TOTAL_GST}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{T_TOTAL_PRICE}}</td>
+
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div style="clear:both; display:block;"></div>
+                                                                <!--<div style="page-break-before:always">&nbsp;</div>
+                                                                <div class="header-section" style=" padding:10px 10px 0;">
+                                                                    <div class="table">
+                                                                        <table style="width: 100%;">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <div align="center" style="padding-right:0px;">-->
+                                                                @*<img src="~/Images/Quotation/HeaderImages/SaiHealthCareMedtronicHeader.png" style="margin: 0 auto; width:100%;">*@
+                                                                <!--<img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="margin: 0 auto; width:100%; object-fit:contain;">
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>-->
+                                                                <br />
+                                                                <div>
+
+                                                                    <div style="padding: 5px 10px; page-break-inside: avoid;">
+                                                                        <h3 style="font-size:18px; font-weight: 600; padding: 5px 10px;"> Terms & Conditions:</h3>
+                                                                        <table style="width: 100%; border-collapse: collapse; ">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">ORDER</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">Order In Favor Of:</p>
+                                                                                        <p style="padding: 0px; margin: 0px;"><strong>{{cbd[0].COMPANY_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px;">
+                                                                                            {{cbd[0].COMPANY_REG_ADDRESS}} - {{cbd[0].ZIP_CODE}}
+                                                                                            @*Office No. 55, 5th Floor, Business Bay,
+                                                                                                Near Sopan Hospital,Mumbai Naka,
+                                                                                                Nashik - 422 001*@
+                                                                                        </p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">PAYMENT TERMS</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+
+                                                                                        <label style="align-content: start; vertical-align: top; text-align: left; font-size: 16px; white-space: pre-wrap; " id="QTerms">@*{{REMARKS}}*@</label>
+
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">GST</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">Included</p>
+
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">SUPPLY</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">To your Stores / Dept. as specified in the Purchase Order.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">DELIVERY PERIOD</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">4 to 6 Weeks.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">VALIDITY OF THE OFFER</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">30 Days From Date of Quotation.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div style="padding:5px 10px;">
+                                                                        <table style="width: 100%; border-collapse: collapse; page-break-inside:avoid; ">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td style="font-size: 18px; padding:5px 10px; font-weight:bold; text-align: left;">Bank Details:</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    @*<td>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>	Sai Imaging Healthcare Pvt. Ltd.</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>Kotak Mahindra Bank</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>Dwarka, Nashik.</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>7020201580</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>KKBK0001915</strong></p>
+                                                                                        </td>*@
+                                                                                    <td>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>{{cbd[0].ACC_HOLDER_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>{{cbd[0].BANK_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>{{cbd[0].BRANCH_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>{{cbd[0].ACC_NO}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>{{cbd[0].IFSC_CODE}}</strong></p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+
+                                                                                        <div>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; margin-top:20px; font-weight: bold; ">For {{cbd[0].COMPANY_NAME}} </p>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            @*<img src="~/Images/Sai-ImagingServices-stamp.png" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
+                                                                                            <img src="{{cbd[0].COMPANY_SEAL}}" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; font-weight: bold;">Authorized Signatory</p>
+                                                                                        </div>
+
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--<div style="position: fixed; width: 100%; bottom: 0px; margin-top: 0px; text-align: center;">
+                                                    <table style="margin-top:30px; width: 100%;">
+                                                        <tbody>
+                                                            <tr align="center">
+                                                                <td style="font-size: 16px; color: #1f497d;">
+                                                                    <span style="font-weight: 600; font-size:18px;">Admi. Office:</span> Office No. 55, 5th Floor, Business Bay, Near Sopan Hospital,Mumbai Naka, Nashik - 422 001-->
+                                                    @*405-406 ShreejiBizzworld, Opp. Camel House, Near KatheGali Signal, Dwarka, Nashik – 422 011{{cbd[0].COMPANY_REG_ADDRESS}} – {{cbd[0].ZIP_CODE}}*@
+                                                    <!--.
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>-->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                        <!--<tfoot>
+                                        <tr>
+                                            <td>-->
+                                        <!--place holder for the fixed-position footer-->
+                                        <!--<div class="page-footer-space"></div>
+                                                </td>
+                                            </tr>
+                                        </tfoot>-->
+
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintMedtronicSparePart')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="QuotationMedtronicService">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintMedtronicService" style="border: 0px solid #000; font-family:'Google Sans', 'Roboto', Arial, sans-serif">
+                                    <style>
+                                        .cover {
+                                            object-fit: cover;
+                                            width: 512px;
+                                            height: 512px;
+                                        }
+
+                                        .page-header, .page-header-space {
+                                            height: 200px;
+                                        }
+
+                                        .page {
+                                            page-break-after: always;
+                                            padding-bottom: 55px;
+                                        }
+
+                                        @@page {
+                                            margin: 5mm
+                                        }
+
+                                        @@media print {
+                                            .page-header {
+                                                position: fixed;
+                                                top: 0mm;
+                                                width: 100%;
+                                                height: 220px;
+                                            }
+
+                                            thead {
+                                                display: table-header-group;
+                                            }
+
+                                            body {
+                                                margin: 0;
+                                            }
+                                        }
+                                    </style>
+                                    <div class="page-header" style="text-align: center">
+                                        <div class="header-section">
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                <div class="header-section" style="object-fit:contain;">
+                                                                    <img src="{{cbd[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <div class="page-header-space"></div>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div style="font-family: 'Roboto', sans-serif;">
+                                                        <div class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                                            <div class="container" style="border: 0px solid #000;">
+                                                                <div class="address-section">
+                                                                    <table style="padding: 10px 10px; width: 100%;">
+                                                                        <tbody>
+                                                                            <tr valign="top">
+                                                                                <td style="font-size: 16px; color: #000; ">
+                                                                                    <table width="100%">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="text-align: right;"> <strong>Date:</strong> {{QuotationList[0].QUOTATION_DATE}}</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="text-align: right;"> <strong> Quotation No: </strong> {{QuotationList[0].QUOTATION_NO}}</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="text-align: left; font-weight: 600;"></td>
+                                                                                                <td style="text-align: right;"></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: left; font-weight: 600; font-size: 20px; margin-top: 20px;">To,</td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: left; font-weight: 600;">
+                                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].CUSTOMER_NAME}}<br>{{QuotationList[0].FIRM_NAME}},</p>
+                                                                                                    <p style="margin:0px; font-weight: bold; width:30%;">{{QuotationList[0].FIRM_ADDRESS}}-{{QuotationList[0].ZIP_CODE}}</p>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td><p><br /></p></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="1" style="text-align: center; font-size: 16px;  ">
+                                                                                                    <span style="font-weight: 600; font-size: 16px;">Sub: -</span> {{SUBJECT}} @*Quotation for Repair of {{QuotationProductList[0].PRODUCT_NAME}}*@
+
+                                                                                                    @*<span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length===0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length===0)">
+                                                                                                                <span ng-if="$index+1 === 1">Main System.</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length===0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length===0)">
+                                                                                                                <span ng-if="$index+1 === 1">Attachment(s).</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length===0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length===0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length>0)">
+                                                                                                                <span ng-if="$index+1 === 1">Tool(s).</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length===0)">
+                                                                                                                <span ng-if="$index+1 === 1">Main System, Attachment(s).</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length===0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length>0)">
+                                                                                                                <span ng-if="$index+1 === 1">Attachment(s), Tool(s).</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length===0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length>0)">
+                                                                                                                <span ng-if="$index+1 === 1">Main System, Tool(s).</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                        <span ng-repeat="P in QuotationProductList">
+                                                                                                            <span ng-if="((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length>0) && ((P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length>0)">
+                                                                                                                <span ng-if="$index+1 === 1">Main System, Attachment(s), Tool(s).</span>
+                                                                                                            </span>
+                                                                                                        </span>*@
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div style="clear:both; display:block;">
+                                                                    <div style="padding:5px 10px 0;">
+                                                                        <table style="width:100%; margin-top:10px; padding-top: 30px; border-collapse: collapse;">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th rowspan="2" style="border:1px solid #000; font-size: 16px; padding: 5px;">S.N.</th>
+                                                                                    <th rowspan="2" style="border:1px solid #000; font-size: 16px; padding: 5px;">Code</th>
+                                                                                    <th rowspan="2" style="border:1px solid #000; font-size: 16px; padding: 5px;">Description </th>
+                                                                                    <th rowspan="2" style="border:1px solid #000; font-size: 16px; padding: 5px;">Qty</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px 0; text-align:center;" colspan="3">Unit Price</th>
+
+
+                                                                                </tr>
+                                                                                <tr>
+
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">Basic Price</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">GST {{QuotationProductList[0].GST_PERCENTAGE}} % Amount</th>
+                                                                                    <th style="border:1px solid #000; font-size: 16px; padding: 5px;">Total Amount</th>
+
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody ng-repeat="P in QuotationProductList">
+                                                                                @*<tr ng-if="(P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict).length>0">
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding:5px;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">MAIN SYSTEM</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                    </tr>*@
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict">
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding:5px;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.BASIC_PRICE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{(Acc.BASIC_PRICE * Acc.GST_PERCENTAGE/100).toFixed(0)}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"><span ng-if="IncludingTaxes==='Including'">{{Acc.PART_TOTAL_AMOUNT}}</span><span ng-if="IncludingTaxes==='Excluding'">{{(Acc.PART_TOTAL_AMOUNT + ((Acc.PART_TOTAL_AMOUNT * Acc.GST_PERCENTAGE)/100)).toFixed(0)}}</span></td>
+                                                                                </tr>
+                                                                                @*<tr ng-if="(P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict).length>0">
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding:5px;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">ATTACHMENTS</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                    </tr>*@
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict">
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding:5px;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.BASIC_PRICE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{(Acc.BASIC_PRICE * Acc.GST_PERCENTAGE/100).toFixed(0)}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"><span ng-if="IncludingTaxes==='Including'">{{Acc.PART_TOTAL_AMOUNT}}</span><span ng-if="IncludingTaxes==='Excluding'">{{(Acc.PART_TOTAL_AMOUNT + ((Acc.PART_TOTAL_AMOUNT * Acc.GST_PERCENTAGE)/100)).toFixed(0)}}</span></td>
+                                                                                </tr>
+                                                                                @*<tr ng-if="(P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict).length>0">
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding:5px;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">MAIN SYSTEM</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                        <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">&nbsp;</td>
+                                                                                    </tr>*@
+                                                                                <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict">
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{$index+1}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding:5px;">{{Acc.ACCESSORY_CODE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.ACCESSORY_NAME}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.QUANTITY}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{Acc.BASIC_PRICE}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;">{{(Acc.BASIC_PRICE * Acc.GST_PERCENTAGE/100).toFixed(0)}}</td>
+                                                                                    <td style="border:1px solid #000; font-size: 16px; padding: 5px; text-align: center;"><span ng-if="IncludingTaxes==='Including'">{{Acc.PART_TOTAL_AMOUNT}}</span><span ng-if="IncludingTaxes==='Excluding'">{{(Acc.PART_TOTAL_AMOUNT + ((Acc.PART_TOTAL_AMOUNT * Acc.GST_PERCENTAGE)/100)).toFixed(0)}}</span></td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div style="clear:both; display:block;"></div>
+
+                                                                <div>
+
+                                                                    <div style="padding:5px 10px; page-break-inside:avoid;">
+                                                                        <h3 style="font-size:18px; font-weight: 600; padding: 5px 10px;"> Terms & Conditions:</h3>
+                                                                        <table style="width: 100%; border-collapse: collapse; ">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">ORDER</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">Order In Favor Of:</p>
+                                                                                        <p style="padding: 0px; margin: 0px;"><strong>{{cbd[0].COMPANY_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px;">
+                                                                                            {{cbd[0].COMPANY_REG_ADDRESS}} – {{cbd[0].ZIP_CODE}}
+                                                                                        </p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">PAYMENT TERMS</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+
+                                                                                        <label style="align-content: start; vertical-align: top; text-align: left; font-size: 16px; white-space: pre-wrap; " id="QTermsService">@*{{REMARKS}}*@</label>
+
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">SUPPLY</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">To your Stores / Dept. as specified in the Purchase Order.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">DELIVERY PERIOD</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">4 to 6 Weeks.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">VALIDITY OF THE OFFER</td>
+                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; font-weight:normal; text-align: left; width: 50%;">
+                                                                                        <p style="padding: 0px; margin: 0px;">30 Days From Date of Quotation.</p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div style="padding:5px 10px;">
+                                                                        <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid;">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td style="font-size: 18px; padding:5px 10px; font-weight:bold; text-align: left;">Bank Details:</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    @*<td>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>	Sai Imaging Healthcare Pvt. Ltd.</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>Kotak Mahindra Bank</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>Dwarka, Nashik.</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>7020201580</strong></p>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>KKBK0001915</strong></p>
+                                                                                        </td>*@
+                                                                                    <td>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>{{cbd[0].ACC_HOLDER_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>{{cbd[0].BANK_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>{{cbd[0].BRANCH_NAME}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>{{cbd[0].ACC_NO}}</strong></p>
+                                                                                        <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>{{cbd[0].IFSC_CODE}}</strong></p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+
+                                                                                        <div>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; margin-top:20px; font-weight: bold; ">For {{cbd[0].COMPANY_NAME}} </p>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            @*<img src="~/Images/Sai-ImagingServices-stamp.png" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
+                                                                                            <img src="{{cbd[0].COMPANY_SEAL}}" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; font-weight: bold;">Authorized Signatory</p>
+                                                                                        </div>
+
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                        <!--<tfoot>
+                                        <tr>
+                                            <td>-->
+                                        <!--place holder for the fixed-position footer-->
+                                        <!--<div class="page-footer-space"></div>
+                                                </td>
+                                            </tr>
+                                        </tfoot>-->
+
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <div class="noprint">
+                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintMedtronicService')" />
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                        <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/AngularJs/MedtronicQuotaionView.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>*@
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        // Write on keyup event of keyword input element
+        $("#searchInTb").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#example-table3 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+
+    </script>
+
+    <script>
+        $("#searchAccName1").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable1 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+
+        $("#searchAccCode1").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#AccTable1 tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+
+        $("#searchAccName2").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#Attachments tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+
+        $("#searchAccCode2").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#Attachments tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+
+        $("#searchAccName3").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#Tools tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+
+        $("#searchAccCode3").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#Tools tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+    </script>
+
+    <script>
+
+        function CheckALLMainSystem() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox1").change(function () {
+                if (this.checked) {
+                    $(".MainSystem").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".MainSystem").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".MainSystem").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".MainSystem").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox1").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox1").prop("checked", false);
+                }
+            });
+        }
+        function CheckALLAttachments() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox2").change(function () {
+                if (this.checked) {
+                    $(".Attachments").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".Attachments").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".Attachments").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".Attachments").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox2").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox2").prop("checked", false);
+                }
+            });
+        }
+        function CheckALLTools() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox3").change(function () {
+                if (this.checked) {
+                    $(".Tools").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".Tools").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".Tools").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".Tools").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox3").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox3").prop("checked", false);
+                }
+            });
+        }
+
+        function CheckALLStd() {
+            $("#checkAllChkboxStd").change(function () {
+                if (this.checked) {
+                    $(".StdAccParts").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".StdAccParts").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".StdAccParts").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".StdAccParts").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkboxStd").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkboxStd").prop("checked", false);
+                }
+            });
+        }
+    </script>
+
+}
+
+

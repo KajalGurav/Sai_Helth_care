@@ -1,0 +1,467 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@*<style>
+        .table td, .table th {
+            padding: 0.50rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+            font-size: 12px;
+        }
+    </style>*@
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+<style>
+    .dropbtn {
+        background-color: #04AA6D;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #3e8e41;
+        }
+
+    #myInput {
+        box-sizing: border-box;
+        background-image: url('searchicon.png');
+        background-position: 14px 12px;
+        background-repeat: no-repeat;
+        font-size: 16px;
+        padding: 14px 20px 12px 45px;
+        border: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+        #myInput:focus {
+            outline: 3px solid #ddd;
+        }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f6f6f6;
+        min-width: 230px;
+        overflow: auto;
+        border: 1px solid #ddd;
+        z-index: 1;
+    }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+    .dropdown a:hover {
+        background-color: #ddd;
+    }
+
+    .show {
+        display: block;
+    }
+</style>
+
+
+
+
+<section ng-controller="RegularQuotationCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>{{CUSTOMER_TYPE}} Quotation</b></h3>
+                            </div>
+                            <div class="col-lg-2">
+                                <a href="~/Quotation_Registration/QueAdd?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId=0&QuotId=0" type="button" class="btn btn-sm pull-left" style="background-color: rgb(60, 179, 113); color: black">
+                                    Add Quotation
+
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="display:none;">
+                        <div class="col-2"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" ng-model="FROM_DATE" id="STARTING_DATE" autocomplete="off" placeholder="Select From Date" />
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" ng-model="TO_DATE" id="ENDING_DATE" autocomplete="off" placeholder="Select To Date" />
+                        </div>
+                        <div class="col-1">
+                            <input type="button" class="form-control  note-btn-block" style="background-color: #E9967A; color: black; width: 90px; text-align: center;" value="Get Data" ng-click="getdate()" />
+                        </div>
+                        <div class="col-2"></div>
+
+                    </div>
+                    <div class="row" style="margin-top:2px;">
+
+                        <div class="col-3"></div> <div class="col-3"></div>
+
+                        <div class="form-group col-md-3">
+                            <select ng-model="P_ID" id="P_ID" class="form-control" ng-change="GetData()">
+                                <option value="">Select Product</option>
+                                <option ng-repeat="Product in ProductList" ng-value="{{Product.P_ID}}">{{Product.PRODUCT_NAME}}</option>
+                            </select>
+                        </div>
+                       
+
+
+
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Quotation" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr.No.</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    @*<th>Quote. Date</th>*@
+                                    <th>Quote.No</th>
+                                    <th>Quotation For</th>
+                                    @*<th>Product Name</th>
+                                        <th>Model Name</th>*@
+                                    <th>PNDT Status</th>
+                                    <th>Status</th>
+                                    @*<th>Quotation For</th>*@
+                                    <th>Quot Type</th>
+                                    <th>PNDT No</th>
+                                    <th>Reg Date</th>
+                                    @*<th>P.O Date </th>*@
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in RegularQuotationList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{admin.CUSTOMER_NAME}}</td>
+                                    <td>{{admin.FIRM_NAME}}</td>
+                                    @*<td>{{admin.QUOTATION_DATE}}</td>*@
+                                    <td>{{admin.QUOTATION_NO}}</td>
+                                    <td style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:100px;"><a href="" ng-click="ShowReceiptFor(admin)" data-target="#ReceiptForModal" data-toggle="modal">{{admin.QUOTATION_FOR}}</a></td>
+                                    @*<td>{{admin.FIRM_NAME}}</td>
+                                        <td>{{admin.FIRM_NAME}}</td>*@
+                                    <td>{{admin.PNDT_STATUS}}</td>
+                                    <td>{{admin.STATUS}}</td>
+                                    <td>{{admin.QUOTATION_TYPE}}</td>
+                                    <td>{{admin.PNDT_NO}}</td>
+                                    <td>{{admin.REG_DATE}}</td>
+                                    @*<td>{{admin.PO_DATE}}</td>*@
+                                    <td>
+                                        @*<a class="btn btn-xs btn-success" ng-click="getForUpdate(admin)" data-toggle="modal"> Edit</a>*@
+                                        <a href="~/Quotation_Registration/QueAdd?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&QuotId={{admin.Q_ID}}" class="btn btn-xs btn-success">Edit</a>
+                                        <a ng-show="CUSTOMER_TYPE=='Regular'" href="~/Quotation_Registration/ViewQuote?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&QuotId={{admin.Q_ID}}&From='Quotation'" style="color:black" title="View" class="btn btn-xs btn-primary">View </a>
+                                        <a ng-show="CUSTOMER_TYPE=='Mindray'" href="~/MindrayQuotation/ViewQuote/{{admin.Q_ID}}?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}" style="color:black" title="View" class="btn btn-xs btn-primary">View </a>
+                                        <a ng-show="CUSTOMER_TYPE=='Medtronic'" href="~/Quotation_Registration/MedtronicViewQuote?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&QuotId={{admin.Q_ID}}" style="color:black" title="View" class="btn btn-xs btn-primary">View </a>
+
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="12" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal fade" id="ReceiptForModal">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>Quotation Details</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="form-group col-md-12">
+                                            <label>Quotation For:</label>
+                                            <textarea class="form-control" ng-model="QUOTATION_FOR" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="Admin_Addupdate">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #20B2AA; color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>{{Admin_Action}}</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Quot Type:</label><label style="color:red;">*</label>
+                                                <select name="QUOTATION_TYPE" class="form-control" ng-model="QUOTATION_TYPE" id="QUOTATION_TYPE" required>
+                                                    <option value="">Select Quot Type </option>
+                                                    <option value="Sales">Sales</option>
+                                                    <option value="Service">Service</option>
+                                                    <option value="SpareParts">SpareParts</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.QUOTATION_TYPE.$invalid && (AddPayment.QUOTATION_TYPE.$touched || AddPayment.QUOTATION_TYPE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.QUOTATION_TYPE.$error.required">Quot Type is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Quotation Number:</label>
+                                                <input type="text" name="QUOTATION_NO" ng-model="QUOTATION_NO" class="form-control" readonly placeholder="Enter Quotation No." />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Customer Name:</label><label style="color:red;">*</label>
+                                                <select id="CUSTOMER_ID" class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID"
+                                                        ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in CustomerList"
+                                                        ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-change="GetFirmChange()" required>
+                                                    <option value="">Select Customer Name</option>
+                                                </select>
+                                                @*<select class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID" id="CUSTOMER_ID" ng-change="GetFirmChange()" required>
+                                                        <option value="">Select Customer Name</option>
+                                                        <option ng-repeat="Customer in CustomerList" value="{{Customer.Customer_ID}}">{{Customer.CUSTOMER_NAME}}</option>
+                                                    </select>*@
+                                                <span ng-show="(AddPayment.CUSTOMER_ID.$invalid && (AddPayment.CUSTOMER_ID.$touched || AddPayment.CUSTOMER_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CUSTOMER_ID.$error.required">Customer Name is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-lg-6">
+                                                <label class="control-label">Select Customer Firm Name :</label><label style="color:red;">*</label>
+                                                <select id="FIRM_ID" class="form-control" name="FIRM_ID" ng-model="FIRM_ID"
+                                                        ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in CustomerFirmList"
+                                                        ng-selected="Customer.F_ID == FIRM_ID">
+                                                    <option value="">Select Firm Name</option>
+                                                </select>
+                                                @*<select name="FIRM_ID" id="FIRM_ID" class="form-control" ng-model="FIRM_ID" required>
+                                                        <option value="">Select Firm Name</option>
+                                                        <option ng-repeat="Customer in CustomerFirmList" value="{{Customer.F_ID}}">{{Customer.FIRM_NAME}}</option>
+                                                    </select>*@
+                                                <span ng-show="(AddPayment.FIRM_ID.$invalid && (AddPayment.FIRM_ID.$touched || AddPayment.FIRM_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FIRM_ID.$error.required">Customer Firm Name is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Quotation Date:</label>
+                                                <input type="text" name="QUOTATION_DATE" ng-model="QUOTATION_DATE" readonly @*id="QUOTATION_DATE"*@ class="form-control" placeholder="Quotation Date." />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PNDT Status:</label>
+                                                <input type="text" name="PNDT_STATUS" ng-model="PNDT_STATUS" maxlength="50" class="form-control" placeholder="Enter PNDT Status" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PNDT No.:</label>
+                                                <input type="text" name="PNDT_NO" id="PNDT_NO" ng-model="PNDT_NO" ng-pattern="/^[ A-Za-z0-9_@('@')./#&+-]*$/" maxlength="100" class="form-control" placeholder="Enter PNDT No" />
+                                                <span ng-show="(AddPayment.PNDT_NO.$invalid && (AddPayment.PNDT_NO.$touched || AddPayment.PNDT_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.required">PNDT Number is required</span>
+                                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.pattern">Invalid PNDT Number</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Status:</label><label style="color:red;">*</label>
+                                                <select name="STATUS" class="form-control" ng-model="STATUS" id="STATUS" required>
+                                                    <option value="">Select Status </option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Done">Done</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.STATUS.$invalid && (AddPayment.STATUS.$touched || AddPayment.STATUS.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.STATUS.$error.required">Status is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">P.O Date:</label>@*<label style="color:red;">*</label>*@
+                                                <input type="text" id="PO_DATE" name="PO_DATE" ng-model="PO_DATE" class="form-control" placeholder="Enter P.O Date" @*required*@ />
+                                                <span ng-show="(AddPayment.PO_DATE.$invalid && (AddPayment.PO_DATE.$touched || AddPayment.PO_DATE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PO_DATE.$error.required">P.O Date is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Payment Term(%):</label><label style="color:red;">*</label>
+                                                <input type="number" step="0.01" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseFloat(this.value)>this.max){ this.value =this.max; return false; }" ng-pattern="/^[0-9]{1,3}(?:\.[0-9]{1,2})?$/" name="PAYMENT_TERM" ng-model="PAYMENT_TERM" id="PAYMENT_TERM" class="form-control" placeholder="Enter Payment Term" required />
+                                                <span ng-show="(AddPayment.PAYMENT_TERM.$invalid && (AddPayment.PAYMENT_TERM.$touched || AddPayment.PAYMENT_TERM.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PAYMENT_TERM.$error.required">Payment Term(%) is required</span>
+                                                    <span class="error" ng-show="AddPayment.PAYMENT_TERM.$error.number">Payment Term(%) is invalid</span>
+                                                    <span class="error" ng-show="AddPayment.PAYMENT_TERM.$error.pattern">Payment Term(%) is invalid</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Competent Authorities(AERB/PNDT):</label><label style="color:red;">*</label>
+                                                <select name="AERB_OR_PNDT" class="form-control" ng-model="AERB_OR_PNDT" id="AERB_OR_PNDT" required>
+                                                    <option value="">Select Competent Authorities</option>
+                                                    <option value="AERB">AERB</option>
+                                                    <option value="PNDT">PNDT</option>
+                                                    <option value="AERB/PNDT">AERB/PNDT</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.AERB_OR_PNDT.$invalid && (AddPayment.AERB_OR_PNDT.$touched || AddPayment.AERB_OR_PNDT.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.AERB_OR_PNDT.$error.required">Competent Authorities(AERB/PNDT) is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Company Bank Details(for printing on Quotation):</label><label style="color:red;">*</label>
+                                                <select id="BANK_ID" class="form-control" name="BANK_ID" ng-model="BANK_ID"
+                                                        ng-options="Bank.B_ID as Bank.BANK_AND_ACCNO for Bank in CompanyBankList"
+                                                        ng-selected="Bank.B_ID == BANK_ID" required>
+                                                    <option value="">Select Bank Details</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.BANK_ID.$invalid && (AddPayment.BANK_ID.$touched || AddPayment.BANK_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.BANK_ID.$error.required">Company Bank Details are required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Note:</label>
+                                                <textarea class="form-control" ng-model="NOTE" id="NOTE" name="NOTE" placeholder="Enter Note"></textarea>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <script src="~/AngularJs/RegQuotaion.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $("#STARTING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#STARTING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STARTING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STARTING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#STARTING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#ENDING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#ENDING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#ENDING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#ENDING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#ENDING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#PO_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#PO_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#PO_DATE").datepicker("option", "maxDate", null);
+            $("#PO_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#PO_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#PO_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+        $(function () {
+
+
+            $("#STARTING_DATE").datepicker({ maxDate: 0 });
+        });
+
+        $(function () {
+
+            $("#ENDING_DATE").datepicker({ maxDate: 0 });
+        });
+
+    </script>
+    <script>
+        function filterFunction() {
+        const input = document.getElementById("myInput");
+        const filter = input.value.toUpperCase();
+        const div = document.getElementById("myDropdown");
+        const a = div.getElementsByTagName("a");
+        for (let i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        a[i].style.display = "";
+        } else {
+        a[i].style.display = "none";
+        }
+        }
+}
+</script>
+
+
+}
