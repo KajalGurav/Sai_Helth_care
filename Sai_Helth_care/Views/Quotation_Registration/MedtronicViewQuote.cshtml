@@ -62,6 +62,40 @@
         color: Red;
     }
 </style>
+<style>
+    .content-div {
+        display: none;
+    }
+
+    /* Show the div when its id is targeted */
+    #main-system:target,
+    #attachment:target,
+    #tools:target {
+        display: block;
+    }
+
+    /* Styling for buttons */
+    .buttons {
+        margin-bottom: 10px;
+    }
+
+        .buttons button {
+            background-color: forestgreen;
+            color: white;
+            padding: 5px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 5px;
+            border: none;
+        }
+
+    .content-div {
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin-top: 10px;
+    }
+</style>
 
 
 <div class="page-content fade-in-up" ng-controller="RegularQuotationCtrl">
@@ -168,7 +202,9 @@
 
                                             </th>
                                             <th></th>
+
                                         </tr>
+
                                     </thead>
                                     <tbody style="color:black;">
                                         <tr ng-repeat="Product in ProductList">
@@ -203,28 +239,37 @@
                                             <td>{{P.QUANTITY}}</td>
                                             <td>{{P.BASIC_PRICE}}</td>
                                             <td>
-                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a><br /><br />
+                                                <a href="" title="{{Action}}" ng-click="GetSpareForUpdate(P)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Update</a>
                                             </td>
                                         </tr>
                                         <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} |filter:search:strict"
                                             @*ng-if="Acc.ACCESSORY_NAME!='' && Acc.BASIC_PRICE!=0"*@>
                                             <td colspan="4"><b>Main System:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b>Basic Price:</b>{{Acc.BASIC_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.QUANTITY}}&nbsp; <b>Total:</b>{{Acc.PART_TOTAL_AMOUNT}}&nbsp; </td>
                                             <td>
-                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                <!--<a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                <a href="" title="{{Action}}" ng-click="GetSpareForUpdate(P)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Update</a>-->
+                                                @*Added By Kajal*@
+
                                             </td>
                                         </tr>
                                         <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} |filter:search:strict"
                                             @*ng-if="Acc.ACCESSORY_NAME!='' && Acc.BASIC_PRICE!=0"*@>
                                             <td colspan="4"><b>Attachment:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b>Basic Price:</b>{{Acc.BASIC_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.QUANTITY}}&nbsp;<b>Total:</b>{{Acc.PART_TOTAL_AMOUNT}}&nbsp; </td>
                                             <td>
-                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                <!--<a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                <a href="" title="{{Action}}" ng-click="GetSpareForUpdate(P)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Update</a>-->
+                                                @*Added By Kajal*@
+
                                             </td>
                                         </tr>
                                         <tr ng-repeat="Acc in P.MedtronicQuotationProductAccessoriesList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} |filter:search:strict"
                                             @*ng-if="Acc.ACCESSORY_NAME!='' && Acc.BASIC_PRICE!=0"*@>
                                             <td colspan="4"><b>Tool:</b> {{Acc.ACCESSORY_NAME}}&nbsp;<b>Basic Price:</b>{{Acc.BASIC_PRICE}}&nbsp; <b>Quantity:</b>{{Acc.QUANTITY}}&nbsp;<b>Total:</b>{{Acc.PART_TOTAL_AMOUNT}}&nbsp; </td>
                                             <td>
-                                                <a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                @*<a ng-click="getFordelete(Acc)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                    <a href="" title="{{Action}}" ng-click="GetSpareForUpdate(P)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Update</a>*@
+
                                             </td>
                                         </tr>
                                     </tbody>
@@ -324,7 +369,7 @@
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:gray; color: white; padding: 10px; ">
                             <h4 class="modal-title">
-                                <b> Add Product Accessories </b>
+                                <b> {{Action}} Product Accessories </b>
                             </h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -369,10 +414,16 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div style="margin-bottom: 10px;">
 
-                                        <div style="overflow-y:auto;height:200px;margin-top:10px;">
-                                            <table ng-hide="QuotationList[0].QUOTATION_TYPE==='SpareParts'" id="AccTable1" class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                            <button onclick="location.hash = 'main-system'" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;">Main System</button>
+                                            <button onclick="location.hash = 'attachment'" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;">Attachment</button>
+                                            <button onclick="location.hash = 'tools'" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;">Tools</button>
 
+                                        </div>
+
+                                        <div style="overflow-y:auto;margin-top:10px;" id="main-system" class="content-div">
+                                            <table id="AccTable1" class="table table-bordered mh-100" style="font-size: 0.9rem;color:black;">
                                                 <thead>
                                                     <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
                                                         <th>
@@ -390,11 +441,9 @@
                                                     <tr>
                                                         <th></th>
                                                         <th>
-                                                            @*<input type="text" class="form-control" ng-model="searchAccName1" placeholder="Search Name">*@
                                                             <input id="searchAccName1" class="form-control" type="text" placeholder="Search" />
                                                         </th>
                                                         <th>
-                                                            @*<input type="text" class="form-control" ng-model="searchAccCode1" placeholder="Search Code">*@
                                                             <input id="searchAccCode1" class="form-control" type="text" placeholder="Search" />
                                                         </th>
                                                         <th></th>
@@ -403,38 +452,71 @@
                                                         <th></th>
                                                         <th></th>
                                                         <th></th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="ms in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 1} | filter: {'ACCESSORY_NAME' : searchAccName1} | filter: {'ACCESSORY_CODE' : searchAccCode1}">
-                                                        <td scope="row" class="checkbox_th">
-                                                            <input id="prodSpare" class="MainSystem" value="{{ms.MED_ACC_ID}}" ng-model="MAIN_SYSTEM_ID" type="checkbox" />
-                                                        </td>
-                                                        <td>{{ms.ACCESSORY_NAME}}</td>
-                                                        <td>{{ms.ACCESSORY_CODE}}</td>
-                                                        <td><input class="form-control priceid" type="number" name="MRP{{ms.MED_ACC_ID}}" id="MRP{{ms.MED_ACC_ID}}" value="{{ms.MRP}}" readonly @*step="0.01" min="0"  onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control priceid" type="number" name="DISCOUNT{{ms.MED_ACC_ID}}" id="DISCOUNT{{ms.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(ms)" value="0" step="1" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                        <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{ms.MED_ACC_ID}}" id="BASIC_PRICE{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly @*value="{{ms.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control qid" type="number" name="Q{{ms.MED_ACC_ID}}" id="Q{{ms.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(ms)" value="1" min="1" max="500" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                        <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly @*value="{{ms.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{ms.MED_ACC_ID}}" id="GST_PERCENTAGE{{ms.MED_ACC_ID}}" value="{{ms.GST_PERCENTAGE}}" readonly @*step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }"*@ /></td>
-
-                                                        @*<td><input class="form-control qid" type="number" name="Q{{ms.MED_ACC_ID}}" id="Q{{ms.MED_ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="MRP{{ms.MED_ACC_ID}}" id="MRP{{ms.MED_ACC_ID}}" value="{{ms.MRP}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{ms.MED_ACC_ID}}" id="BASIC_PRICE{{ms.MED_ACC_ID}}" value="{{ms.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{ms.MED_ACC_ID}}" id="GST_PERCENTAGE{{ms.MED_ACC_ID}}" value="{{ms.GST_PERCENTAGE}}" step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>*@
-
-                                                    </tr>
-
-                                                </tbody>
                                             </table>
-
+                                            <!-- Scrollable section starts here -->
+                                            <div style="max-height: 300px; overflow-y: auto;">
+                                                <table id="AccTable1" class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                                    <tbody>
+                                                        <tr ng-repeat="ms in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID':1} | filter: {'ACCESSORY_NAME' : searchAccName1} | filter: {'ACCESSORY_CODE' : searchAccCode1}">
+                                                            <td scope="row" class="checkbox_th">
+                                                                <input id="prodSpare" class="MainSystem" value="{{ms.MED_ACC_ID}}" ng-model="MAIN_SYSTEM_ID" type="checkbox" />
+                                                            </td>
+                                                            <td>{{ms.ACCESSORY_NAME}}</td>
+                                                            <td>{{ms.ACCESSORY_CODE}}</td>
+                                                            <td><input class="form-control priceid" type="number" name="MRP{{ms.MED_ACC_ID}}" id="MRP{{ms.MED_ACC_ID}}" value="{{ms.MRP}}" readonly /></td>
+                                                            <td><input class="form-control priceid" type="number" name="DISCOUNT{{ms.MED_ACC_ID}}" id="DISCOUNT{{ms.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(ms)" value="0" step="1" min="0" max="100" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{ms.MED_ACC_ID}}" id="BASIC_PRICE{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly /></td>
+                                                            <td><input class="form-control qid" type="number" name="Q{{ms.MED_ACC_ID}}" id="Q{{ms.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(ms)" value="1" min="1" max="500" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly /></td>
+                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{ms.MED_ACC_ID}}" id="GST_PERCENTAGE{{ms.MED_ACC_ID}}" value="{{ms.GST_PERCENTAGE}}" readonly /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
 
-                                        <div style="overflow-y: auto; height: 200px; margin-top: 10px;">
+                                        <!--<div style="max-height: 300px; overflow-y: auto;">
+                                            <table class="table table-bordered" style="font-size: 0.9rem; color:black;">
+                                                <tbody>-->
+                                        <!-- ng-repeat with chained filter logic for proper filtering -->
+                                        <!--<tr ng-repeat="ms in SparepartList
+                                                      | filter: { MED_ACCESSORY_TYPE_ID: 1 }
+                                        | filter: (searchAccName1 ? { ACCESSORY_NAME: searchAccName1 } : {})
+                                        | filter: (searchAccCode1 ? { ACCESSORY_CODE: searchAccCode1 } : {})">
+                                                                        <td scope="row" class="checkbox_th">
+                                                                            <input id="prodSpare" class="MainSystem" value="{{ms.MED_ACC_ID}}" ng-model="MAIN_SYSTEM_ID" type="checkbox" />
+                                                                        </td>
+                                                                        <td>{{ms.ACCESSORY_NAME}}</td>
+                                                                        <td>{{ms.ACCESSORY_CODE}}</td>
+                                                                        <td>
+                                                                            <input class="form-control priceid" type="number" name="MRP{{ms.MED_ACC_ID}}" id="MRP{{ms.MED_ACC_ID}}" value="{{ms.MRP}}" readonly />
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-control priceid" type="number" name="DISCOUNT{{ms.MED_ACC_ID}}" id="DISCOUNT{{ms.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(ms)" value="0" step="1" min="0" max="100" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-control priceid" type="number" name="BASIC_PRICE{{ms.MED_ACC_ID}}" id="BASIC_PRICE{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly />
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-control qid" type="number" name="Q{{ms.MED_ACC_ID}}" id="Q{{ms.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(ms)" value="1" min="1" max="500" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{ms.MED_ACC_ID}}" value="{{Math.round((ms.MRP * 100) / (ms.GST_PERCENTAGE + 100))}}" readonly />
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-control priceid" type="number" name="GST_PERCENTAGE{{ms.MED_ACC_ID}}" id="GST_PERCENTAGE{{ms.MED_ACC_ID}}" value="{{ms.GST_PERCENTAGE}}" readonly />
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>-->
 
-                                            <table class="table table-bordered" id="Attachments" style="font-size: 0.9rem;color:black;">
 
+                                        <div style="overflow-y:auto;margin-top:10px;" id="attachment" class="content-div">
+                                            <table class="table table-bordered mh-100" id="Attachments" style="font-size: 0.9rem;color:black;">
                                                 <thead>
                                                     <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
                                                         <th>
@@ -451,8 +533,6 @@
                                                     </tr>
                                                     <tr>
                                                         <th></th>
-                                                        @*<th><input type="text" class="form-control" ng-model="searchAccName2" placeholder="Search Name"></th>
-                                                            <th><input type="text" class="form-control" ng-model="searchAccCode2" placeholder="Search Code"></th>*@
                                                         <th>
                                                             <input id="searchAccName2" class="form-control" type="text" placeholder="Search" />
                                                         </th>
@@ -467,35 +547,46 @@
                                                         <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="attachment in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} | filter: {'ACCESSORY_NAME' : searchAccName2} | filter: {'ACCESSORY_CODE' : searchAccCode2}">
-                                                        <td scope="row" class="checkbox_th">
-                                                            <input id="prodSpare" class="Attachments" value="{{attachment.MED_ACC_ID}}" ng-model="ATTACHMENTS_ID" type="checkbox" />
-                                                        </td>
-                                                        <td>{{attachment.ACCESSORY_NAME}}</td>
-                                                        <td>{{attachment.ACCESSORY_CODE}}</td>
-                                                        <td><input class="form-control priceid" type="number" name="MRP{{attachment.MED_ACC_ID}}" id="MRP{{attachment.MED_ACC_ID}}" value="{{attachment.MRP}}" readonly @*step="0.01" min="0"  onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control priceid" type="number" name="DISCOUNT{{attachment.MED_ACC_ID}}" id="DISCOUNT{{attachment.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(attachment)" value="0" step="1" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                        <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{attachment.MED_ACC_ID}}" id="BASIC_PRICE{{attachment.MED_ACC_ID}}" value="{{Math.round((attachment.MRP * 100) / (attachment.GST_PERCENTAGE + 100))}}" readonly @*value="{{attachment.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control qid" type="number" name="Q{{attachment.MED_ACC_ID}}" id="Q{{attachment.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(attachment)" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                        <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{attachment.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{attachment.MED_ACC_ID}}" value="{{Math.round((attachment.MRP * 100) / (attachment.GST_PERCENTAGE + 100))}}" readonly @*value="{{attachment.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" id="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" value="{{attachment.GST_PERCENTAGE}}" readonly @*step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }"*@ /></td>
-
-                                                        @*<td><input class="form-control qid" type="number" name="Q{{attachment.MED_ACC_ID}}" id="Q{{attachment.MED_ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="MRP{{attachment.MED_ACC_ID}}" id="MRP{{attachment.MED_ACC_ID}}" value="{{attachment.MRP}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{attachment.MED_ACC_ID}}" id="BASIC_PRICE{{attachment.MED_ACC_ID}}" value="{{attachment.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" id="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" value="{{attachment.GST_PERCENTAGE}}" step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>*@
-                                                    </tr>
-
-                                                </tbody>
                                             </table>
+
+                                            <!-- Scrollable section for the table body -->
+                                            <div style="max-height: 300px; overflow-y: auto;">
+                                                <table id="Attachments" class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                                    <tbody>
+                                                        <tr ng-repeat="attachment in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 2} | filter: {'ACCESSORY_NAME' : searchAccName2} | filter: {'ACCESSORY_CODE' : searchAccCode2}">
+                                                            <td scope="row" class="checkbox_th">
+                                                                <input id="prodSpare" class="Attachments" value="{{attachment.MED_ACC_ID}}" ng-model="ATTACHMENTS_ID" type="checkbox" />
+                                                            </td>
+                                                            <td>{{attachment.ACCESSORY_NAME}}</td>
+                                                            <td>{{attachment.ACCESSORY_CODE}}</td>
+                                                            <td><input class="form-control priceid" type="number" name="MRP{{attachment.MED_ACC_ID}}" id="MRP{{attachment.MED_ACC_ID}}" value="{{attachment.MRP}}" readonly /></td>
+                                                            <td><input class="form-control priceid" type="number" name="DISCOUNT{{attachment.MED_ACC_ID}}" id="DISCOUNT{{attachment.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(attachment)" value="0" step="1" min="0" max="100" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{attachment.MED_ACC_ID}}" id="BASIC_PRICE{{attachment.MED_ACC_ID}}" value="{{Math.round((attachment.MRP * 100) / (attachment.GST_PERCENTAGE + 100))}}" readonly /></td>
+                                                            <td><input class="form-control qid" type="number" name="Q{{attachment.MED_ACC_ID}}" id="Q{{attachment.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(attachment)" value="1" min="1" max="300" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{attachment.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{attachment.MED_ACC_ID}}" value="{{Math.round((attachment.MRP * 100) / (attachment.GST_PERCENTAGE + 100))}}" readonly /></td>
+                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" id="GST_PERCENTAGE{{attachment.MED_ACC_ID}}" value="{{attachment.GST_PERCENTAGE}}" readonly /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
 
                                         </div>
 
-                                        <div style="overflow-y: auto; height: 200px; margin-top: 10px;">
 
-                                            <table class="table table-bordered" id="Tools" style="font-size: 0.9rem;color:black;">
 
+
+
+
+
+
+
+
+
+
+
+
+                                        <div style="overflow-y:auto;margin-top:10px;" id="tools" class="content-div">
+                                            <table class="table table-bordered mh-100" id="Tools" style="font-size: 0.9rem;color:black;">
                                                 <thead>
                                                     <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
                                                         <th>
@@ -512,14 +603,8 @@
                                                     </tr>
                                                     <tr>
                                                         <th></th>
-                                                        @*<th><input type="text" class="form-control" ng-model="searchAccName3" placeholder="Search Name"></th>
-                                                            <th><input type="text" class="form-control" ng-model="searchAccCode3" placeholder="Search Code"></th>*@
-                                                        <th>
-                                                            <input id="searchAccName3" class="form-control" type="text" placeholder="Search" />
-                                                        </th>
-                                                        <th>
-                                                            <input id="searchAccCode3" class="form-control" type="text" placeholder="Search" />
-                                                        </th>
+                                                        <th><input id="searchAccName3" class="form-control" type="text" placeholder="Search Name" /></th>
+                                                        <th><input id="searchAccCode3" class="form-control" type="text" placeholder="Search Code" /></th>
                                                         <th></th>
                                                         <th></th>
                                                         <th></th>
@@ -528,43 +613,41 @@
                                                         <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="tools in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} | filter: {'ACCESSORY_NAME' : searchAccName3} | filter: {'ACCESSORY_CODE' : searchAccCode3}">
-                                                        <td scope="row" class="checkbox_th">
-                                                            <input id="prodSpare" class="Tools" value="{{tools.MED_ACC_ID}}" ng-model="TOOLS_ID" type="checkbox" />
-                                                        </td>
-                                                        <td>{{tools.ACCESSORY_NAME}}</td>
-                                                        <td>{{tools.ACCESSORY_CODE}}</td>
-                                                        <td><input class="form-control priceid" type="number" name="MRP{{tools.MED_ACC_ID}}" id="MRP{{tools.MED_ACC_ID}}" value="{{tools.MRP}}" readonly @*step="0.01" min="0"  onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control priceid" type="number" name="DISCOUNT{{tools.MED_ACC_ID}}" id="DISCOUNT{{tools.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(tools)" value="0" step="1" min="0" max="100" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                        <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{tools.MED_ACC_ID}}" id="BASIC_PRICE{{tools.MED_ACC_ID}}" value="{{Math.round((tools.MRP * 100) / (tools.GST_PERCENTAGE + 100))}}" readonly @*value="{{tools.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control qid" type="number" name="Q{{tools.MED_ACC_ID}}" id="Q{{tools.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(tools)" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                        <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{tools.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{tools.MED_ACC_ID}}" value="{{Math.round((tools.MRP * 100) / (tools.GST_PERCENTAGE + 100))}}" readonly @*value="{{tools.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }"*@ /></td>
-                                                        <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{tools.MED_ACC_ID}}" id="GST_PERCENTAGE{{tools.MED_ACC_ID}}" value="{{tools.GST_PERCENTAGE}}" readonly @*step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }"*@ /></td>
-
-
-                                                        @*<td><input class="form-control qid" type="number" name="Q{{tools.MED_ACC_ID}}" id="Q{{tools.MED_ACC_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="MRP{{tools.MED_ACC_ID}}" id="MRP{{tools.MED_ACC_ID}}" value="{{tools.MRP}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{tools.MED_ACC_ID}}" id="BASIC_PRICE{{tools.MED_ACC_ID}}" value="{{tools.BASIC_PRICE}}" step="0.01" min="0" onkeyup="if(parseFloat(this.value)<0){ this.value =0; return false; }" /></td>
-                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{tools.MED_ACC_ID}}" id="GST_PERCENTAGE{{tools.MED_ACC_ID}}" value="{{tools.GST_PERCENTAGE}}" step="1" min="0" max="100" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>*@
-
-                                                    </tr>
-
-                                                </tbody>
                                             </table>
+
+                                            <!-- Scrollable table body -->
+                                            <div style="height: 300px; overflow-y: auto;">
+                                                <table class="table table-bordered mh-100" id="Tools" style="font-size: 0.9rem;color:black;">
+                                                    <tbody>
+                                                        <tr ng-repeat="tools in SparepartList | filter: {'MED_ACCESSORY_TYPE_ID' : 3} | filter: {'ACCESSORY_NAME' : searchAccName3} | filter: {'ACCESSORY_CODE' : searchAccCode3}">
+                                                            <td scope="row" class="checkbox_th">
+                                                                <input id="prodSpare" class="Tools" value="{{tools.MED_ACC_ID}}" ng-model="TOOLS_ID" type="checkbox" />
+                                                            </td>
+                                                            <td>{{tools.ACCESSORY_NAME}}</td>
+                                                            <td>{{tools.ACCESSORY_CODE}}</td>
+                                                            <td><input class="form-control priceid" type="number" name="MRP{{tools.MED_ACC_ID}}" id="MRP{{tools.MED_ACC_ID}}" value="{{tools.MRP}}" readonly /></td>
+                                                            <td><input class="form-control priceid" type="number" name="DISCOUNT{{tools.MED_ACC_ID}}" id="DISCOUNT{{tools.MED_ACC_ID}}" ng-model="PART_DISCOUNT" ng-change="CalculateBasicPrice(tools)" value="0" step="1" min="0" max="100" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="BASIC_PRICE{{tools.MED_ACC_ID}}" id="BASIC_PRICE{{tools.MED_ACC_ID}}" value="{{Math.round((tools.MRP * 100) / (tools.GST_PERCENTAGE + 100))}}" readonly /></td>
+                                                            <td><input class="form-control qid" type="number" name="Q{{tools.MED_ACC_ID}}" id="Q{{tools.MED_ACC_ID}}" ng-model="PART_QTY" ng-change="CalculatePartTotalAmount(tools)" value="1" min="1" max="300" /></td>
+                                                            <td><input class="form-control priceid" type="number" name="PART_TOTAL_AMOUNT{{tools.MED_ACC_ID}}" id="PART_TOTAL_AMOUNT{{tools.MED_ACC_ID}}" value="{{Math.round((tools.MRP * 100) / (tools.GST_PERCENTAGE + 100))}}" readonly /></td>
+                                                            <td><input class="form-control priceid" type="number" name="GST_PERCENTAGE{{tools.MED_ACC_ID}}" id="GST_PERCENTAGE{{tools.MED_ACC_ID}}" value="{{tools.GST_PERCENTAGE}}" readonly /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
 
                                     </div>
-
+                                    <div class="modal-footer">
+                                        <div class="form-group col-md-12">
+                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14" ; ng-click="AddProduct(Sparepart)" value="{{Action}} Product" />
+                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" @*data-dismiss="modal"*@ />
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
-                        <div class="modal-footer">
-                            <div class="form-group col-md-12">
-                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" @*ng-disabled="AddProductParts.$invalid"*@ ng-click="AddProduct(Sparepart)" value="Add Product" />
-                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" @*data-dismiss="modal"*@ />
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -636,9 +719,6 @@
                                     <table>
                                         <thead>
                                             <tr>
-                                                <td>
-                                                    <div class="page-header-space"></div>
-                                                </td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -894,7 +974,8 @@
                                                                                         </div>
                                                                                         <div>
                                                                                             @*<img src="~/Images/Sai-ImagingServices-stamp.png" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
-                                                                                            <img src="{{cbd[0].COMPANY_SEAL}}" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />
+                                                                                            @*<img src="{{cbd[0].COMPANY_SEAL}}" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
+                                                                                            <img src="~/Images/signture-stamp-img.jpg" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />
                                                                                         </div>
                                                                                         <div>
                                                                                             <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; font-weight: bold;">Authorized Signatory</p>
@@ -1046,10 +1127,10 @@
 
                                         <thead>
                                             <tr>
-                                                <td>
-                                                    <!--place holder for the fixed-position header-->
-                                                    <div class="page-header-space"></div>
-                                                </td>
+                                                <!--<td>-->
+                                                <!--place holder for the fixed-position header-->
+                                                <!--<div class="page-header-space"></div>
+                                                </td>-->
                                             </tr>
                                         </thead>
 
@@ -1278,7 +1359,8 @@
                                                                                         </div>
                                                                                         <div>
                                                                                             @*<img src="~/Images/Sai-ImagingServices-stamp.png" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
-                                                                                            <img src="{{cbd[0].COMPANY_SEAL}}" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />
+                                                                                            @*<img src="{{cbd[0].COMPANY_SEAL}}" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
+                                                                                            <img src="~/Images/signture-stamp-img.jpg" style="padding-right:0px;height:100%; width:250px; padding-top:0px;" />
                                                                                         </div>
                                                                                         <div>
                                                                                             <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; font-weight: bold;">Authorized Signatory</p>
@@ -1698,6 +1780,124 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="AddProductAccessories">
+    @*Added By Kajal Gurav*@
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:gray; color: white; padding: 10px; ">
+                <h4 class="modal-title">
+                    <b> {{Action}} Product Accessories </b>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="col-12">
+                                <div class="row">
+                                    @*<div class="form-group col-md-4">
+                                            <label class="control-label">Product Name:</label><label style="color:red;">*</label>
+                                           <input class="form-control" type="text" ng-model="{{Product.PRODUCT_NAME}}" />
+                                        </div>*@
+                                    <div class="form-group col-md-4">
+                                        <label class="control-label">Quantity:<label ng-if="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label></label>
+
+                                        <input id="prodQuant" class="form-control" type="number" name="PRODUCT_QUANTITY" ng-model="PRODUCT_QUANTITY" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" />
+                                        <span ng-show="(AddPayment.PRODUCT_QUANTITY.$invalid && (AddPayment.PRODUCT_QUANTITY.$touched || AddPayment.PRODUCT_QUANTITY.$dirty))">
+                                            <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.required">Quantity is required</span>
+                                            <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.number">Please enter a valid Quantity</span>
+                                        </span>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="control-label">MRP:<label ng-if="QuotationList[0].QUOTATION_TYPE!='SpareParts'" style="color:red;">*</label></label>
+
+                                        <input id="prodPrice" class="form-control" type="number" name="PROCUCT_PRICE" ng-model="PROCUCT_PRICE" value="0" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" />
+                                        <span ng-show="(AddPayment.PROCUCT_PRICE.$invalid && (AddPayment.PROCUCT_PRICE.$touched || AddPayment.PROCUCT_PRICE.$dirty))">
+                                            <span class="error" ng-show="AddPayment.PROCUCT_PRICE.$error.required">MRP is required</span>
+                                            <span class="error" ng-show="AddPayment.PROCUCT_PRICE.$error.number">Please enter valid MRP</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row">
+
+                                        <input id="STDACCESSORIES" type="checkbox" class="STD_ACC" ng-model="IS_WITH_STANDARD_ACC" ng-click="ShowHideStdAcc()" value="Std_Acc" style="margin-bottom: 8px;" />
+
+                                        <div class="col-8" @*style="margin-bottom:4px;"*@>
+                                            <label>With Standard Accessories</label>
+                                        </div>
+                                        <table id="StdAccTB" class="table table-bordered StdAccClass" style="font-size: 0.9rem;color:black;display:none;">
+
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkboxStd" type="checkbox" onclick="CheckALLStd()" checked />
+                                                    </th>
+                                                    @*<th> No</th>*@
+                                                    <th>Std Accessories Name</th>
+                                                    <th style="width:150px;">Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-if="StdAccPartList.length>0" ng-repeat="StdAccpart in StdAccPartList">
+                                                    <td scope="row" class="checkbox_std">
+                                                        <input id="prodStdAcc" class="StdAccParts" value="{{StdAccpart.STD_ID}}" ng-model="STD_ID" type="checkbox" />
+                                                    </td>
+                                                    @*<td ng-click="GotoPage(Sparepart)">{{Sparepart.SP_ID}}</td>*@
+                                                    <td width="570px">{{StdAccpart.STD_ACC_NAME}}</td>
+                                                    <td><input class="form-control stdid" type="number" name="STD{{StdAccpart.STD_ID}}" id="STD{{StdAccpart.STD_ID}}" value="1" min="1" max="500" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="col-5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+
+                                <thead>
+                                    <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                        <th>
+                                            <input id="checkAllChkbox" type="checkbox" value="false" onclick="CheckALL()" />
+                                        </th>
+                                        @*<th> No</th>*@
+                                        <th>Spare Parts Name</th>
+                                        <th style="width:150px;">Quantity</th>
+                                        <th style="width:150px;">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="Sparepart in SparepartList">
+                                        <td scope="row" class="checkbox_th">
+                                            <input id="prodSpare" class="SparePart" value="{{Sparepart.SP_ID}}" ng-model="SP_ID" type="checkbox" />
+                                        </td>
+                                        @*<td ng-click="GotoPage(Sparepart)">{{Sparepart.SP_ID}}</td>*@
+                                        <td>{{Sparepart.SPARE_PART}}</td>
+                                        <td><input class="form-control qid" type="number" name="Q{{Sparepart.SP_ID}}" id="Q{{Sparepart.SP_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                        <td><input class="form-control priceid" type="number" name="PRICE{{Sparepart.SP_ID}}" id="PRICE{{Sparepart.SP_ID}}" value="{{Sparepart.PRICE}}" min="1" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; }" /></td>
+                                        @*<td>{{Sparepart.PRICE}}</td>*@
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group col-md-12">
+                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddProduct(Sparepart)" value="{{Action}} Product" />
+                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" @*data-dismiss="modal"*@ />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts{
 
@@ -1945,6 +2145,9 @@
         }
     </script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+
+
+
 }
-
-

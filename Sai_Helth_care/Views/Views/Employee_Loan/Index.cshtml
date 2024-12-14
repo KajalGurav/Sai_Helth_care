@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<section ng-controller="EmloyeeLoanCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Employee Loan</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()">Add Loan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Employee" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Employee Name</th>
+                                    <th>Loan Amount</th>
+                                    <th>Loan on Date</th>
+                                    <th>Loan on Installment</th>
+                                    <th>Loan Outstanding</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in EmployeeLoanList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{admin.EMP_NAME}}</td>
+                                    <td>{{admin.LOAN_AMOUNT}}</td>
+                                    <td>{{admin.REG_DATE}}</td>
+                                    <td>{{admin.INSTALLMENT_AMOUNT}}</td>
+                                    <td>{{admin.LOAN_OUTSTANDING}}</td>
+                                    <td>
+                                        <a href="~/Employee_Loan/Detail?EMP_ID={{admin.EMP_ID}}&&EMP_LOAN_ID={{admin.EMP_LOAN_ID}}" class="btn btn-sm pull-left" style="background-color: green; color: white">View</a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="6" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Admin_Addupdate">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>{{Admin_Action}}</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Employee Name :</label><label style="color:red;">*</label>
+                                                <select name="EMP_ID" class="form-control" ng-model="EMP_ID" id="EMP_ID">
+                                                    <option value="">Select Employee </option>
+                                                    <option ng-repeat="Emp in EmployeeList" value="{{Emp.EMP_ID}}">{{Emp.EMP_NAME}}</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Loan Amount:</label>
+                                                <input type="number" name="LOAN_AMOUNT" ng-model="LOAN_AMOUNT" class="form-control" placeholder="Enter Loan Amount" required/>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Interest Rate:</label>
+                                                <input type="number" name="INTREST_RATE" ng-model="INTREST_RATE" class="form-control" placeholder="Enter Interest Rate" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Installment Amount:</label>
+                                                <input type="number" name="INSTALLMENT_AMOUNT" ng-model="INSTALLMENT_AMOUNT" class="form-control" placeholder="Enter Installment Amount" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Loan Outstanding:</label>
+                                                <input type="text" name="LOAN_OUTSTANDING" ng-model="LOAN_OUTSTANDING" class="form-control" placeholder="Enter Loan Outstanding" required/>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Reason:</label>
+                                                <textarea name="REASON" ng-model="REASON" class="form-control" placeholder="Enter Reason "></textarea>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/EmployeeLoan.js"></script>
+
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+}

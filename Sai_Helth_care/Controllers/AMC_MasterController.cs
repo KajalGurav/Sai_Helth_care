@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -95,7 +96,7 @@ namespace Sai_Helth_care.Controllers
             cmd.Parameters.AddWithValue("@PageNo", tB_Admin.PageNo - 1);
             cmd.Parameters.AddWithValue("@FARMER_NAME", tB_Admin.FARMER_NAME);
             cmd.Parameters.AddWithValue("@STATE_ID", tB_Admin.STATE_ID);
-           // cmd.Parameters.AddWithValue("@COMPANY_ID", tB_Admin.COMPANY_ID);
+            // cmd.Parameters.AddWithValue("@COMPANY_ID", tB_Admin.COMPANY_ID);
             cmd.Parameters.AddWithValue("@COMPANY_ID", id);
             cmd.Parameters.AddWithValue("@CUSTOMER_TYPE_ID", tB_Admin.CUSTOMER_TYPE_ID);
             // cmd.Parameters.AddWithValue("@STARTING_DATE", tB_Admin.STARTING_DATE);
@@ -160,7 +161,7 @@ namespace Sai_Helth_care.Controllers
                         rt.IS_FEES_INC_GST = Convert.ToBoolean(dt.Rows[i]["IS_FEES_INC_GST"]);
                         rt.FEES = Convert.ToInt64(dt.Rows[i]["FEES"]);
                         rt.FEES_IN_GST = Convert.ToInt64(dt.Rows[i]["FEES_IN_GST"]);
-                        rt.GST_PERCENTAGE = dt.Rows[i]["GST_PERCENTAGE"] is DBNull ? (int?)null : Convert.ToInt32(dt.Rows[i]["GST_PERCENTAGE"]); 
+                        rt.GST_PERCENTAGE = dt.Rows[i]["GST_PERCENTAGE"] is DBNull ? (int?)null : Convert.ToInt32(dt.Rows[i]["GST_PERCENTAGE"]);
                         rt.PAID_FEES = Convert.ToInt64(dt.Rows[i]["PAID_FEES"]);
                         rt.FEES_PAID_BY = (dt.Rows[i]["FEES_PAID_BY"]).ToString();
                         rt.COMMENTS = (dt.Rows[i]["COMMENTS"]).ToString();
@@ -186,8 +187,18 @@ namespace Sai_Helth_care.Controllers
             try
             {
                 long adminId = Convert.ToInt64(Session["EMP_ID"]);
+
+                // Validate fields based on CUSTOMER_TYPE (companyId logic)
+                if ((tB_admin.CUSTOMER_TYPE == 1 || tB_admin.CUSTOMER_TYPE == 13) &&
+                    (tB_admin.IS_FEES_INC_GST == null || tB_admin.FEES_IN_GST == null))
+                {
+                    return Json(new { success = false, message = "Fields Fees In GST and Is Fees Including GST are mandatory for the selected company." });
+                }
+
                 cmd = new SqlCommand("Insert_AMC_CMC_Record", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+
+                // Add parameters to SQL command
                 cmd.Parameters.AddWithValue("@CONTRACT_DOCUMENT_NO", tB_admin.CONTRACT_DOCUMENT_NO);
                 cmd.Parameters.AddWithValue("@CONTRACT_TYPE", tB_admin.CONTRACT_TYPE);
                 cmd.Parameters.AddWithValue("@CONTRACT_PERIOD", tB_admin.CONTRACT_PERIOD);
@@ -217,28 +228,35 @@ namespace Sai_Helth_care.Controllers
                 cmd.Parameters.AddWithValue("@ADMIN_ID", adminId);
                 cmd.Parameters.AddWithValue("@BANK_ID", tB_admin.BANK_ID);
                 cmd.Parameters.AddWithValue("@CONTRACT_TYPE_DETAILS", tB_admin.CONTRACT_TYPE_DETAILS);
+
                 cmd.Connection = con;
-                if (con.State == System.Data.ConnectionState.Open)
+
+                // Ensure the connection is open
+                if (con.State == ConnectionState.Open)
                 {
                     con.Close();
                 }
                 con.Open();
-                int i = Convert.ToInt32(cmd.ExecuteScalar());
-                con.Close();
-                if (i == -1)
-                {
-                    return Json(new { success = false });
 
+                // Execute stored procedure
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+                con.Close();
+
+                // Check the result of the procedure
+                if (result == -1)
+                {
+                    return Json(new { success = false, message = "Duplicate record found." });
                 }
                 else
                 {
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Record added successfully." });
                 }
             }
             catch (Exception ex)
             {
+                // Handle exception (log as needed)
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
             }
-            return View("Index");
         }
 
         public JsonResult GetState()
@@ -253,18 +271,33 @@ namespace Sai_Helth_care.Controllers
             return Json(_getadmin, JsonRequestBehavior.AllowGet);
         }
 
-        
-        public ActionResult EditAdmin(AMC_CMCMaster tB_admin)
+
+        public ActionResult EditAdmin(AMC_CMCMaster tB_admin, string originalContractDocumentNo)
         {
             try
             {
+                // Validate fields based on CUSTOMER_TYPE (similar to AddAdmin logic)
+                if ((tB_admin.CUSTOMER_TYPE == 1 || tB_admin.CUSTOMER_TYPE == 13) &&
+                    (tB_admin.IS_FEES_INC_GST == null || tB_admin.FEES_IN_GST == null))
+                {
+                    return Json(new { success = false, message = "Fields Fees In GST and Is Fees Including GST are mandatory for the selected company." });
+                }
+
+                // Configure SQL Command
                 cmd = new SqlCommand("Update_AMC_CMC_Record", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+
+                // Add parameters to SQL command
                 cmd.Parameters.AddWithValue("@CONTRACT_DOCUMENT_NO", tB_admin.CONTRACT_DOCUMENT_NO);
                 cmd.Parameters.AddWithValue("@CONTRACT_TYPE", tB_admin.CONTRACT_TYPE);
                 cmd.Parameters.AddWithValue("@CONTRACT_PERIOD", tB_admin.CONTRACT_PERIOD);
-                cmd.Parameters.AddWithValue("@CONTRACT_DATE", tB_admin.CONTRACT_DATE);
-                cmd.Parameters.AddWithValue("@CUSTOMER_ID", Convert.ToInt64(tB_admin.CUSTOMER_ID));
+                cmd.Parameters.AddWithValue(
+     "@CONTRACT_DATE",
+     string.IsNullOrWhiteSpace(tB_admin.CONTRACT_DATE)
+         ? (object)DBNull.Value
+         : tB_admin.CONTRACT_DATE
+ );
+                cmd.Parameters.AddWithValue("@CUSTOMER_ID", tB_admin.CUSTOMER_ID);
                 cmd.Parameters.AddWithValue("@CUSTOMER_NAME", tB_admin.CUSTOMER_NAME);
                 cmd.Parameters.AddWithValue("@FIRM_ID", tB_admin.FIRM_ID);
                 cmd.Parameters.AddWithValue("@CUSTOMER_FIRM_NAME", tB_admin.CUSTOMER_FIRM_NAME);
@@ -272,47 +305,74 @@ namespace Sai_Helth_care.Controllers
                 cmd.Parameters.AddWithValue("@PRODUCT_NAME", tB_admin.PRODUCT_NAME);
                 cmd.Parameters.AddWithValue("@MODEL_ID", tB_admin.P_ID);
                 cmd.Parameters.AddWithValue("@MODEL_NAME", tB_admin.MODEL_NAME);
-                cmd.Parameters.AddWithValue("@MODEL_SERIAL_NO", tB_admin.MODEL_SERIAL_NO);
-                cmd.Parameters.AddWithValue("@CONTRACT_FROM", tB_admin.CONTRACT_FROM);
-                cmd.Parameters.AddWithValue("@CONTRACT_TO", tB_admin.CONTRACT_TO);
+                cmd.Parameters.AddWithValue("@MODEL_SERIAL_NO",
+        string.IsNullOrWhiteSpace(tB_admin.MODEL_SERIAL_NO)
+            ? (object)DBNull.Value
+            : tB_admin.MODEL_SERIAL_NO);
+
+                cmd.Parameters.AddWithValue(
+     "@CONTRACT_FROM",
+     string.IsNullOrWhiteSpace(tB_admin.CONTRACT_FROM)
+         ? (object)DBNull.Value
+         : DateTime.ParseExact(tB_admin.CONTRACT_FROM, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+ );
+
+                cmd.Parameters.AddWithValue(
+     "@CONTRACT_TO",
+     string.IsNullOrWhiteSpace(tB_admin.CONTRACT_TO)
+          ? (object)DBNull.Value
+         : DateTime.ParseExact(tB_admin.CONTRACT_FROM, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+ );
                 cmd.Parameters.AddWithValue("@PM_VISIT", tB_admin.PM_VISIT);
                 cmd.Parameters.AddWithValue("@CM_VISIT", tB_admin.CM_VISIT);
                 cmd.Parameters.AddWithValue("@IS_FEES_INC_GST", tB_admin.IS_FEES_INC_GST);
                 cmd.Parameters.AddWithValue("@FEES", tB_admin.FEES);
                 cmd.Parameters.AddWithValue("@FEES_IN_GST", tB_admin.FEES_IN_GST);
-                cmd.Parameters.AddWithValue("@GST_PERCENTAGE", tB_admin.GST_PERCENTAGE);
+                cmd.Parameters.AddWithValue(
+    "@GST_PERCENTAGE",
+    tB_admin.GST_PERCENTAGE == 0 ? DBNull.Value : (object)tB_admin.GST_PERCENTAGE);
+
                 cmd.Parameters.AddWithValue("@PAID_FEES", tB_admin.PAID_FEES);
                 cmd.Parameters.AddWithValue("@FEES_PAID_BY", tB_admin.FEES_PAID_BY);
                 cmd.Parameters.AddWithValue("@COMMENTS", tB_admin.COMMENTS);
                 cmd.Parameters.AddWithValue("@AMC_CMC_STATUS", tB_admin.AMC_CMC_STATUS);
                 cmd.Parameters.AddWithValue("@CUSTOMER_TYPE", tB_admin.CUSTOMER_TYPE.ToString());
-                cmd.Parameters.AddWithValue("@BANK_ID", Convert.ToInt64(tB_admin.BANK_ID));
+                cmd.Parameters.AddWithValue("@BANK_ID", tB_admin.BANK_ID);
                 cmd.Parameters.AddWithValue("@CONTRACT_TYPE_DETAILS", tB_admin.CONTRACT_TYPE_DETAILS);
+                //cmd.Parameters.AddWithValue("@ORIGINAL_CONTRACT_DOCUMENT_NO", originalContractDocumentNo);
+
                 cmd.Connection = con;
-                if (con.State == System.Data.ConnectionState.Open)
+
+                // Ensure the connection is open
+                if (con.State == ConnectionState.Open)
                 {
                     con.Close();
                 }
                 con.Open();
-                int i = Convert.ToInt32(cmd.ExecuteScalar());
-                con.Close();
-                if (i == -1)
-                {
-                    return Json(new { success = false });
 
+                // Execute stored procedure
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+                con.Close();
+
+                // Check the result of the procedure
+                if (result == -1)
+                {
+                    return Json(new { success = false, message = "Duplicate record found." });
                 }
                 else
                 {
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Record updated successfully." });
                 }
             }
             catch (Exception ex)
             {
+                // Handle exception (log as needed)
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
             }
-            return View("Index");
         }
 
-      
+
+
         public JsonResult GetLatestRecord()
         {
             cmd = new SqlCommand("SP_GetTB_AMC_LatestRecord", con);
@@ -353,7 +413,7 @@ namespace Sai_Helth_care.Controllers
         public JsonResult GetCustomerList()
         {
             long c_id = Convert.ToInt64(Session["COMPANY_ID"]);
-            var _getadmin = db.Tb_CustomerMaster.Where(z => z.STATUS == "Active" && z.COMPANY_ID == c_id).OrderBy(o=>o.CUSTOMER_NAME).Select(s => new { s.Customer_ID, s.CUSTOMER_NAME, s.FIRM_NAME,s.CUSTOMER_TYPE_ID, s.STATUS, s.REG_DATE }).ToList();
+            var _getadmin = db.Tb_CustomerMaster.Where(z => z.STATUS == "Active" && z.COMPANY_ID == c_id).OrderBy(o => o.CUSTOMER_NAME).Select(s => new { s.Customer_ID, s.CUSTOMER_NAME, s.FIRM_NAME, s.CUSTOMER_TYPE_ID, s.STATUS, s.REG_DATE }).ToList();
             return Json(_getadmin, JsonRequestBehavior.AllowGet);
         }
 
@@ -387,7 +447,7 @@ namespace Sai_Helth_care.Controllers
                     CustId = item.CUSTOMER_ID;
                     break;
                 }
-                if (CustId==0 || CustId == null)
+                if (CustId == 0 || CustId == null)
                 {
                     Session["CUSTOMER_ID"] = 0;
                 }
@@ -395,7 +455,7 @@ namespace Sai_Helth_care.Controllers
                 {
                     Session["CUSTOMER_ID"] = CustId;
                 }
-                
+
                 return Json(_getadmin, JsonRequestBehavior.AllowGet);
             }
         }
@@ -429,8 +489,8 @@ namespace Sai_Helth_care.Controllers
             //        return Json(_getadmin, JsonRequestBehavior.AllowGet);
             //    }
             //}
-            
-            
+
+
         }
 
         public JsonResult GetProductList(long id)
@@ -447,20 +507,20 @@ namespace Sai_Helth_care.Controllers
             //    var _getadmin = db.Tb_Product.Where(z => z.STATUS == "Active" && z.CAT_ID == id).OrderBy(o => o.PRODUCT_NAME).Select(s => new { s.P_ID, s.CAT_ID, s.PRODUCT_NAME, s.STATUS, s.REG_DATE }).ToList();
             //    return Json(_getadmin, JsonRequestBehavior.AllowGet);
             //}
-            
+
         }
 
         public JsonResult GetProductList1(long id)
         {
             string CustType = Convert.ToString(Session["CustType"]);
 
-            if (CustType== "Regular")
+            if (CustType == "Regular")
             {
-                var _getadmin = db.Tb_Product.Where(z => z.STATUS == "Active" && z.CAT_ID == id && z.PT_ID==1).OrderBy(o => o.PRODUCT_NAME).Select(s => new { s.P_ID, s.CAT_ID, s.PRODUCT_NAME, s.STATUS, s.REG_DATE }).ToList();
+                var _getadmin = db.Tb_Product.Where(z => z.STATUS == "Active" && z.CAT_ID == id && z.PT_ID == 1).OrderBy(o => o.PRODUCT_NAME).Select(s => new { s.P_ID, s.CAT_ID, s.PRODUCT_NAME, s.STATUS, s.REG_DATE }).ToList();
                 return Json(_getadmin, JsonRequestBehavior.AllowGet);
             }
 
-            else if (CustType== "Mindray")
+            else if (CustType == "Mindray")
             {
                 var _getadmin = db.Tb_Product.Where(z => z.STATUS == "Active" && z.CAT_ID == id && z.PT_ID == 2).OrderBy(o => o.PRODUCT_NAME).Select(s => new { s.P_ID, s.CAT_ID, s.PRODUCT_NAME, s.STATUS, s.REG_DATE }).ToList();
                 return Json(_getadmin, JsonRequestBehavior.AllowGet);

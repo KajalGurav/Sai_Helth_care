@@ -1,0 +1,207 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+<style>
+    .error {
+        color: red;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Daily Activity Report</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()" data-target="#Emp_add">Add Record</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Employee Name" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr No</th>
+                                    <th>DAR Date</th>
+                                    <th>Employee Name</th>
+                                    <th>Working Location (City)</th>
+                                    <th>Activity Note</th>
+                                    <th>Admin Note</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="emp in DailyActivityList">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{emp.ACTIVITY_DATE}}</td>
+                                    <td>{{emp.EMP_NAME}}</td>
+                                    <td>{{emp.CITY_NAME}}</td>
+                                    <td>{{emp.ACTIVITY_NOTE}}</td>
+                                    <td>{{emp.ADMIN_NOTE}}</td>
+                                    <td><a data-toggle="modal" ng-click="getForUpdate(emp)" title="Update" class="btn btn-xs btn-danger">Edit </a></td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="7" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                                @*<tr>
+                                        <td>06/02/2022</td>
+                                        <td>Sagar Tandle</td>
+                                        <td>Dombivali</td>
+                                        <td> </td>
+                                        <td><a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a>   </td>
+                                    </tr>*@
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Emp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>{{Action}} Daily Activity Report </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Employee Name:</label><label style="color:red;">*</label>
+                                                <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                                        ng-selected="emp.EMP_ID == EMP_ID" required>
+                                                    <option value="">Select Employee</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.EMP_ID.$invalid && ( AddPayment.EMP_ID.$touched || AddPayment.EMP_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.EMP_ID.$error.required">
+                                                        Employee is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Working Location:</label><label style="color:red;">*</label>
+                                                <select ng-model="CITY_ID" id="CITY_ID" name="CITY_ID" class="form-control"
+                                                        ng-options="city.CITY_ID as city.CITY_NAME for city in CityList"
+                                                        ng-selected="city.CITY_ID == CITY_ID" required>
+                                                    <option value="">Select City</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.CITY_ID.$invalid && ( AddPayment.CITY_ID.$touched || AddPayment.CITY_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CITY_ID.$error.required">
+                                                        City is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Activity Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="ACTIVITY_DATE" id="ACTIVITY_DATE" class="form-control" ng-model="ACTIVITY_DATE" placeholder="Select Activity Date" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Daily Activity Note:</label>@*<label style="color:red;">*</label>*@
+                                                <textarea class="form-control" id="ACTIVITY_NOTE" name="ACTIVITY_NOTE" ng-model="ACTIVITY_NOTE" placeholder="Daily Activity Note" @*required*@></textarea>
+                                                <span ng-show="(AddPayment.ACTIVITY_NOTE.$invalid && ( AddPayment.ACTIVITY_NOTE.$touched || AddPayment.ACTIVITY_NOTE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.ACTIVITY_NOTE.$error.required">
+                                                        Daily Activity Note is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Administrator Note:</label>@*<label style="color:red;">*</label>*@
+                                                <textarea class="form-control" id="ADMIN_NOTE" name="ADMIN_NOTE" ng-model="ADMIN_NOTE" placeholder="Administrator Note" @*required*@></textarea>
+                                                <span ng-show="(AddPayment.ADMIN_NOTE.$invalid && ( AddPayment.ADMIN_NOTE.$touched || AddPayment.ADMIN_NOTE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.ADMIN_NOTE.$error.required">
+                                                        Administrator Note is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/DailyActivity.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#ACTIVITY_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#ACTIVITY_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#ACTIVITY_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#ACTIVITY_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#ACTIVITY_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+    </script>
+}

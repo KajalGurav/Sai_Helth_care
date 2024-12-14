@@ -45,7 +45,7 @@
     };
 
     this.GetMedtronicQuotationProductList = function (id) {
-       
+
         var response = $http({
             method: "POST",
             url: "/Quotation_Registration/GetMedtronicQuotationProductList",
@@ -53,7 +53,7 @@
                 id: id
             }
         });
-        return response;  
+        return response;
     };
 
 
@@ -80,7 +80,7 @@
         });
         return response;
     };
-  
+
     this.UpdateQuotationDetails = function (tb_Admin) {
         var response = $http({
             method: "POST",
@@ -128,12 +128,12 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
     clearTax();
     GetQuotation();
     GetMedtronicQuotationProductList();
-    
+
     function GetQuotation() {
-        
+
         var getAdmin = QuotationService.GetRegularQotDetails($scope.Q_ID);
         getAdmin.then(function (response) {
-            
+
             $scope.QuotationList = response.data;
 
             $("#tempCustId").val($scope.QuotationList[0].CUSTOMER_ID);
@@ -184,7 +184,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                         $scope.IsDisabled = false;
                         GetMedtronicQuotationProductList();
                     }
-                    else{
+                    else {
                         $scope.IsDisabled = false;
                         $scope.gstamt = $scope.QuotationList[0].TAX_PERCENTAGE.toString();
                         //$("#gstamt").val($scope.gstamt);
@@ -192,7 +192,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                         $scope.AItax = $scope.final + $scope.Ttax;
                         $scope.FinalAmount = $scope.AItax;
                     }
-                    
+
                 } //else { alert("wrong selection"); }
 
 
@@ -209,7 +209,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                 $scope.WARRANTY_PERIOD = $scope.QuotationList[0].WARRANTY_IN_DMY;
                 $scope.WARRANTY_VALUE = $scope.QuotationList[0].WARRANTY_PERIOD;
                 $scope.SPL_WARRANTY = $scope.QuotationList[0].IS_SPL_WARRANTY;
-               
+
             }
             GetAllProduct();
 
@@ -234,7 +234,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         getAdmin.then(function (response) {
             $scope.QuotationProductList = response.data;
 
-            $scope.T_TOTAL_PRICE = $scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList[$scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList.length-1].T_TOTAL_PRICE;
+            $scope.T_TOTAL_PRICE = $scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList[$scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList.length - 1].T_TOTAL_PRICE;
             $scope.TOTAL_BASIC_PRICE = $scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList[$scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList.length - 1].TOTAL_BASIC_PRICE;
             $scope.TOTAL_GST = $scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList[$scope.QuotationProductList[0].MedtronicQuotationProductAccessoriesList.length - 1].TOTAL_GST;
             $scope.final = 0;
@@ -249,7 +249,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                     var MedtronicQuotationProductAccessoriesList = $scope.QuotationProductList[x].MedtronicQuotationProductAccessoriesList;
                     for (let y = 0; y < MedtronicQuotationProductAccessoriesList.length; y++) {
                         var accitem = MedtronicQuotationProductAccessoriesList[y];
-                       
+
                         $scope.Ttax = $scope.Ttax + ((accitem.PART_TOTAL_AMOUNT * accitem.GST_PERCENTAGE) / 100);
 
                         $scope.final = $scope.final + (accitem.PART_TOTAL_AMOUNT);
@@ -377,10 +377,10 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         $scope.PRODUCT_PRICE = Product.BASIC_PRICE;
         $scope.PRODUCT_GST = Product.GST_PERCENTAGE;
 
-        
+
         ////////////
         if ($scope.QuotationList[0].QUOTATION_TYPE != "SpareParts") {
-           
+
             $("#prodQuant").removeAttr("disabled");
             $("#prodQuant").value = 1;
             document.getElementById("prodQuant").required = true;
@@ -394,7 +394,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         else {
             $("#prodQuant").prop("disabled", "disabled");
             //document.getElementById("prodQuant").required = false;
-            $("#prodQuant").value=0;
+            $("#prodQuant").value = 0;
             $("#prodPrice").prop("disabled", "disabled");
             //document.getElementById("prodPrice").required = false;
             $("#prodPrice").value = 0;
@@ -474,9 +474,8 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                 return false;
             }
             if ($scope.ATTACHMENTS_ID === "" || $scope.ATTACHMENTS_ID === null || $scope.ATTACHMENTS_ID === undefined
-                || $scope.TOOLS_ID === "" || $scope.TOOLS_ID === null || $scope.TOOLS_ID === undefined 
-                || $scope.MED_ACC_ID === "" || $scope.MED_ACC_ID === null || $scope.MED_ACC_ID === undefined )
-            {
+                || $scope.TOOLS_ID === "" || $scope.TOOLS_ID === null || $scope.TOOLS_ID === undefined
+                || $scope.MED_ACC_ID === "" || $scope.MED_ACC_ID === null || $scope.MED_ACC_ID === undefined) {
                 alert("Please Select Atleast Any One From Main System,Attachments Or Tools ");
                 return false;
             }
@@ -489,7 +488,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         });
         var accessories = [];
         for (let i = 0; i < chkidsarr.length; i++) {
-            
+
             accessories.push({ MQPA_ID: null, Q_ID: parseInt($scope.Q_ID), P_ID: parseInt($scope.P_ID), MED_ACC_ID: parseInt(chkidsarr[i].Id), QUANTITY: parseInt($("#Q" + chkidsarr[i].Id).val()), MRP: parseInt($("#MRP" + chkidsarr[i].Id).val()), BASIC_PRICE: parseFloat($("#BASIC_PRICE" + chkidsarr[i].Id).val()), DISCOUNT: parseFloat($("#DISCOUNT" + chkidsarr[i].Id).val()), GST_PERCENTAGE: parseInt($("#GST_PERCENTAGE" + chkidsarr[i].Id).val()), PART_TOTAL_AMOUNT: parseFloat($("#PART_TOTAL_AMOUNT" + chkidsarr[i].Id).val()), });
         }
         if (accessories === null || accessories.length === 0) {
@@ -514,7 +513,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         };
         AddproductRecord(tb_Admin);
     }
-  
+
     function AddproductRecord(tb_Admin) {
 
         var datalist = QuotationService.AddProductDetails(tb_Admin);
@@ -522,7 +521,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
             if (d.data.success === true) {
                 alert("Product added successfully.");
                 GetMedtronicQuotationProductList();
-               
+
                 $("#AddProductAccessories").modal("hide");
                 $("#loader").css("display", 'none');
             }
@@ -552,14 +551,14 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         if (Product.MED_ACC_ID !== undefined || Product.MED_ACC_ID !== null || Product.MED_ACC_ID !== "") {
             MED_ACC_ID = parseInt(Product.MED_ACC_ID);
         }
-        
+
         var datalist = QuotationService.Admin_Delete(parseInt(Product.Q_ID), parseInt(Product.P_ID), MED_ACC_ID);
         datalist.then(function (d) {
             if (d.data.success === true) {
                 clearTax();
                 alert("Product removed successfully.");
                 GetMedtronicQuotationProductList();
-                
+
                 $("#loader").css("display", 'none');
             }
             else if (d.data.success === false) {
@@ -600,19 +599,19 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                 //document.getElementById('taxNote').innerHTML = '<b>Amount Including 18% GST</b>'
             }
             else if ($scope.QuotationList[0].QUOTATION_TYPE === 'SpareParts') {
-               
+
             }
 
             //alert($scope.Ttax);
         } else if (s_option == "No") {
             $scope.IsDisabled = false;
             if ($scope.QuotationList[0].QUOTATION_TYPE === 'SpareParts') {
-              
+
             } else {
-                
+
                 $scope.calTax($scope.gstamt);
             }
-           
+
         } //else { alert("wrong selection"); }
     }
 
@@ -644,17 +643,17 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         $('#PrintQuotation').removeAttr("disabled");
         $('#SaveQuotation').removeAttr("disabled");
     });
-   
+
     window.processHTML = function (htmlContent, id) {
         var content = htmlContent.replace(/(?:^|<\/pre>)[^]*?(?:<pre>|$)/g, function (m) {
             return m.replace(/[\n\t]+/g, "");
         });
-      
+
         $("#" + id).html(content);
     };
 
     $scope.numTowords = function () {
-       
+
         if ($scope.FinalAmount <= 0 && $scope.QuotationList[0].QUOTATION_TYPE === 'Sales') {
             $("#PrintQuotation").attr('disabled', 'disabled');
             $("#SaveQuotation").attr('disabled', 'disabled');
@@ -688,7 +687,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                 $scope.cbd = response.data;
             });
         }
-        else if($scope.QuotationList[0].QUOTATION_TYPE === "Sales") {
+        else if ($scope.QuotationList[0].QUOTATION_TYPE === "Sales") {
             $('.btn-no').text("No");
             $('.btn-yes').text("Yes");
             if (typeof $scope.result === "undefined" || $scope.result.length < 1) {
@@ -771,7 +770,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         else {
             str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Only ' : '';
         }
-        
+
         return str;
     }
 
@@ -784,7 +783,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                 alert("Please Select Including All Taxes Option!");
                 return false;
             }
-        } 
+        }
         var includingTaxes = "Including";
         if ($scope.result === "Yes") {
             includingTaxes = "Including";
@@ -801,7 +800,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
             $scope.WARRANTY_PERIOD = "Months";
         }
 
-        if (typeof $scope.SPL_WARRANTY === "undefined" || $scope.SPL_WARRANTY === '' || $scope.SPL_WARRANTY === null ) {
+        if (typeof $scope.SPL_WARRANTY === "undefined" || $scope.SPL_WARRANTY === '' || $scope.SPL_WARRANTY === null) {
             $scope.SPL_WARRANTY = "No";
         }
 
@@ -827,7 +826,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         datalist.then(function (d) {
             if (d.data.success === true) {
                 alert("Quotation Details updated successfully.");
-                
+
                 window.location.href = window.location.href;
             }
             else if (d.data.success === false) {
@@ -877,8 +876,8 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                     WindowObject.close();
                     window.location.href = "/Quotation_Registration/Index?CustType=" + $scope.CUSTOMER_TYPE;
                 }, 1000);
-                
-                           
+
+
             }
             else if (d.data.success === false) {
                 alert("Error occured while updating Quotation details");
@@ -887,7 +886,7 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
                 alert("Error.");
             }
         },
-        function() {
+            function () {
                 alert("Error.");
             }
         );

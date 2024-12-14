@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 @{
     ViewBag.Title = "Index";
 }
@@ -42,6 +42,50 @@
 
     .error {
         color: Red;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        width: 100%; /* Full width */
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f6f6f6;
+        min-width: 230px;
+        border: 1px solid #ddd;
+        z-index: 1;
+        max-height: 400px; /* Set a maximum height */
+        overflow-y: auto; /* Enable scrolling */
+    }
+
+    .show {
+        display: block;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+    .search-input {
+        box-sizing: border-box;
+        padding: 12px;
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .dropdown-toggle {
+        cursor: pointer; /* Change cursor to pointer */
     }
 </style>
 
@@ -124,6 +168,8 @@
                         </li>
                     </ul>
                 </div>
+
+
                 <div class="modal fade" id="Admin_Addupdate">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -139,13 +185,37 @@
                                     <form role="form" name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator">
                                         <div class="row">
                                             <input type="text" class="form-control" ng-model="P_ID" style="display:none">
+                                            <!--<div class="col-lg-4">
+                                            <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
+                                            <div class="dropdown">-->
+                                            <!-- Added dropdown-toggle class and onclick event to the input field -->
+                                            <!--<input type="text" class="form-control dropdown-toggle" placeholder="Select Category &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#9660;" ng-model="selectedCategoryName" onclick="toggleDropdown()"/>
+                                                    <p>{{selectedCategoryName}}</p>
+                                                    <div id="myDropdown" class="dropdown-content">
+                                                        <input type="text" class="search-input" placeholder="Search Product Category" ng-model="searchText" ng-change="filterCategories()" onfocus="showDropdown()" />
+                                                        <a ng-repeat="Category in filteredCategories = (CategoryList | filter:searchText)"
+                                                           ng-click="selectCategory(Category.CAT_ID, Category.CAT_NAME)">
+                                                            {{Category.CAT_NAME}}
+                                                        </a>
+
+                                                        <div ng-if="filteredCategories.length === 0" style="padding: 12px;">No results found</div>
+                                                    </div>
+                                                </div>
+                                            </div>-->
                                             <div class="col-lg-4">
-                                                <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
-                                                <select ng-model="CAT_ID" id="CAT_ID" class="form-control" required>
-                                                    <option value="">Select Category</option>
-                                                    <option ng-repeat="Category in CategoryList" ng-value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
-                                                </select>
+                                                <label class="control-label">Select Product Category:</label>
+                                                <label style="color:red;">*</label>
+                                                <input class="form-control" list="categoryOptions" ng-model="searchText" ng-change="updateCategoryID()" id="CAT_ID" placeholder="search Product Category" required>
+                                                <datalist id="categoryOptions">
+                                                    <option ng-repeat="Category in CategoryList | filter:{CAT_NAME: searchText}" value="{{Category.CAT_NAME}}"></option>
+                                                </datalist>
                                             </div>
+
+
+
+
+
+
                                             <div class="col-lg-8">
                                                 <label>Product Name :</label><label style="color:red;">*</label>
                                                 <input type="text" ng-model="PRODUCT_NAME" name="PRODUCT_NAME" maxlength="400" placeholder="Enter Product Name" class="form-control" required />
@@ -157,31 +227,35 @@
                                                 <label>HSN Code:</label>
                                                 <input type="text" name="HSN_CODE" ng-model="HSN_CODE" maxlength="50" class="form-control" placeholder="Enter Product HSN Code" />
                                             </div>
+
+                                            @*<div class="col-lg-12">
+                                                    <label>Product Image :</label><label style="color:red;">*</label>
+                                                    <input type="file" name="PRODUCT_IMAGE" class="form-control" accept="image/png, image/jpg, image/jpeg" style="height:38px;" id="product_photo">
+
+                                                    <a href="#" style="display:none" id="divProfile">
+                                                        <img src="{{_Party.PRODUCT_IMAGE}}" style="height: 100px; width: 100px; object-fit: contain;">&nbsp; &nbsp; &nbsp;
+                                                    </a>
+                                                </div>*@
                                             <div class="col-lg-12">
-                                                <label>Product Image :</label><label style="color:red;">*</label>
-                                                <input type="file" src="" ng-model="PRODUCT_IMAGE" name="PRODUCT_IMAGE" class="form-control" accept="image/png, image/jpg, image/jpeg" style="height:38px;" id="product_photo">
-                                                <label style="color:green;font-size:14px;">Note:Image size should be less than 500 kb and Dimension: 512 * 512 pixels.</label>
+                                                <label>Product Image:</label><label style="color:red;">*</label>
+                                                <input type="file" name="PRODUCT_IMAGE" class="form-control" style="height:38px;" id="product_photo" onchange="uploadImage(this)">
+
                                                 <a href="#" style="display:none" id="divProfile">
-                                                    <img src="{{_Party.PRODUCT_IMAGE}}" style="height: 100px; width: 100px; object-fit: contain;">&nbsp; &nbsp; &nbsp;
+                                                    <img id="imagePreview" style="height: 100px; width: 100px; object-fit: contain;" alt="Product Image Preview">
                                                 </a>
-                                                @*<span ng-show="(AddPayment.PRODUCT_IMAGE.$invalid && (AddPayment.PRODUCT_IMAGE.$touched || AddPayment.PRODUCT_IMAGE.$dirty))">
-                <span class="error" ng-show="AddPayment.PRODUCT_IMAGE.$error.required">Product Image is required</span>
-            </span>*@
                                             </div>
 
+
+
+
                                             <div class="col-lg-12">
-                                                <label>Product Description(Specification) :</label>@*<label style="color:red;">*</label>*@
+                                                <label>Product Description(Specification) :</label>
                                                 <textarea class="form-control" name="DESCRIPTION" id="editor_AnswerEng" ng-model="DESCRIPTION" placeholder="Enter Description"></textarea>
-                                                @*<span ng-show="(AddPayment.DESCRIPTION.$invalid && (AddPayment.DESCRIPTION.$touched || AddPayment.DESCRIPTION.$dirty))">
-                <span class="error" ng-show="AddPayment.DESCRIPTION.$error.required">Description is required</span>
-            </span>*@
+
                                             </div>
                                             <div class="col-lg-12">
                                                 <label>Product Configuration :</label><label style="color:red;">*</label>
                                                 <textarea class="form-control" name="CONFIGURATION" id="editor_AnswerEngConf" ng-model="CONFIGURATION" placeholder="Enter Configuration"></textarea>
-                                                @*<span ng-show="(AddPayment.CONFIGURATION.$invalid && (AddPayment.CONFIGURATION.$touched || AddPayment.CONFIGURATION.$dirty))">
-                <span class="error" ng-show="AddPayment.CONFIGURATION.$error.required">Configuration is required</span>
-            </span>*@
                                             </div>
                                         </div>
                                     </form>
@@ -196,6 +270,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -207,6 +282,28 @@
 {
     <script src="~/AngularJs/MindrayProduct.js"></script>
     <link href="~/css/Paging.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="~/ckeditor/ckeditor.js"></script>
+    <script>
+        function uploadImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Show the image preview
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('divProfile').style.display = 'block'; // Show the image container
+                };
+
+                reader.readAsDataURL(input.files[0]); // Read the file as a data URL
+            } else {
+                // If no file is selected, hide the image preview
+                document.getElementById('divProfile').style.display = 'none';
+            }
+        }
+
+    </script>
+
 }
 

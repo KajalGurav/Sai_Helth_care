@@ -1,0 +1,243 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+<style>
+    .error {
+        color: red;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Make Your Salary Increment</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()" data-target="#Emp_add">Add Salary</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <input type="text" class="form-control" ng-model="STARTING_DATE" id="STARTING_DATE" autocomplete="off" placeholder="Select From Date" />
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" ng-model="ENDING_DATE" id="ENDING_DATE" autocomplete="off" placeholder="Select To Date" />
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <select class="form-control" ng-model="EMPLOYEE_ID" ng-change="SearchAdmin()" id="EMPLOYEE_ID" name="EMPLOYEE_ID">
+                                    <option value="">Select Employee</option>
+                                    <option ng-repeat="Employee in EmployeeListSearch" value="{{Employee.EMP_ID}}">{{Employee.EMP_NAME}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            @*<input type="button" class="form-control  note-btn-block" style="background-color: #E9967A; color: black; width: 90px; text-align: center;" value="Get Data" ng-click="SearchAdmin()" />*@
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="SearchAdmin()">Get Data</button>
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="exportToExcel()">Export</button>
+                        </div>
+                        <div class="col-2"></div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Employee" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Employee Name</th>
+                                    <th>Basic Salary</th>
+                                    <th>Increment Value</th>
+                                    <th>Salary After Increment</th>
+                                    <th>Increment Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="emp in SalaryIncrementList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{emp.EMP_NAME}}</td>
+                                    <td>{{emp.BASIC_SALARY}}</td>
+                                    <td>{{emp.INCREMENT_VALUE}}</td>
+                                    <td>{{emp.BASIC_SALARY+emp.INCREMENT_VALUE}}</td>
+                                    <td>{{emp.INCREMENT_DATE}}</td>
+                                    <td><a data-toggle="modal" ng-click="getForUpdate(emp)" title="Update" class="btn btn-xs btn-danger">Edit </a></td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="7" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                                @*<tr>
+                        <td>101</td>
+                        <td>KHAIRNAR DIPAKKUMAR</td>
+                        <td>11000</td>
+                        <td>0</td>
+                        <td>11000</td>
+                        <td>2019</td>
+                        <td></td>
+                    </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Emp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>{{Action}} Increment </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Employee Name :</label><label style="color:red;">*</label>
+                                                <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                                        ng-selected="emp.EMP_ID == EMP_ID" ng-change="GetBasicSalary()" required>
+                                                    <option value="">Select Employee</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.EMP_ID.$invalid && ( AddPayment.EMP_ID.$touched || AddPayment.EMP_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.EMP_ID.$error.required">
+                                                        Employee is required
+                                                    </span>
+                                                </span>
+                                                @*<select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                        <option value="">Select Employee </option>
+                                                        <option value="Administrator">Manoj Patil</option>
+                                                        <option value="ServiceAdmin">Rakesh Solanki</option>
+                                                        <optin value="Jr.Service Engineer">Rahul Rathod</optin>
+                                                        <option value="Sr. Account">Rohit Pawar</option>
+                                                    </select>*@
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Basic Salary:</label>
+                                                <input type="text" name="BASIC_SALARY" class="form-control" ng-model="BASIC_SALARY" readonly placeholder="Basic Salary" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Increment Value :</label><label style="color:red;">*</label>
+                                                <input type="text" name="INCREMENT_VALUE" class="form-control" ng-model="INCREMENT_VALUE" ng-change="CalTotal()" placeholder="Enter Increment Value" required />
+                                                <span ng-show="(AddPayment.INCREMENT_VALUE.$invalid && ( AddPayment.INCREMENT_VALUE.$touched || AddPayment.INCREMENT_VALUE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.INCREMENT_VALUE.$error.required">
+                                                        Increment value is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Increment Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="INCREMENT_DATE" id="INCREMENT_DATE" class="form-control" ng-model="INCREMENT_DATE" placeholder="Enter Increment Date" />
+                                                <span ng-show="(AddPayment.INCREMENT_DATE.$invalid && ( AddPayment.INCREMENT_DATE.$touched || AddPayment.INCREMENT_DATE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.INCREMENT_DATE.$error.required">
+                                                        Increment Date is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Total:</label>
+                                                <input type="text" name="TOTAL_SALARY" class="form-control" ng-model="TOTAL_SALARY" readonly placeholder="Total" />
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/SalaryIncrement.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#INCREMENT_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#INCREMENT_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#INCREMENT_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#INCREMENT_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#INCREMENT_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+    </script>
+    <script>
+        $("#STARTING_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#STARTING_DATE").datepicker("option", "dateFormat", "mm/dd/yy");
+        $("#STARTING_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#STARTING_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#STARTING_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#ENDING_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#ENDING_DATE").datepicker("option", "dateFormat", "mm/dd/yy");
+        $("#ENDING_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#ENDING_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#ENDING_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+}

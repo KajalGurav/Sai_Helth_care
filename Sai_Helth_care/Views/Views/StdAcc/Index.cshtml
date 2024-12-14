@@ -1,0 +1,252 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<section ng-controller="StdAccCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Product Std Accessories</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()">Add Std Acc</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search By Accessories" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No</th>
+                                    <th>Product Category</th>
+                                    <th>Manufacturer</th>
+                                    <th>Product</th>
+                                    @*<th>Product Model</th>*@
+                                    <th>Std Accessories Name</th>
+                                    <th>HSN Code</th>
+                                    <th>Status</th>
+                                    <th>Reg. Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="Product in StdAccList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{Product.CAT_NAME}}</td>
+                                    <td>{{Product.M_NAME}}</td>
+                                    <td>{{Product.PRODUCT_NAME}}</td>
+                                    <td>{{Product.STD_ACC_NAME}}</td>
+                                    <td>{{Product.HSN_CODE}}</td>
+                                    <td><a href="" ng-confirm-click="Do you want to change status ?" confirmed-click="ChangeStatus(Product)"><b ng-style="Product.STATUS=='Active'?{'color':'green'}:{'color':'red'}">{{Product.STATUS}}</b></a></td>
+                                    <td>{{Product.REG_DATE}}</td>
+                                    <td>
+                                        <a data-toggle="modal" ng-click="getForUpdate(Product)" title="Update" class="btn btn-xs btn-success">Edit </a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="9" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal" id="Admin_Addupdate">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+                                <h4 class="modal-title"><b>{{Admin_Action}}</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
+                                                <select id="CAT_ID" class="form-control" name="CAT_ID" ng-model="CAT_ID"
+                                                    ng-options="Category.CAT_ID as Category.CAT_NAME for Category in CategoryList"
+                                                    ng-selected="Category.CAT_ID == CAT_ID" ng-change="GetMenuChange()" required>
+                                                    <option value="">Select Product Category</option>
+                                                </select>
+                                                @*<select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()" required>
+                                                    <option value="">Select Product Category</option>
+                                                    <option ng-repeat="Category in CategoryList" value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
+                                                </select>*@
+                                                <span ng-show="(AddPayment.CAT_ID.$invalid && (AddPayment.CAT_ID.$touched || AddPayment.CAT_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CAT_ID.$error.required">Product Category is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                                <select id="M_ID" class="form-control" name="M_ID" ng-model="M_ID"
+                                                    ng-options="Manufac.M_ID as Manufac.M_NAME for Manufac in ManufacturerList"
+                                                    ng-selected="Manufac.M_ID == M_ID" ng-change="GetProductChange()" required>
+                                                    <option value="">Select Manufacturer</option>
+                                                </select>
+                                                @*<select ng-model="M_ID" id="M_ID" class="form-control" ng-change="GetProductChange()" required>
+                                                    <option value="">Select Manufacturer</option>
+                                                    <option ng-repeat="Manufac in ManufacturerList" value="{{Manufac.M_ID}}">{{Manufac.M_NAME}}</option>
+                                                </select>*@
+                                                <span ng-show="(AddPayment.M_ID.$invalid && (AddPayment.M_ID.$touched || AddPayment.M_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.M_ID.$error.required">Manufacturer is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Product/Model:</label><label style="color:red;">*</label>
+                                                <select id="P_ID" class="form-control" name="P_ID" ng-model="P_ID"
+                                                    ng-options="Product.P_ID as Product.PRODUCT_NAME for Product in ProductList"
+                                                    ng-selected="Product.P_ID == P_ID" required>
+                                                    <option value="">Select Product</option>
+                                                </select>
+                                                @*<select ng-model="P_ID" id="P_ID" class="form-control">
+                                                    <option value="">Select Product</option>
+                                                    <option ng-repeat="Product in ProductList" value="{{Product.P_ID}}">{{Product.PRODUCT_NAME}}</option>
+                                                </select>*@
+                                                <span ng-show="(AddPayment.P_ID.$invalid && (AddPayment.P_ID.$touched || AddPayment.P_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.P_ID.$error.required">Product is required</span>
+                                                </span>
+                                            </div>
+                                            @*<div class="form-group col-md-6">
+                                                    <label class="control-label">Select Model:</label><label style="color:red;">*</label>
+                                                    <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                        <option value="">Select Product Category </option>
+                                                        <option value="BMD Machine">BMD Machine</option>
+                                                        <option value="Apron">Apron</option>
+                                                        <option value="CT Scan Machine">CT Scan Machine</option>
+                                                    </select>
+                                                </div>*@
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Standard Accessories Name:</label><label style="color:red;">*</label>
+                                                <input type="text" name="STD_ACC_NAME" ng-model="STD_ACC_NAME" class="form-control" placeholder="Enter Std Acc Name" required />
+                                                <span ng-show="(AddPayment.STD_ACC_NAME.$invalid && (AddPayment.STD_ACC_NAME.$touched || AddPayment.STD_ACC_NAME.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.STD_ACC_NAME.$error.required">Spare Part is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">HSN Code:</label>@*<label style="color:red;">*</label>*@
+                                                <input type="text" name="HSN_CODE" ng-model="HSN_CODE" maxlength="50" class="form-control" placeholder="Enter HSN Code" />
+                                                @*<span ng-show="(AddPayment.HSN_CODE.$invalid && (AddPayment.HSN_CODE.$touched || AddPayment.HSN_CODE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.HSN_CODE.$error.required">HSN Code is required</span>
+                                                </span>*@
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">MRP:</label><label style="color:red;">*</label>
+                                                <input type="number" name="PRICE" ng-model="PRICE" ng-pattern="/^([0-9]\d*)$/" class="form-control" placeholder="Enter Price" required />
+                                                <span ng-show="(AddPayment.PRICE.$invalid && (AddPayment.PRICE.$touched || AddPayment.PRICE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PRICE.$error.required">MRP. is required</span>
+                                                    <span class="error" ng-show="AddPayment.PRICE.$error.pattern">Enter valid MRP. </span>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-sm" style="background-color:green;font-size:14px;color:white" ng-disabled="AddPayment.$invalid" ng-click="AddAdmin()">{{Admin_Action}}</button>
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+.
+@section scripts
+{
+    <script src="~/AngularJs/StdAcc.js"></script>
+    <script src="~/AngularJs/Customermaster.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+}
+

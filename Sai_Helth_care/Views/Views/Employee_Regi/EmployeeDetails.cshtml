@@ -1,0 +1,1223 @@
+﻿
+@{
+    ViewBag.Title = "EmployeeDetails";
+}
+
+
+<style>
+    .catStyle_Desc {
+        color: orangered;
+        cursor: pointer;
+        font-size: 15px;
+        border: 1px solid #077F7B;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .catStyle_active_Desc {
+        color: white;
+        background-color: #077F7B;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: 1px solid #077F7B;
+        border-radius: 5px;
+    }
+</style>
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+<section class="content" ng-controller="EmployeeDetailsController">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a href="/Employee_Regi/Index" class="btn btn-xs" style="background-color:green;color:white"><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-8" style="margin-left:-40px">
+                                <h3 class="card-title"><b> Employee Details(<span style="color:red">Employee Name : {{EmployeeDetails.EMP_NAME}}</span>)</b></h3>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-12" style="overflow-y: auto;">
+                            <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%" style="font-size: 0.8rem; ">
+                                <thead style="color: white; background-color: gray;">
+                                    <tr>
+                                        <th>Employee Name</th>
+                                        <th>Contact No</th>
+                                        <th>Alt Contact No</th>
+                                        <th>Email</th>
+                                        <th>Permanent Address</th>
+                                        <th>City</th>
+                                        <th>State</th>
+                                        <th>Zip Code</th>
+                                        <th>Designation</th>
+                                        <th>Department</th>
+                                        <th>Martial Status</th>
+                                        <th>Physical Disability</th>
+                                        <th>Salary</th>
+                                        <th>Bank Name</th>
+                                        <th>Bank Acc No</th>
+                                        <th>IFSC Code</th>
+                                        <th>Aadhar Card No</th>
+                                        <th>PANCard No</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        
+                                        <td>{{EmployeeDetails.EMP_NAME}}</td>
+                                        <td>{{EmployeeDetails.CONTACT_NO}}</td>
+                                        <td>{{EmployeeDetails.ALTERNATE_CONT_NO}}</td>
+                                        <td>{{EmployeeDetails.EMAIL}}</td>
+                                        <td>{{EmployeeDetails.PERMENENT_ADDRESS}}</td>
+                                        <td>{{EmployeeDetails.CITY_NAME}}</td>
+                                        <td>{{EmployeeDetails.STATE_NAME}}</td>
+                                        <td>{{EmployeeDetails.ZIP_CODE}}</td>
+                                        <td>{{EmployeeDetails.DESI_NAME}}</td>
+                                        <td>{{EmployeeDetails.DEP_NAME}}</td>
+                                        <td>{{EmployeeDetails.MARRIED_STATUS}}</td>
+                                        <td>{{EmployeeDetails.PHYSICAL_DUSABILITY}}</td>
+                                        <td>Rs.{{EmployeeDetails.SALERY_PER_MONTH}}/-</td>
+                                        <td>{{EmployeeDetails.BANK_NAME}}</td>
+                                        <td>{{EmployeeDetails.ACCOUNT_NO}}</td>
+                                        <td>{{EmployeeDetails.IFSC_CODE}}</td>
+                                        <td>{{EmployeeDetails.ADHAR_CARD_NO}}</td>
+                                        <td>{{EmployeeDetails.PAN_CARD_NO}}</td>
+                                        <td>{{EmployeeDetails.STATUS}}</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div style="overflow: auto; white-space: nowrap; padding:15px 0px;">
+                                                <center>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_active_Desc" id="0_catId_Desc" ng-click="OnCategoryClick('0')" style="padding:5px; margin:5px;font-size:12px;">Daily Activity</span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="1_catId_Desc" ng-click="OnCategoryClick('1')" style="padding:5px; margin:5px;font-size:12px;">Service Call </span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="2_catId_Desc" ng-click="OnCategoryClick('2')" style="padding:5px; margin:5px;font-size:12px;">Service Call Complete</span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="3_catId_Desc" ng-click="OnCategoryClick('3')" style="padding:5px; margin:5px;font-size:12px;">Service Call Request</span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="4_catId_Desc" ng-click="OnCategoryClick('4')" style="padding:5px; margin:5px;font-size:12px;">Salary Increment</span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="5_catId_Desc" ng-click="OnCategoryClick('5')" style="padding:5px; margin:5px;font-size:12px;">Advanced Salary</span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="6_catId_Desc" ng-click="OnCategoryClick('6')" style="padding:5px; margin:5px;font-size:12px;">Employee Loan</span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="7_catId_Desc" ng-click="OnCategoryClick('7')" style="padding:5px; margin:5px;font-size:12px;">Leads</span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="catmenu_button_Desc catStyle_Desc" id="8_catId_Desc" ng-click="OnCategoryClick('8')" style="padding:5px; margin:5px;font-size:12px;">Leaves Application</span>
+                                                    </span>
+                                                </center>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="card-body" id="Demoexample_0">
+                                    <div class="ibox-body" style="height:55vh;">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row" style="padding:7px;">
+                                                    <div class="col-3">
+                                                        <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#Activity_add" ng-click="AddActivity()">Add Daily Activity</button>
+                                                    </div>
+                                                    <div class="col-3"></div> <div class="col-3"></div>
+                                                </div>
+
+                                                <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+                                                    <thead style="background-color:#077F7B; color: white ">
+                                                        <tr>
+                                                            <th>DAR Date</th>
+                                                            <th>Employee Name</th>
+                                                            <th>Working Location (City)</th>
+                                                            <th>Admin Note</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>06/02/2022</td>
+                                                            <td>Sagar Tandle</td>
+                                                            <td>Dombivali</td>
+                                                            <td>Do As Early as Possible</td>
+                                                            <td><a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a>   </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal fade" id="Activity_add">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="background-color: #077F7B; color: white; padding: 10px; ">
+                                                        <h4 class="modal-title"><b>Add Daily Activity</b></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+                                                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Employee Name:</label><label style="color:red;">*</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Employee Name" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Working Location:</label>
+                                                                        <input type="text" name="Service" class="form-control" placeholder="Working Location" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Activity Date:</label>
+                                                                        <input type="date" name="Service" class="form-control" placeholder="Activity Date" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Daily Activity Note:</label>
+                                                                        <textarea class="form-control" placeholder="Daily Activity Note"></textarea>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Administrator Note:</label>
+                                                                        <textarea class="form-control" placeholder="Administrator Note"></textarea>
+                                                                    </div>
+                                                                </div>
+
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="form-group col-md-12">
+                                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Service" />
+                                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="Demoexample_1" style="display:none">
+                                    <div class="ibox-body" style="height:70vh; overflow-y:auto;">
+                                        <div class="row" style="padding:7px;">
+                                            <div class="col-3">
+                                                <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#Comp_add" ng-click="Adddoctor()">Add Service Call</button>
+                                            </div>
+                                            <div class="col-3"></div> <div class="col-3"></div>
+                                        </div>
+                                        <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+                                            <thead style="background-color:#077F7B; color: white ">
+                                                <tr>
+                                                    <th>Service Call No.</th>
+                                                    <th>Customer Name/Firm Name</th>
+                                                    <th>Call Date</th>
+                                                    <th>Product</th>
+                                                    <th>Manufacturer</th>
+                                                    <th>Model</th>
+                                                    <th>Service Engg. Name</th>
+                                                    <th>Call Priority</th>
+                                                    <th>Call Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                                <tr>
+                                                    <td>SMS/SCN/1173</td>
+                                                    <td>Mrugraj Murtadak / Sudharma Hospital</td>
+                                                    <td>11/09/2020</td>
+                                                    <td>Ultrasound Machine</td>
+                                                    <td>Philips</td>
+                                                    <td>HD6</td>
+                                                    <td>Jitendra Mokal</td>
+                                                    <td>Medium</td>
+                                                    <td>Close</td>
+                                                    <td><a href="~/#/Index" data-toggle="modal" data-target="#Comp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="modal fade" id="Comp_add">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="background-color: #077F7B; color: white; padding: 10px; ">
+                                                        <h4 class="modal-title"><b>@*{{Action}}*@ Add Service Call </b></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+                                                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Service Call Number:</label><label style="color:red;">*</label>
+                                                                        <input type="number" name="Zip Code" class="form-control" readonly placeholder="Service Call Number" />
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Firm Name:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                                            <option value="">Select Firm Name</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTDS">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Address:</label>
+                                                                        <textarea class="form-control" placeholder="Enter Address"></textarea>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Call Assign Date:</label><label style="color:red;">*</label>
+                                                                        <input type="date" name="Zip Code" class="form-control" placeholder="Call Assign Date." />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Schedule Call Date:</label><label style="color:red;">*</label>
+                                                                        <input type="date" name="Zip Code" class="form-control" placeholder="Schedule Call Date." />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label"> Select Product: </label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Product</option>
+                                                                            <option value="New">Apron</option>
+                                                                            <optin value="Old">CT Scan Machine</optin>
+                                                                            <optin value="BMD Machine">BMD Machine</optin>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Manufacturer</option>
+                                                                            <option value="New">Apron</option>
+                                                                            <optin value="Old">L&T</optin>
+                                                                            <optin value="BMD Machine">Tata</optin>
+                                                                        </select>
+                                                                    </div>
+
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Model:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Model</option>
+                                                                            <option value="New">High-Speed-H22</option>
+                                                                            <optin value="Old">High-Speed CT-I22</optin>
+                                                                            <optin value="BMD Machine">High-Speed HU-H22</optin>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select service Engineer:</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Engineer</option>
+                                                                            <optin value="Cash">Akash Agale</optin>
+                                                                            <option value="Cash">Archana Sunil Kulkarni</option>
+                                                                            <option value="Cash">Cheten Bhagwat</option>
+                                                                            <option value="Cash">Manoj Kamat</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Contract Type:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Contract Type</option>
+                                                                            <option value="Cash">Warranty</option>
+                                                                            <option value="Cash">AMC</option>
+                                                                            <option value="Cash">CMC</option>
+                                                                            <option value="Cash">Paid Call</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Service type:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Service Type</option>
+                                                                            <option value="PM">PM</option>
+                                                                            <option value="CM">CM</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Call Priority:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Priority Type</option>
+                                                                            <option value="Cash">High</option>
+                                                                            <option value="Cash">Medium</option>
+                                                                            <option value="Cash">Low</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Description about call / Customer Issue:</label>
+                                                                        <textarea class="form-control" placeholder="Enter Description"></textarea>
+                                                                    </div>
+
+                                                                </div>
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="form-group col-md-12">
+                                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Service" />
+                                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="Demoexample_2" style="display:none">
+                                    <div class="row" style="padding:7px;">
+
+                                    </div>
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+                                        <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+                                            <thead style="background-color:#077F7B; color: white ">
+                                                <tr>
+                                                    <th>Service Call No.</th>
+                                                    <th>Customer Name/Firm Name</th>
+                                                    <th>Call Date</th>
+                                                    <th>Product</th>
+                                                    <th>Manufacturer</th>
+                                                    <th>Model</th>
+                                                    <th>Service Engg. Name</th>
+                                                    <th>Call Priority</th>
+                                                    <th>Call Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td>SMS/SCN/1173</td>
+                                                    <td>Mrugraj Murtadak / Sudharma Hospital</td>
+                                                    <td>11/09/2020</td>
+                                                    <td>Ultrasound Machine</td>
+                                                    <td>Philips</td>
+                                                    <td>HD6</td>
+                                                    <td>Jitendra Mokal</td>
+                                                    <td>Medium</td>
+                                                    <td>Close</td>
+                                                    <td><a href="~/#/Index" data-toggle="modal" data-target="#Comp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                <div class="card-body" id="Demoexample_3" style="display:none">
+                                    <div class="row" style="padding:7px;">
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#AerbQutation_add" ng-click="Adddoctor()">Add Service Call</button>
+                                        </div>
+                                        <div class="col-3"></div>
+                                        <div class="col-3"></div>
+                                    </div>
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+                                        <div class="row">
+                                            <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+                                                <thead style="background-color:#077F7B; color: white ">
+                                                    <tr>
+                                                        <th>Service Call No.</th>
+                                                        <th>Customer Name/Firm Name</th>
+                                                        <th>Call Date</th>
+                                                        <th>Product</th>
+                                                        <th>Manufacturer</th>
+                                                        <th>Model</th>
+                                                        <th>Service Engg. Name</th>
+                                                        <th>Call Priority</th>
+                                                        <th>Call Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr>
+                                                        <td>SMS/SCN/1173</td>
+                                                        <td>Mrugraj Murtadak / Sudharma Hospital</td>
+                                                        <td>11/09/2020</td>
+                                                        <td>Ultrasound Machine</td>
+                                                        <td>Philips</td>
+                                                        <td>HD6</td>
+                                                        <td>Jitendra Mokal</td>
+                                                        <td>Medium</td>
+                                                        <td>Close</td>
+                                                        <td><a href="~/#/Index" data-toggle="modal" data-target="#Comp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal fade" id="AerbQutation_add">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="background-color: #077F7B; color: white; padding: 10px; ">
+                                                        <h4 class="modal-title"><b>Add Service Call</b></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+                                                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Service Call Number ::</label><label style="color:red;">*</label>
+                                                                        <input type="number" name="Zip Code" class="form-control" readonly placeholder="Service Call Number" />
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Firm Name:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                                            <option value="">Select Firm Name</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTDS">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Address:</label>
+                                                                        <textarea class="form-control" placeholder="Enter Address"></textarea>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Call Assign Date:</label><label style="color:red;">*</label>
+                                                                        <input type="text" name="Zip Code" class="form-control" readonly placeholder="Call Assign Date." />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Schedule Call Date:</label><label style="color:red;">*</label>
+                                                                        <input type="text" name="Zip Code" class="form-control" readonly placeholder="Schedule Call Date." />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label"> Select Product: </label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Product</option>
+                                                                            <option value="New">Apron</option>
+                                                                            <optin value="Old">CT Scan Machine</optin>
+                                                                            <optin value="BMD Machine">BMD Machine</optin>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Manufacturer</option>
+                                                                            <option value="New">Apron</option>
+                                                                            <optin value="Old">L&T</optin>
+                                                                            <optin value="BMD Machine">Tata</optin>
+                                                                        </select>
+                                                                    </div>
+
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Model:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Model</option>
+                                                                            <option value="New">High-Speed-H22</option>
+                                                                            <optin value="Old">High-Speed CT-I22</optin>
+                                                                            <optin value="BMD Machine">High-Speed HU-H22</optin>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select service Engineer:</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Engineer</option>
+                                                                            <optin value="Cash">Akash Agale</optin>
+                                                                            <option value="Cash">Archana Sunil Kulkarni</option>
+                                                                            <option value="Cash">Cheten Bhagwat</option>
+                                                                            <option value="Cash">Manoj Kamat</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Contract Type:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Contract Type</option>
+                                                                            <optin value="Cash">AMC</optin>
+                                                                            <option value="Cash">CMC</option>
+                                                                            <option value="Cash">Warranty</option>
+                                                                            <option value="Cash">Paid</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Service type:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Service Type</option>
+                                                                            <optin value="PM">PM</optin>
+                                                                            <option value="CM">CM</option>
+                                                                            <option value="PM & CM">PM & CM</option>
+                                                                            <option value="AMC">AMC</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Call Priority:</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Propriatory" id="Taluka Name">
+                                                                            <option value="">Select Priority Type</option>
+                                                                            <optin value="Cash">High</optin>
+                                                                            <option value="Cash">Medium</option>
+                                                                            <option value="Cash">Low</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Description about call / Customer Issue:</label>
+                                                                        <textarea class="form-control" placeholder="Enter Description"></textarea>
+                                                                    </div>
+
+                                                                </div>
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="form-group col-md-12">
+                                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Increment" />
+                                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="card-body" id="Demoexample_4" style="display:none">
+                                    <div class="row" style="padding:7px;">
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#AddIncrement">Add Increment</button>
+                                        </div>
+                                        <div class="col-3"></div> <div class="col-3"></div>
+                                    </div>
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+                                        <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+                                            <thead style="background-color:#077F7B; color: white ">
+                                                <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Employee Name</th>
+                                                    <th>Basic Salary</th>
+                                                    <th>Increment Value</th>
+                                                    <th>Salary After Increment</th>
+                                                    <th>Increment Year</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                                <tr>
+                                                    <td>101</td>
+                                                    <td>KHAIRNAR DIPAKKUMAR</td>
+                                                    <td>11000</td>
+                                                    <td>0</td>
+                                                    <td>11000</td>
+                                                    <td>2019</td>
+                                                    <td>
+                                                        <a href="" ng-click="UpdateCaseSheet(Case)" title="Edit" class="btn btn-xs btn-success"><span class="fa fa-pen"></span></a>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="modal fade" id="AddIncrement">
+                                            <div class="modal-dialog  modal-lg">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="background-color: #17a2b8">
+                                                        <center> <h4 class="modal-title" style="color:white">Add Increment</h4></center>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="col-md-12">
+
+                                                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                                <div class="row">
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Basic Salary:</label>
+                                                                        <input type="number" name="Service" class="form-control" readonly placeholder="Basic Salary" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Increment Value :</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Increment Value" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Increment Date:</label>
+                                                                        <input type="text" name="Service" class="form-control" placeholder="Enter Increment Date" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Total:</label><label style="color:red;">*</label>
+                                                                        <input type="number" name="Service" class="form-control" readonly placeholder="" />
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </form>
+                                                            <center>
+                                                                <div class="form-group col-md-12">
+                                                                    <button type="button" class="btn btn-sm" style="background-color:#4B545C;color:white" ng-click="AddUpdateCaseSheet()">{{AddUpdateCaseSheet_Action}}</button>
+                                                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                                </div>
+                                                            </center>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body" id="Demoexample_5" style="display:none">
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row" style="padding:7px;">
+                                                    <div class="col-3">
+                                                        <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#Advanced_Salary" ng-click="Adddoctor()">Add Advanced Salary</button>
+                                                    </div>
+                                                    <div class="col-3"></div> <div class="col-3"></div>
+                                                </div>
+                                                <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+                                                    <thead style="background-color:#077F7B; color: white ">
+                                                        <tr>
+                                                            <th>Employee Name</th>
+                                                            <th>Advance Amount</th>
+                                                            <th>Date</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>KHAIRNAR DIPAKKUMAR</td>
+                                                            <td>2000</td>
+                                                            <td>12/06/2022</td>
+                                                            <td>
+                                                                <a href="" ng-click="UpdateCaseSheet(Case)" title="Edit" class="btn btn-xs btn-success"><span class="fa fa-pen"></span></a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="Advanced_Salary">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="background-color: #077F7B; color: white; padding: 10px; ">
+
+                                                        <h4 class="modal-title"><b>@*{{Action}}*@ Add Advance Salary</b></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+
+                                                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Advance Amount:</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Advance Amount" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label"> Date:</label>
+                                                                        <input type="text" name="Service" class="form-control" placeholder="Enter Date" />
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Remark:</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Remark" />
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="form-group col-md-12">
+                                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Challan" />
+                                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+
+                                    </div>
+                                </div>
+
+
+                                <div class="card-body" id="Demoexample_6" style="display:none">
+
+                                    <div class="row" style="padding:7px;">
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#AddEmployeeLoan">Add Employee Loan</button>
+                                        </div>
+                                        <div class="col-3"></div> <div class="col-3"></div>
+                                    </div>
+
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+
+                                        <table id="example2" class="table table-hover table-bordered">
+
+                                            <thead>
+                                                <tr style="background-color:#077F7B; color: white ">
+                                                    <th>Sr. No.</th>
+                                                    <th>Employee Name</th>
+                                                    <th>Loan Amount</th>
+                                                    <th>Loan on Date</th>
+                                                    <th>Loan on Installment</th>
+                                                    <th>Loan Outstanding</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>101</td>
+                                                    <td>KHAIRNAR DIPAKKUMAR</td>
+                                                    <td>193000</td>
+                                                    <td>06/02/2022</td>
+                                                    <td>2000</td>
+                                                    <td>183000</td>
+                                                    <td>
+                                                        <a data-toggle="modal" data-target="#PaymentReceipt" title="Add Language" class="btn btn-xs btn-success">Edit </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+
+
+                                    </div>
+
+
+                                    <div class="modal fade" id="AddEmployeeLoan">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                                    <h4 class="modal-title"><b>@*{{Action}}*@ Add Receipt Master</b></h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="card-body">
+
+                                                        <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                            <div class="row">
+
+                                                                <div class="form-group col-md-6">
+                                                                    <label class="control-label">Loan Amount:</label>
+                                                                    <input type="number" name="Service" class="form-control" placeholder="Basic Salary" />
+                                                                </div>
+                                                                <div class="form-group col-md-6">
+                                                                    <label class="control-label">Installment Amount:</label>
+                                                                    <input type="number" name="Service" class="form-control" placeholder="Loan on Date" />
+                                                                </div>
+                                                                <div class="form-group col-md-6">
+                                                                    <label class="control-label">Loan Outstanding:</label>
+                                                                    <input type="number" name="Service" class="form-control" readonly placeholder="Loan Outstanding" />
+                                                                </div>
+                                                            </div>
+
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="form-group col-md-12">
+                                                        <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Challan" />
+                                                        <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                </div>
+
+
+
+
+                                <div class="card-body" id="Demoexample_7" style="display:none">
+                                    <div class="row" style="padding:7px;">
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#Importantcall">Add Leads</button>
+                                        </div>
+                                        <div class="col-3"></div> <div class="col-3"></div>
+                                    </div>
+
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+                                        <table id="example2" class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr style="background-color:#077F7B; color: white ">
+                                                    <th>Sr.No</th>
+                                                    <th>DSR No</th>
+                                                    <th>DSR Date</th>
+                                                    <th>Sales Person Name</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Firm Name</th>
+                                                    <th>Address</th>
+                                                    <th>Location</th>
+                                                    <th>Modility</th>
+                                                    <th>Buy %</th>
+                                                    <th>Projected model</th>
+                                                    <th>Forcasted Month</th>
+                                                    <th>Price(IN Lac)</th>
+                                                    <th>Enquiry Type</th>
+                                                    <th>Reg Date</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>SMS/DSR/1150</td>
+                                                    <td>22/05/2021</td>
+                                                    <td>Sagar Tandle</td>
+                                                    <td>Dr Jitesh Munot</td>
+                                                    <td>NDC diagnostic centre</td>
+                                                    <td>Khopat thane</td>
+                                                    <td>Thane</td>
+                                                    <td>5</td>
+                                                    <td>10%</td>
+                                                    <td>DC30</td>
+                                                    <td>March</td>
+                                                    <td>19.5</td>
+                                                    <td>HOT</td>
+                                                    <td>Active</td>
+                                                    <td>
+                                                        <a data-toggle="modal" data-target="#Importantcall" title="Add Language" class="btn btn-xs btn-success">Edit </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div class="modal fade" id="Importantcall">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                                        <h4 class="modal-title"><b>@*{{Action}}*@ Add Leads</b></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+
+                                                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">DSR No:</label>
+                                                                        <input type="number" name="Service" class="form-control" readonly placeholder="Enter DSR No" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">DSR Date:</label>
+                                                                        <input type="number" name="Service" class="form-control" readonly placeholder="Enter DSR Date" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Enter Customer Name:</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Customer Name" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Customer Firm Name:</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                                            <option value="">Select Customer Firm Name</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTDS">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                            <option value="MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD">MAC CARE SPECIALITY HOSPITAL A UNIT OF VARAD MULTISPECIALITY HOSPITAL PVT LTD</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Place (City)</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Place (City)" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Firm Address</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Firm Address" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Mobile No</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Mobile No" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Modality</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Modality" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Competition & Model</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Competition & Model" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Email Id</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Email Id" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Projected Model</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Projected Model" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Employee Name</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Employee Name" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Requirments of Customer</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Requirments of Customer" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Sales Person Commitments</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Sales Person Commitments" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Forcasted Month</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Forcasted Month" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Price (In Lac)</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Price (In Lac)" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Buy %</label>
+                                                                        <input type="number" name="Service" class="form-control" placeholder="Enter Buy %" />
+                                                                    </div>
+                                                                    @*<div class="form-group col-md-6">
+                                                                            <label class="control-label"> Select Enquiry Type</label><label style="color:red;">*</label>
+                                                                            <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                                                <option value="">Select Customer Firm Name</option>
+                                                                                <option value="HOT">HOT</option>
+                                                                                <option value="COLD">COLD</option>
+                                                                            </select>
+                                                                        </div>*@
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Enquiry Type:</label>
+                                                                        <input type="radio" id="contactChoice1" name="contact" value="Unmarried" />
+                                                                        <label for="contactChoice1">HOT</label>
+                                                                        <input type="radio" id="contactChoice2" name="contact" value="Married" />
+                                                                        <label for="contactChoice2">COLD</label>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="form-group col-md-12">
+                                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Important Call" />
+                                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="card-body" id="Demoexample_8" style="display:none">
+                                    <div class="row" style="padding:7px;">
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-success btn-sm" style="background-color:orangered;color:white" data-toggle="modal" data-target="#LeaveApplication">Add Leave</button>
+                                        </div>
+                                        <div class="col-3"></div> <div class="col-3"></div>
+                                    </div>
+
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+                                        <table id="example2" class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr style="background-color:#077F7B; color: white ">
+                                                    <th>Sr.No</th>
+                                                    <th>Application No</th>
+                                                    <th>Leave Application Date</th>
+                                                    <th>Leave From Date</th>
+                                                    <th>Leave To Date</th>
+                                                    <th>Leave Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>SMS/LA/1</td>
+                                                    <td>11/01/2017</td>
+                                                    <td>23/12/2016</td>
+                                                    <td>24/12/2017</td>
+                                                    <td>Approve</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>SMS/LA/1</td>
+                                                    <td>11/01/2017</td>
+                                                    <td>23/12/2016</td>
+                                                    <td>24/12/2017</td>
+                                                    <td>Approve</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+
+                                        <div class="modal fade" id="LeaveApplication">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                                        <h4 class="modal-title"><b>@*{{Action}}*@ Add Leave</b></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+
+                                                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Application No:</label>
+                                                                        <input type="text" name="Service" class="form-control" readonly placeholder="Enter Application No" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Application Date:</label><label style="color:red;">*</label>
+                                                                        <input type="date" name="Service" class="form-control" placeholder="Enter Application Date" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Leave From</label><label style="color:red;">*</label>
+                                                                        <input type="date" name="Service" class="form-control" placeholder="Enter Leave From" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Leave To</label><label style="color:red;">*</label>
+                                                                        <input type="date" name="Service" class="form-control" placeholder="Enter Leave To" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Leave Reason</label><label style="color:red;">*</label>
+                                                                        <input type="text" name="Service" class="form-control" placeholder="Enter Leave Reason" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Leave in Days</label><label style="color:red;">*</label>
+                                                                        <input type="text" name="Service" class="form-control" placeholder="Enter Leave in Days" />
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label class="control-label">Select Leave Type</label><label style="color:red;">*</label>
+                                                                        <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                                                                            <option value="">Select Leave Type</option>
+                                                                            <option value="Pending">Personal</option>
+                                                                            <option value="Casual">Casual</option>
+                                                                            <option value="Sick">Sick</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="form-group col-md-12">
+                                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value=" Add Leave" />
+                                                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+
+                                <div class="card-body" id="Demoexample_9" style="display:none">
+                                    <div class="ibox-body" style="height:55vh; overflow-y:auto;">
+                                        <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%" style="font-size: 0.8rem">
+                                            <thead>
+                                                <tr style="background-color:#077F7B; color: white ">
+                                                    <th>Sr.No</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Yoga Date</th>
+                                                    <th>Reg Date</th>
+
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td><input type="text" class="form-control" placeholder="Amount" ng-model="searchText0.SHOP_PAYMENT" /></td>
+                                                    <td><input type="text" class="form-control" placeholder="Status" ng-model="searchText1.STATUS" /></td>
+                                                    <td></td>
+                                                    <td></td>
+
+                                                </tr>
+                                                <tr ng-repeat="yoga in yogaList|filter:searchText0 | filter:searchText1">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>{{yoga.AMOUNT}}</td>
+                                                    <td><a href="" style="color:orangered" data-toggle="modal" data-target="#changeClearance" ng-click="getyoga(yoga)">{{yoga.STATUS}}</a></td>
+                                                    <td>{{yoga.YOGA_DATE}}</td>
+                                                    <td>{{yoga.REG_DATE}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+
+    <script src="~/AngularJs/EmployeeDetails.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+}
+
+
+

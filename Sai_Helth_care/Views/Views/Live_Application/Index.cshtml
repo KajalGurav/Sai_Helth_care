@@ -1,0 +1,515 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section ng-controller="LeaveCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9">
+                                <h3 class="card-title"><b>Leave Master</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="form-control btn btn-sm pull-left" ng-click="AddLeave()" style="background-color: green;  color: white" data-toggle="modal" data-target="#Comp_add">Add Leave</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <select ng-model="EMP_ID1" id="EMP_ID1" name="EMP_ID1" class="form-control"
+                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                        ng-selected="emp.EMP_ID == EMP_ID1">
+                                    <option value="">Select Employee</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="START_DATE" name="START_DATE" id="START_DATE" autocomplete="off" placeholder="Select From Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="END_DATE" name="END_DATE" id="END_DATE" autocomplete="off" placeholder="Select To Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="SearchAdmin()">Get Data</button>
+                        </div>
+                        <div class="col-lg-1 col-md-1 col-sm-1">
+
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <input type="text" class="form-control" placeholder="Search Leave" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr.No.</th>
+                                    <th>Application No.</th>
+                                    <th>Leave Application Date</th>
+                                    <th>Employee Name</th>
+                                    <th>Department</th>
+                                    <th>Leave Category</th>
+                                    <th>Leave Type</th>
+                                    <th>Leave From Date</th>
+                                    <th>Leave To Date</th>
+                                    <th>Leave Status</th>
+                                    <th>Cancel Remark</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="Leave in LeaveList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{Leave.APPLICATION_NO}}</td>
+                                    <td>{{Leave.APPLICATION_DATE}}</td>
+                                    <td>{{Leave.EMP_NAME}}</td>
+                                    <td>{{Leave.DEP_NAME}}</td>
+                                    <td>{{Leave.LEAVE_CAT_NAME}}</td>
+                                    <td>{{Leave.LEAVE_TYPE}}</td>
+                                    <td>{{Leave.LEAVE_FROM_DATE}}</td>
+                                    <td>{{Leave.LEAVE_TO_DATE}}</td>
+                                    <td ng-show="Leave.LEAVE_STATUS_NAME=='Cancelled'" style="color:red;">{{Leave.LEAVE_STATUS_NAME}}</td>
+                                    <td ng-show="Leave.LEAVE_STATUS_NAME=='Approved'" style="color:green">{{Leave.LEAVE_STATUS_NAME}}</td>
+                                    <td ng-show="Leave.LEAVE_STATUS_NAME!='Cancelled' && Leave.LEAVE_STATUS_NAME!='Approved'">{{Leave.LEAVE_STATUS_NAME}}</td>
+                                    <td>{{Leave.LEAVE_CANCEL_REMARK}}</td>
+                                    @*<td><a href="~/#/Index" data-toggle="modal" ng-click="UpdateLeave()" data-target="#Comp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a></td>*@
+                                    <td>
+                                        <button type="button" class="btn btn-sm pull-left btn-danger" ng-click="UpdateLeave(Leave)" style="color: white" data-toggle="modal" data-target="#Comp_add">Edit</button>
+                                        <button type="button" class="btn btn-sm pull-left " style="background-color:green; color: white" ng-click="PrintLeave(Leave)" data-toggle="modal" data-target="#LeaveApplication">Print L.A.</button>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="12" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(1)">First</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                                <span ng-if="pager.currentPage==1">Previous</span>
+                            </li>
+                            <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                                <a ng-click="setPage(page)">{{page}}</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.totalPages)">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal fade" id="Comp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>@*{{Action}}*@ {{Admin_Action}} </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" @*ng-submit="AddPayment(AddPayment.$valid)"*@ data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Application No: </label>
+                                                <input type="text" name="Zip Code" class="form-control" ng-model="APPLICATION_NO" readonly placeholder="Application No." />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Application Date: </label><label style="color:red;">*</label>
+                                                <input type="text" name="Zip Code" class="form-control" id="APPLICATION_DATE" ng-model="APPLICATION_DATE" @*readonly*@ placeholder="Application Date." />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Employee Name:</label><label style="color:red;">*</label>
+                                                <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                                        ng-selected="emp.EMP_ID == EMP_ID" required ng-change="GetDepartment()">
+                                                    <option value="">Select Employee</option>
+                                                </select>
+
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Department Name: </label>
+                                                <input type="text" name="DEP_NAME" class="form-control" ng-model="DEP_NAME" readonly placeholder="Department Name" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Designtion Name: </label>
+                                                <input type="text" name="DESI_NAME" class="form-control" ng-model="DESI_NAME" readonly placeholder="Designtion Name" />
+                                            </div>
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Leave Category:</label><label style="color:red;">*</label>
+                                                <select ng-model="LEAVE_CAT_ID" id="LEAVE_CAT_ID" name="LEAVE_CAT_ID" class="form-control"
+                                                        ng-options="dep.LEAVE_CAT_ID as dep.LEAVE_CAT_NAME for dep in LeaveCategoryList"
+                                                        ng-selected="dep.LEAVE_CAT_ID == LEAVE_CAT_ID" required>
+                                                    <option value="">Select Leave Category</option>
+                                                </select>
+
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Leave Status Type:</label>
+                                                <select ng-model="LEAVE_STATUS_TYPE_ID" id="LEAVE_STATUS_TYPE_ID" name="LEAVE_STATUS_TYPE_ID" class="form-control"
+                                                        ng-options="dep.LEAVE_STATUS_TYPE_ID as dep.LEAVE_STATUS_NAME for dep in LeaveStatusList"
+                                                        ng-selected="dep.LEAVE_STATUS_TYPE_ID == LEAVE_STATUS_TYPE_ID" @*required*@>
+                                                    <option value="">Select  Status Type</option>
+                                                </select>
+
+                                            </div>
+
+                                            <div class="form-group col-md-6" ng-show="LEAVE_STATUS_TYPE_ID==3">
+                                                <label class="control-label">Cancel Reason:</label>
+                                                <input type="text" name="Cancel Reason" class="form-control" ng-model="LEAVE_CANCEL_REMARK" placeholder="Cancel Reason" required />
+                                            </div>
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Leave From:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Service" class="form-control" id="LEAVE_FROM_DATE" ng-model="LEAVE_FROM_DATE" placeholder="Leave From" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Leave To:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Service" class="form-control" id="LEAVE_TO_DATE" ng-model="LEAVE_TO_DATE" placeholder="Leave To" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Leave Type:</label><label style="color:red;">*</label>
+                                                <select name="" class="form-control" ng-model="LEAVE_TYPE" required>
+                                                    <option value="">Select Leave Type</option>
+                                                    <option value="Full Day">Full Day</option>
+                                                    <option value="Half Day">Half Day</option>
+
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Leave Reason.:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Contact No" class="form-control" ng-model="LEAVE_REASON" placeholder="Leave Reason" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Leave in Days:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Contact No" class="form-control" ng-model="LEAVE_IN_DAYS" placeholder="Leave in Days" required />
+                                            </div>
+
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" @*ng-disabled="AddPayment.$invalid"*@ ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="LeaveApplication">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                                    <div>
+                                        <div id="PrintMain" style="border: 0px solid #000;padding:0px; font-family:'Google Sans', 'Roboto', Arial, sans-serif">
+                                            <div class="wrapper">
+                                                <header>
+                                                    @*<div style="
+                                                          display: flex;
+                                                          width: fit-content;
+                                                          margin: 10px auto;
+                                                          align-items: center;
+                                                        ">
+                                                                                                      <div style="margin-right: 15px">
+                                                                                                          <img src="~/Images/sai-logo.png" alt="sailhelth logo" class="img-logo" />
+                                                                                                      </div>
+                                                                                                      <div>
+                                                                                                          <h1 style="
+
+                                                             color: #175292;
+                                                              text-decoration: underline;
+                                                              font-size: 30px;
+                                                              text-transform: uppercase;
+                                                              font-weight: 800;
+                                                              margin-bottom: 0px;
+                                                              line-height: 0;
+
+                                                            ">
+                                                                                                              SAI MEDICAL SERVICES
+                                                                                                          </h1>
+                                                                                                          <br />
+                                                                                                          <h2 style="
+                                                              color: #2e74b5;
+                                                              font-size: 22px;
+                                                              text-transform: capitalize;
+                                                              padding-top:0px;
+                                                            ">
+                                                                                                              Mumbai Naka, Nashik-422001
+                                                                                                          </h2>
+                                                                                                      </div>
+                                                                                                  </div>*@
+                                                    <div style="display: flex; justify-content: center; align-items: center;">
+                                                        <img style="width: 100%; height:180px;" src="/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg" alt="SAI MEDICAL LOGO">
+                                                    </div>
+                                                </header>
+                                                <div class="content-section">
+                                                    <h2 style="text-align: center; font-size: 24px; color: #000">
+                                                        Leave Application
+                                                    </h2>
+                                                </div>
+                                                <div style="margin-left:auto; text-align: end; margin-bottom: 15px; display: block;">
+                                                    <label for="Date">Date:</label> {{APPLICATION_DATE}}<br />
+                                                    <label for="ApplicationNo">Application No:</label> {{APPLICATION_NO}}
+
+                                                </div>
+
+                                                <p style="text-align:start;">
+                                                    To, <br>Respected Sir
+                                                </p>
+
+
+                                                <p style="margin: 15px 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Subject:</b> &nbsp;Required approval for Leave Application</p>
+
+                                                <div style="display: flex; flex-wrap: wrap;">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I&nbsp;<span style=" max-width: 100%; margin-right: 0px; border-bottom: 1px solid #000; margin-bottom: 0;">
+                                                        {{EMP_NAME}}
+                                                    </span>, request a leave of absence from my position, beginning&nbsp; <span style="border: 0; width: auto; max-width: 100%; margin-right: 0px; border-bottom: 1px solid #000; margin-bottom: 0;">
+                                                        {{LEAVE_FROM_DATE}}
+                                                    </span>  <b>
+                                                        <small style="font-size: 13px;"> &nbsp;&nbsp;</small>
+                                                    </b> through &nbsp; <span style="max-width: 100%; margin-right: 0px; border-bottom: 1px solid #000; margin-bottom: 0; ">
+                                                        {{LEAVE_TO_DATE}}
+                                                    </span> <b>
+                                                        <small style="font-size: 13px;"> &nbsp; &nbsp;</small>
+                                                    </b>
+                                                    I will be contactable on these numbers: 1) &nbsp;<span style="max-width: 100%; margin-right: 0px; border-bottom: 1px solid #000; margin-bottom: 0; ">
+                                                        {{CONTACT_NO}}
+                                                    </span>
+                                                    <div ng-show="ALTERNATE_CONT_NO!=null">
+                                                        &nbsp; 2) &nbsp;<span style="max-width: 100%; margin-right: 15px; border-bottom: 1px solid #000; margin-bottom: 0; ">
+                                                            {{ALTERNATE_CONT_NO}}
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                <p style="line-height: 20px;">The reason I am requesting a leave of absence is:<br />Please tick one of below.</p>
+                                                @*<p style="line-height: 20px;"></p>*@
+
+                                                <div style="line-height: 20px;">
+                                                    <div style="line-height: 15px;margin-bottom:5px">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                            </svg>
+                                                        </span>
+                                                        <label> Sick Leave Beyond 5 days</label>
+                                                    </div>
+                                                    <div style="line-height: 15px;margin-bottom:5px">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                            </svg>
+                                                        </span>
+                                                        <label> Extended Illness Leave (please provide doctor’s note)</label>
+                                                    </div>
+                                                    <div style="line-height: 15px;margin-bottom:5px">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                            </svg>
+                                                        </span>
+                                                        <label> Festive Leave</label>
+                                                    </div>
+                                                    <div style="line-height: 15px;margin-bottom:5px">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                            </svg>
+                                                        </span>
+                                                        <label> Temporarily Disability/ Accident Leave</label>
+                                                    </div>
+                                                    <div style="line-height: 15px;margin-bottom:5px">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                            </svg>
+                                                        </span>
+                                                        <label>Family Function/Vacation Leave</label>
+                                                    </div>
+                                                    <div style="line-height: 15px;margin-bottom:5px">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                            </svg>
+                                                        </span>
+                                                        <label> Professional Improvement Course Leave</label>
+                                                    </div>
+                                                    <div style="line-height: 15px;margin-bottom:5px">
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                            </svg>
+                                                        </span>
+                                                        <label>Other – please attach explanation</label>
+                                                    </div>
+                                                </div>
+
+                                                <br />
+                                                <div style="display: flex; flex-wrap: wrap;">
+                                                    In my absence my subordinate Mr/Ms.
+                                                    <p style=" width: 300px; max-width: 100%; margin-right: 15px; border-bottom: 1px solid #000; margin-bottom: 0; margin-top: 15px; ">
+
+                                                    </p>
+                                                    will take charge of my work.
+                                                </div>
+
+
+                                                <h3 style="margin-bottom: 0; margin-top: 10px;">
+                                                    <b>Sincerely,</b>
+                                                </h3>
+                                                <div>
+                                                    <p style="border: 0; width: 300px; max-width: 100%; margin-right: 15px; border-bottom: 1px solid #000; margin-bottom: 0; margin-top: 20px; ">
+
+                                                    </p>
+                                                    <p style="line-height: 10px;"> <small> (Employee Signature)</small></p>
+                                                </div>
+                                                <div>
+                                                    <p style="line-height:20px;margin-top: 30px;margin-bottom: 0;font-size: 15px;"><b>Relieved by</b></p>
+                                                    <p style="border: 0; width: 300px; max-width: 100%; margin-right: 15px; border-bottom: 1px solid #000; margin-bottom: 0; margin-top: 20px; ">
+
+                                                    </p>
+                                                    <p style="line-height:10px;"> <small> (Subordinate Signature)</small></p>
+                                                </div>
+                                                <div>
+                                                    <p style="line-height:20px;margin-top: 30px;margin-bottom: 0;font-size: 15px;"><b>Approved by   </b></p>
+                                                    <p style="border: 0; width: 300px; max-width: 100%; margin-right: 15px; border-bottom: 1px solid #000; margin-bottom: 0; margin-top: 20px; ">
+
+                                                    </p>
+                                                    <p style="line-height:10px;"> <small>(Reporting Manager Signature)     </small></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="form-group col-md-12">
+                                            <div class="noprint">
+                                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="Print('PrintMain')" />
+                                                <input type="button" value="Cancel" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    @*<script src="~/AngularJs/Customermaster.js"></script>*@
+    <script src="~/AngularJs/Leave_Master.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+    <script>
+        $("#APPLICATION_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#APPLICATION_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#APPLICATION_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#APPLICATION_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#APPLICATION_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#LEAVE_FROM_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#LEAVE_FROM_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#LEAVE_FROM_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#LEAVE_FROM_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#LEAVE_FROM_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#LEAVE_TO_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0*/ });
+        $("#LEAVE_TO_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#LEAVE_TO_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#LEAVE_TO_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#LEAVE_TO_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#START_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#START_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#START_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#START_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#START_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#END_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#END_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#END_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#END_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#END_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+
+}

@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<style>
+    #printECRPAF {
+        display: block;
+    }
+
+    #border1 {
+        display: none;
+    }
+
+    .paf {
+        text-shadow: 5px 5px 8px #666;
+    }
+</style>
+<style type="text/css" media="print">
+    input[type="checkbox"] {
+        visibility: hidden;
+    }
+
+    input[type="checkbox"] {
+        border: 1px solid #333;
+        content: "\00a0";
+        display: inline-block;
+        font: 16px/1em sans-serif;
+        height: 16px;
+        margin: 0 .25em 0 0;
+        padding: 0;
+        vertical-align: top;
+        width: 16px;
+    }
+
+        input[type="checkbox"]:checked {
+            background: white;
+            color: black;
+            content: "\2713";
+            text-align: center;
+        }
+</style>
+
+
+<section ng-controller="AMCCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-6" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Upcoming AMC/CMC Expiry Date</b></h3>
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="text" class="form-control" placeholder="Search" ng-model="SearchKeyword" ng-keyup="Search()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Doc. No.</th>
+                                    <th>Contract Period(Years)</th>
+                                    <th>Contract Period from</th>
+                                    <th>Contract Period To</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    <th ng-hide="CUSTOMER_TYPE_NAME==='Medtronic'">Product Name</th>
+                                    <th>Model No/Name.</th>
+                                    <th>Serial No.</th>
+                                    <th>PM Visit</th>
+                                    <th>CM Visit</th>
+                                    <th>Contract Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in UpcomingPmCmList">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{admin.CONTRACT_DOCUMENT_NO}}</td>
+                                    <td>{{admin.CONTRACT_PERIOD}}</td>
+                                    <td>{{admin.CONTRACT_FROM}}</td>
+                                    <td>{{admin.CONTRACT_TO}}</td>
+                                    <td>{{admin.CUSTOMER_NAME}}</td>
+                                    <td>{{admin.CUSTOMER_FIRM_NAME}}</td>
+                                    <td ng-hide="CUSTOMER_TYPE_NAME==='Medtronic'">{{admin.PRODUCT_NAME}}</td>
+                                    <td>{{admin.MODEL_NAME}}</td>
+                                    <td>{{admin.MODEL_SERIAL_NO}}</td>
+                                    <td>{{admin.PM_VISIT}}</td>
+                                    <td>{{admin.CM_VISIT}}</td>
+                                    <td>{{admin.CONTRACT_TYPE}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts
+{
+    <script src="~/AngularJs/UpcomingExpiry.js"></script>
+}

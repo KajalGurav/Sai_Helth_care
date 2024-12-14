@@ -660,5 +660,16 @@ app.controller("ProductStockCtrl", function ($scope, ProductStockService, $filte
             $scope.ProductList1 = response.data;
         });
     }
+    // Define AngularJS controller function to export data
+    app.controller('CategoryCtrl', function ($scope, $http) {
+        $scope.exportToExcel = function () {
+            // Get the search query from the model
+            var searchQuery = $scope.FARMER_SEARCH;
+
+            // Redirect to the server-side action with the search query
+            window.location.href = '/PRoduct_Master/ExportToExcel?CategoryName=' + encodeURIComponent(searchQuery);
+        };
+    });
+
 
 });

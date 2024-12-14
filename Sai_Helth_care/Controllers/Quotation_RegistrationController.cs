@@ -36,6 +36,15 @@ namespace Sai_Helth_care.Controllers
             public string STATE_ID { get; set; }
             public string STARTING_DATE { get; set; }
             public string ENDING_DATE { get; set; }
+            public string QUOTATION_TYPE { get; set; }
+            public int PNDT_NO { get; set; }
+            public string REG_DATE { get; set;}
+            public string PO_DATE { get; set; }
+            public string CUSTOMER_NAME { get; set; }
+            public string QUOTATION_NO { get; set; }
+            public string QUOTATION_DATE { get; set; }
+           public string STATUS { get; set; }
+
         }
 
         public JsonResult TotalRecordCount(SearchQuotationParams tB_Admin)

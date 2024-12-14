@@ -1,0 +1,327 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@*<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>*@
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section ng-controller="SalesLeadCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-8" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Sales Leads</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" ng-click="AdminClick()" data-toggle="modal">Add Leads</button>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn  btn-sm pull-left" style="color: white; background-color: green; margin-left: 20px;" ng-click="exportToExcel()">Export</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <select ng-model="EMP_ID" id="EMP_ID" class="form-control" ng-change="GetData()">
+                                <option value="">Select Employee Name</option>
+                                <option ng-repeat="Emp in EmployeeList" value="{{Emp.EMP_ID}}">{{Emp.EMP_NAME}}</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Lead" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr.No.</th>
+                                    <th>DSR No.</th>
+                                    <th>DSR Date</th>
+                                    <th>Sales Person Name</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    <th>Firm Address</th>
+                                    <th>Modility</th>
+                                    <th>Buy %</th>
+                                    <th>Projected Model</th>
+                                    <th>Forcasted Month</th>
+                                    <th>Price (In Lac)</th>
+                                    <th>Enquiry Type</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in SalesLeadList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{admin.DSR_LEAD_ID}}</td>
+                                    <td>{{admin.DSR_DATE}}</td>
+                                    <td>{{admin.EMP_NAME}}</td>
+                                    <td>{{admin.CUSTOMER_NAME}}</td>
+                                    <td>{{admin.FIRM_NAME}}</td>
+                                    <td>{{admin.FIRM_ADDRESS}}</td>
+                                    <td>{{admin.MODALITY}}</td>
+                                    <td>{{admin.BUY_PERCENT}}</td>
+                                    <td>{{admin.PROJECHTED_MODEL}}</td>
+                                    <td>{{admin.FORCASTED_MONTH}}</td>
+                                    <td>{{admin.PRICE}}</td>
+                                    <td>{{admin.ENQUIRY_TYPE}}</td>
+                                    <td><a data-toggle="modal" ng-click="getForUpdate(admin)" title="Update Leads" class="btn btn-xs btn-success">Edit </a> </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="14" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Admin_Addupdate">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>{{Admin_Action}}</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            @*<div class="form-group col-md-6">
+                                                <label class="control-label">DSR No:</label>
+                                                <input type="text" name="" class="form-control" readonly placeholder="DSR No" required />
+                                            </div>*@
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DSR Date:</label>
+                                                <input type="text" name="DSR_DATE" ng-model="DSR_DATE" id="DSR_DATE" class="form-control" placeholder="DSR Date" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Customer Name:</label>
+                                                <input type="text" ng-model="CUSTOMER_NAME" name="CUSTOMER_NAME" class="form-control" placeholder="Enter Customer Name" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Firm Name:</label>
+                                                <input type="text" ng-model="FIRM_NAME" name="FIRM_NAME" class="form-control" placeholder="Enter Firm Name" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Firm Address:</label>
+                                                <textarea type="text" ng-model="FIRM_ADDRESS" name="FIRM_ADDRESS" class="form-control" placeholder="Enter Firm Address" required></textarea>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Place (City):</label>
+                                                <input type="text" name="CITY_NAME" ng-model="CITY_NAME" class="form-control" placeholder="Enter Place Name" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Mobile No.:</label>
+                                                <input type="text" name="MOBILE_NO" ng-model="MOBILE_NO" class="form-control" maxlength="10" id="txt_contact_no" autocomplete="off" onchange="checkNumber(this)" placeholder="Enter Mobile No" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Modality:</label>
+                                                <input type="text" name="MODALITY" ng-model="MODALITY" class="form-control" placeholder="Enter Modality" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Email Id:</label>
+                                                <input type="email" name="EMAIL_ID" ng-model="EMAIL_ID" class="form-control" placeholder="Enter Email" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Projected Model :</label>
+                                                <input type="text" name="PROJECHTED_MODEL" ng-model="PROJECHTED_MODEL" class="form-control" minlength="1" placeholder="Projected Model" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Employee Name :</label>
+                                                <select ng-model="EMP_ID" id="EMP_ID" class="form-control">
+                                                    <option value="">Select Employee Name</option>
+                                                    <option ng-repeat="Emp in EmployeeList" value="{{Emp.EMP_ID}}">{{Emp.EMP_NAME}}</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Requirments of Customer :</label>
+                                                <textarea type="text" name="CUSTOMER_REQUIREMENT" ng-model="CUSTOMER_REQUIREMENT" class="form-control" placeholder="Enter Requirments" required></textarea>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Sales Person Commitments :</label>
+                                                <textarea type="text" name="SALES_PERSON_COMMITMENTS" ng-model="SALES_PERSON_COMMITMENTS" class="form-control" placeholder=" Person Commitments" required></textarea>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Forcasted Month:</label>
+                                                <select name="FORCASTED_MONTH" class="form-control" ng-model="FORCASTED_MONTH">
+                                                    <option value="">Select Month </option>
+                                                    <option value="January">January</option>
+                                                    <option value="February">February</option>
+                                                    <option value="March">March</option>
+                                                    <option value="April">April</option>
+                                                    <option value="May">May</option>
+                                                    <option value="June">June</option>
+                                                    <option value="July">July</option>
+                                                    <option value="August">August</option>
+                                                    <option value="September">September</option>
+                                                    <option value="Octomber">Octomber</option>
+                                                    <option value="November">November</option>
+                                                    <option value="December">December</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Price:</label>
+                                                <input type="number" name="PRICE" ng-model="PRICE" class="form-control" minlength="1" placeholder="Enter Price" required />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Buy %:</label>
+                                                <input type="number" name="BUY_PERCENT" ng-model="BUY_PERCENT" class="form-control" minlength="1" maxlength="6" placeholder="Enter %" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Select Enquiry Type:</label>
+                                                <select name="ENQUIRY_TYPE" id="ENQUIRY_TYPE" class="form-control" ng-model="ENQUIRY_TYPE">
+                                                    <option value="">Select Enquiry </option>
+                                                    <option value="HOT">HOT</option>
+                                                    <option value="COLD">COLD</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Upload Visiting Card:</label>
+                                                <input type="File" name="UPLOAD_VISITING_CARD" class="form-control" ng-model="UPLOAD_VISITING_CARD" placeholder="Upload Visiting Card" id="Profile_photo" />
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" @*ng-disabled="AddPayment.$invalid"*@ ng-click="AddAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/SalesLead.js"></script>
+
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#STARTING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#STARTING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STARTING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STARTING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#STARTING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#ENDING_DATE1").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#ENDING_DATE1").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#ENDING_DATE1").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#ENDING_DATE1").datepicker("option", "showMonthAfterYear", false);
+            $("#ENDING_DATE1").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#DSR_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#DSR_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#DSR_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#DSR_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#DSR_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+
+    <script>
+        function checkNumber(check) {
+            var a = document.getElementById("txt_contact_no").value;
+            //var x=check.which;
+            //var x = a.charCode;
+            var x = a.keyCode;
+            if (!(a >= 48 || a <= 57)) {
+
+                alert("Enter only Numbers");
+                return false;
+            }
+            else if (a == "" || a == null) {
+
+                alert("field is Blank");
+                return false;
+            }
+            //if no is more then the value
+            else if (a.length <= 9) {
+                alert("Enter Minimum 10 Characters");
+                return false;
+            }
+            //alert("done");
+            return true;
+        }
+    </script>
+}

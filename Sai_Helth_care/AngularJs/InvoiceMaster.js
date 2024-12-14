@@ -70,6 +70,7 @@ app.controller('InvoiceCtrl', function ($scope, InvoiceService) {
     $scope.FIRM_NAME = null;
     $scope.STARTING_DATE = null;
     $scope.ENDING_DATE = null;
+    $scope.INVOICE_DATE = null;
 
     GetTotalcount();
 
@@ -96,6 +97,9 @@ app.controller('InvoiceCtrl', function ($scope, InvoiceService) {
         if ($scope.SEARCH_NAME === undefined || $scope.SEARCH_NAME === "" || $scope.SEARCH_NAME === null) {
             $scope.SEARCH_NAME = null;
         }
+        if ($scope.INVOICE_DATE === undefined || $scope.INVOICE_DATE === "" || $scope.INVOICE_DATE === null) {
+            $scope.INVOICE_DATE = null;
+        }
 
         var SearchingConditions = {
             PageNo: $scope.PageNo,
@@ -105,7 +109,8 @@ app.controller('InvoiceCtrl', function ($scope, InvoiceService) {
             CUSTOMER_NAME: $scope.SEARCH_NAME,
             FIRM_NAME: $scope.SEARCH_NAME,
             STARTING_DATE: $scope.STARTING_DATE,
-            ENDING_DATE: $scope.ENDING_DATE
+            ENDING_DATE: $scope.ENDING_DATE,
+            INVOICE_DATE:$scope.INVOICE_DATE
         };
 
         return SearchingConditions;

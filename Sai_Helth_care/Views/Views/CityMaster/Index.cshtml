@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section class="content" ng-controller="CITYCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white"><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9">
+                                <h3 class="card-title"><b>City Master</b></h3>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-sm" style="background-color: green; color: white " data-toggle="modal" data-target="#Admin_AddState" ng-click="AdminClick()">Add City</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="padding: 20px; margin:-12px">
+                        
+                        <div class="col-9"></div> <div class="col-9"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3"></div> <div class="col-3"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.8rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white ">
+                                    <th> #</th>
+                                    <th><b>State Name</b></th>
+                                    <th><b>City Name</b></th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Reg Date</b></th>
+                                    <th><b>Action</b></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="User in DISTRICTList" style="color:black">
+                                    <td>{{(page*30+$index+1)}}</td>
+                                    <td>{{User.STATE_NAME}}</td>
+                                    <td>{{User.CITY_NAME}}</td>
+                                    <td id="{{User.CITY_ID}}_td"><a href="" data-toggle="modal" data-target="#Admin_View" ng-click="getAdmin(User)"><b ng-style="User.STATUS=='Active'?{'color':'green'}:{'color':'red'}">{{User.STATUS}}</b></a></td>
+                                    <td>{{User.REG_DATE}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-success" ng-click="getForUpdate(User)" data-toggle="modal" data-target="#Admin_update">Edit</button>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="6" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(1)">First</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+                            </li>
+                            <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                                <a ng-click="setPage(page)">{{page}}</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.totalPages)">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div id="Admin_AddState" class="modal fade" data-backdrop="static" data-keyboard="false" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a);">
+                                    <span class="modal-title"><b>{{Admin_Action}}</b></span>
+                                    <button type="button" class="close" data-dismiss="modal" style="margin-right:5px;">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form name="C2" ng-submit="C2(C2.$valid)" novalidate" data-toggle="validator" role="form">
+
+                                                <div class="row">
+
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label>State Name:</label><label style="color:red">*</label>
+                                                            <select class="form-control" ng-model="STATE_ID" id="STATE_ID" name="STATE_ID" required>
+                                                                <option value="">Select State</option>
+                                                                <option ng-repeat="State in STATELIST" ng-value="{{State.STATE_ID}}">{{State.STATE_NAME}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 form-group">
+                                                        <label>City Name :</label><label style="color:red;">*</label>
+                                                        <input type="text" name="CITY_NAME" class="form-control" ng-model="CITY_NAME" maxlength="120" required placeholder="Enter City Name" />
+                                                    </div>
+
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm" style="background-color:green;font-size:14px;color:white" ng-disabled="C2.$invalid" ng-click="AddUpdateAdmin()">{{Admin_Action}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal fade" id="Admin_View">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a);">
+                                <h5 class="modal-title"><b>City Details</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <div class="modal-body">
+                                        <div class="row">
+
+                                            <div class="col-xs-12 col-sm-12">
+                                                <table id="DataTable" class="table table-bordered bordered table-striped table-condensed" style="color:black">
+                                                    <tr>
+                                                        <th>State  Name</th>
+                                                        <td>{{_Party.STATE_NAME}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>City  Name</th>
+                                                        <td>{{_Party.CITY_NAME}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <td><span style="color:red"><b>{{_Party.STATUS}}</b></span></td>
+                                                    </tr>
+
+                                                </table>
+
+                                                <div class="hr hr-8 dotted"></div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <center><h5><label><b style="color:black">Change Status</b></label></h5></center>
+                                    <form name="annerForm">
+                                        <div class="form-group col-md-12">
+                                            <center><label class="control-label" style="color:black">Are you sure change district status ?</label></center>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm" ng-click="ChangeStatus()" style="color:white;background-color:green">Change Status</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section Scripts{
+
+    <script src="~/AngularJs/AddressDistMaster.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+}
+
+
+
+
+
+

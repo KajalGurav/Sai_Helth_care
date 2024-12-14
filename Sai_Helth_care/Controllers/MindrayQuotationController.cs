@@ -230,6 +230,46 @@ namespace Sai_Helth_care.Controllers
             return View("Index");
         }
 
+        public ActionResult UpdateProductDetails(QuotationMaster tB_Admin)
+        {
+            bool result = false;
+            bool IsSTDAcc = tB_Admin.IS_WITH_PROBE_ACC == "Yes";
+
+            try
+            {
+                using (var con = new SqlConnection(ConfigurationManager.ConnectionStrings["YourConnectionString"].ConnectionString))
+                {
+                    using (var cmd = new SqlCommand("Update_MQuotationProductDetails", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@MP_ID", tB_Admin.MP_ID);
+                        cmd.Parameters.AddWithValue("@MQ_ID", Convert.ToInt64(Session["Q_ID"]));
+                        cmd.Parameters.AddWithValue("@CUSTOMER_ID", tB_Admin.CUSTOMER_ID);
+                        cmd.Parameters.AddWithValue("@PRODUCT_QUANTITY", tB_Admin.PRODUCT_QUANTITY);
+                        cmd.Parameters.AddWithValue("@PROCUCT_PRICE", tB_Admin.PROCUCT_PRICE);
+                        cmd.Parameters.AddWithValue("@PS_ID", tB_Admin.PS_ID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@IS_WITH_PROBE_ACC", IsSTDAcc);
+                        cmd.Parameters.AddWithValue("@PSQ_ID", tB_Admin.PSQ_ID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@PSPRICE_ID", tB_Admin.PSPRICE_ID ?? string.Empty);
+
+                        con.Open();
+                        int rowsAffected = Convert.ToInt32(cmd.ExecuteScalar());
+                        result = rowsAffected > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
+            }
+
+            return Json(new { success = result });
+        }
+
+
+
 
         public ActionResult EditAdmin(QuotationMaster tB_admin)
         {
@@ -482,8 +522,7 @@ namespace Sai_Helth_care.Controllers
         public ActionResult AddProductDetails(QuotationMaster tb_Admin)
         {
             bool result = false;
-            //DataTable table;
-            //long id = 0;
+
             //string SP_ID;
             bool IsSTDAcc = false;
             if (tb_Admin.IS_WITH_PROBE_ACC == "Yes")
@@ -586,6 +625,12 @@ namespace Sai_Helth_care.Controllers
             //return View("Index");
 
         }
+
+
+
+
+
+
 
         //public JsonResult GetProductDetails()
         //{
@@ -706,7 +751,7 @@ namespace Sai_Helth_care.Controllers
                 //List<StdAccList> objStd = new List<StdAccList>();
                 MProdList prlst = new MProdList();
                 var objP = (from i in _Monthlyreport
-                            select new {i.QUOTATION_ID,i.MP_ID, i.AccID, i.PRODUCTNAME, i.M_NAME, i.QUANTITY, i.PRODUCTPRICE, i.IS_WITH_PROBE_ACC, i.PRODUCT_IMAGE, i.CONFIGURATION, i.DESCRIPTION, i.M_ID, i.CAT_ID, i.CAT_NAME, i.HSN_CODE,i.PRODUCT_HSN_CODE, i.QUOTATION_TYPE, i.CUSTOMER_TYPE_ID, i.AMOUNT_WITHOUT_TAX, i.TAX_AMOUNT, i.AMOUNT_WITH_TAX, i.TAX_PERCENTAGE, i.AMOUNT_INC_TAX }).Distinct().Where(x => x.PRODUCTNAME == pid);
+                            select new { i.QUOTATION_ID, i.MP_ID, i.AccID, i.PRODUCTNAME, i.M_NAME, i.QUANTITY, i.PRODUCTPRICE, i.IS_WITH_PROBE_ACC, i.PRODUCT_IMAGE, i.CONFIGURATION, i.DESCRIPTION, i.M_ID, i.CAT_ID, i.CAT_NAME, i.HSN_CODE, i.PRODUCT_HSN_CODE, i.QUOTATION_TYPE, i.CUSTOMER_TYPE_ID, i.AMOUNT_WITHOUT_TAX, i.TAX_AMOUNT, i.AMOUNT_WITH_TAX, i.TAX_PERCENTAGE, i.AMOUNT_INC_TAX }).Distinct().Where(x => x.PRODUCTNAME == pid);
                 //List<string> objSparePart = _Monthlyreport.Where(x => x.PRODUCTNAME == id).Select(x =>  x.SPARE_PART).ToList();
                 //List<string> objSparePartPrice = _Monthlyreport.Where(x => x.PRODUCTNAME == id).Select(x => x.ACCPRICE).ToList();
                 //List<SparePart> objSpare = _Monthlyreport.Where(x => x.PRODUCTNAME == id).Select(x => new List<SparePart>() { x.SPARE_PART, x.ACCPRICE }).ToList();
@@ -724,7 +769,7 @@ namespace Sai_Helth_care.Controllers
                     {
                         price = Convert.ToDecimal(item.ACCPRICE);
                     }
-                    spareList.Add(new ProbePart { QUOTATION_ID= item.QUOTATION_ID, AccID = item.AccID, PROBE_NAME = item.PROBE_NAME, ACCPRICE = price, PRODUCTNAME = item.PRODUCTNAME, HSN_CODE= item.HSN_CODE, QUOTATION_TYPE = item.QUOTATION_TYPE, CUSTOMER_TYPE_ID = item.CUSTOMER_TYPE_ID, AMOUNT_WITHOUT_TAX = item.AMOUNT_WITHOUT_TAX, TAX_AMOUNT = item.TAX_AMOUNT, AMOUNT_WITH_TAX = item.AMOUNT_WITH_TAX, TAX_PERCENTAGE = item.TAX_PERCENTAGE, AMOUNT_INC_TAX = item.AMOUNT_INC_TAX });
+                    spareList.Add(new ProbePart { QUOTATION_ID = item.QUOTATION_ID, AccID = item.AccID, PROBE_NAME = item.PROBE_NAME, ACCPRICE = price, PRODUCTNAME = item.PRODUCTNAME, HSN_CODE = item.HSN_CODE, QUOTATION_TYPE = item.QUOTATION_TYPE, CUSTOMER_TYPE_ID = item.CUSTOMER_TYPE_ID, AMOUNT_WITHOUT_TAX = item.AMOUNT_WITHOUT_TAX, TAX_AMOUNT = item.TAX_AMOUNT, AMOUNT_WITH_TAX = item.AMOUNT_WITH_TAX, TAX_PERCENTAGE = item.TAX_PERCENTAGE, AMOUNT_INC_TAX = item.AMOUNT_INC_TAX });
                 }
 
                 var objQ = (from i in _Quantityreport

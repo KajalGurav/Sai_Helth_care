@@ -79,11 +79,12 @@
                                 </span>
                             </div>
 
+                            <!-- Customer Name Dropdown -->
                             <div class="form-group col-md-3">
                                 <label class="control-label">Select Customer Name:</label><label style="color:red;">*</label>
                                 <select id="CUSTOMER_ID" class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID"
-                                    ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in CustomerList"
-                                    ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-change="GetFirmChange()" ng-disabled="IS_DISABLE" required>
+                                        ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in CustomerList"
+                                        ng-change="GetFirmChange()" ng-disabled="IS_DISABLE || PAGE_NAME === 'Customer'" required>
                                     <option value="">Select Customer Name</option>
                                 </select>
                                 <span ng-show="(AddPayment.CUSTOMER_ID.$invalid && (AddPayment.CUSTOMER_ID.$touched || AddPayment.CUSTOMER_ID.$dirty))">
@@ -91,11 +92,12 @@
                                 </span>
                             </div>
 
+                            <!-- Firm Name Dropdown -->
                             <div class="form-group col-lg-3">
                                 <label class="control-label">Select Customer Firm Name :</label><label style="color:red;">*</label>
                                 <select id="FIRM_ID" class="form-control" name="FIRM_ID" ng-model="FIRM_ID"
-                                    ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in CustomerFirmList"
-                                    ng-selected="Customer.F_ID == FIRM_ID" required>
+                                        ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in CustomerFirmList"
+                                        ng-disabled="IS_DISABLE || PAGE_NAME === 'Customer'" required>
                                     <option value="">Select Firm Name</option>
                                 </select>
                                 <span ng-show="(AddPayment.FIRM_ID.$invalid && (AddPayment.FIRM_ID.$touched || AddPayment.FIRM_ID.$dirty))">
@@ -107,7 +109,7 @@
 
 
                             <div class="form-group col-md-3">
-                                <label class="control-label">Status:</label><label style="color:red;">*</label>
+                                <label class="control-label"> PO Status:</label><label style="color:red;">*</label>
                                 <select name="STATUS" class="form-control" ng-model="STATUS" id="STATUS" required>
                                     <option value="">Select Status </option>
                                     <option value="Pending">Pending</option>
@@ -172,7 +174,7 @@
                             @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddAdmin()" value="{{Admin_Action}}" />*@
                             <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAdmin()" value="{{Admin_Action}}" />
                             @*<input type="button" value="Clear" ng-click="Clearall()" class="btn btn-danger btn-sm" data-dismiss="modal" />*@
-                            <input type="button" value="Cancel" ng-click="Clearall()" class="btn btn-danger btn-sm"/>
+                            <input type="button" value="Cancel" ng-click="Clearall()" class="btn btn-danger btn-sm" />
                         </div>
                     </div>
                 </div>

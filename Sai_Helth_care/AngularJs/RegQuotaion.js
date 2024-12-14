@@ -99,7 +99,9 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
             STARTING_DATE: $scope.STARTING_DATE,
             ENDING_DATE: $scope.ENDING_DATE,
             P_ID: $scope.P_ID,
-            ADMIN_SEARCH: $scope.FARMER_SEARCH
+            ADMIN_SEARCH: $scope.FARMER_SEARCH,
+            PO_DATE:$scope.PO_DATE
+            
         };
 
         return SearchingConditions;

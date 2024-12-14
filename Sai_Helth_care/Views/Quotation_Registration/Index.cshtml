@@ -1,4 +1,7 @@
 ﻿
+
+
+
 @{
     ViewBag.Title = "Index";
 }
@@ -11,6 +14,37 @@
             font-size: 12px;
         }
     </style>*@
+
+
+
+@* Added By Kajal Gurav*@
+<style>
+    .dropdown-menu {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .dropdown-list {
+        max-height: 200px;
+        overflow-y: auto;
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+        .dropdown-list li {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+            .dropdown-list li:hover {
+                background-color: lightgray;
+            }
+</style>
+
+@*Added By Kajal Gurav*@
+
+
 
 <style type="text/css">
     body {
@@ -67,7 +101,7 @@
     }
 
         .dropdown-content a {
-            color: black;
+            color: black !important;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
@@ -126,15 +160,32 @@
 
                         <div class="col-3"></div> <div class="col-3"></div>
 
-                        <div class="form-group col-md-3">
-                            <select ng-model="P_ID" id="P_ID" class="form-control" ng-change="GetData()">
-                                <option value="">Select Product</option>
-                                <option ng-repeat="Product in ProductList" ng-value="{{Product.P_ID}}">{{Product.PRODUCT_NAME}}</option>
-                            </select>
-                        </div>
-                       
 
 
+
+
+                        @* Added By Kajal GUrav*@
+
+                        @*<div class="form-group col-md-3">
+                            <div class="dropdown">
+                                <button class="btn btn-default form-control dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{selectedProduct ? selectedProduct.PRODUCT_NAME : "Select Product"}}
+                                    <span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+                                    <div class="input-group input-group-sm search-control">
+                                        <input type="text" class="form-control" placeholder="Search Product" ng-model="searchTerm">
+                                    </div>
+                                    <ul class="dropdown-list">
+                                        <li ng-repeat="Product in ProductList | filter:searchTerm" ng-click="selectProduct(Product)">
+                                            <a>{{Product.PRODUCT_NAME}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>*@
+
+                        @* Added By Kajal Gurav*@
 
                         <div class="col-3">
                             <input type="text" class="form-control" placeholder="Search Quotation" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
@@ -148,18 +199,24 @@
                                     <th>Sr.No.</th>
                                     <th>Customer Name</th>
                                     <th>Firm Name</th>
-                                    @*<th>Quote. Date</th>*@
+                                    
+                                        <th>Quote. Date</th>
+                                       
                                     <th>Quote.No</th>
                                     <th>Quotation For</th>
-                                    @*<th>Product Name</th>
-                                        <th>Model Name</th>*@
+                                    <th>Product Name</th>
+                                        <th>Model Name</th>
                                     <th>PNDT Status</th>
                                     <th>Status</th>
-                                    @*<th>Quotation For</th>*@
+                                    
+                                        <th>Quotation For</th>
+                                        
                                     <th>Quot Type</th>
                                     <th>PNDT No</th>
                                     <th>Reg Date</th>
-                                    @*<th>P.O Date </th>*@
+                                   
+                                        <th>P.O Date </th>
+                                        
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -168,19 +225,26 @@
                                     <td>{{page*30+$index+1}}</td>
                                     <td>{{admin.CUSTOMER_NAME}}</td>
                                     <td>{{admin.FIRM_NAME}}</td>
-                                    @*<td>{{admin.QUOTATION_DATE}}</td>*@
+                                    
+                                        <td>{{admin.QUOTATION_DATE}}</td>
+                                       
                                     <td>{{admin.QUOTATION_NO}}</td>
                                     <td style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:100px;"><a href="" ng-click="ShowReceiptFor(admin)" data-target="#ReceiptForModal" data-toggle="modal">{{admin.QUOTATION_FOR}}</a></td>
-                                    @*<td>{{admin.FIRM_NAME}}</td>
-                                        <td>{{admin.FIRM_NAME}}</td>*@
+                                    <td>{{admin.FIRM_NAME}}</td>
+                                        <td>{{admin.FIRM_NAME}}</td>
                                     <td>{{admin.PNDT_STATUS}}</td>
                                     <td>{{admin.STATUS}}</td>
+                                    <td>
+                                        {{admin.QUOTATION_FOR}}
+                                    </td>
                                     <td>{{admin.QUOTATION_TYPE}}</td>
                                     <td>{{admin.PNDT_NO}}</td>
                                     <td>{{admin.REG_DATE}}</td>
-                                    @*<td>{{admin.PO_DATE}}</td>*@
+                                    
+                                        <td>{{admin.PO_DATE}}</td>
+                                       
                                     <td>
-                                        @*<a class="btn btn-xs btn-success" ng-click="getForUpdate(admin)" data-toggle="modal"> Edit</a>*@
+                                        @*@<a class="btn btn-xs btn-success" ng-click="getForUpdate(admin)" data-toggle="modal"> Edit</a>@*@
                                         <a href="~/Quotation_Registration/QueAdd?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&QuotId={{admin.Q_ID}}" class="btn btn-xs btn-success">Edit</a>
                                         <a ng-show="CUSTOMER_TYPE=='Regular'" href="~/Quotation_Registration/ViewQuote?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}&QuotId={{admin.Q_ID}}&From='Quotation'" style="color:black" title="View" class="btn btn-xs btn-primary">View </a>
                                         <a ng-show="CUSTOMER_TYPE=='Mindray'" href="~/MindrayQuotation/ViewQuote/{{admin.Q_ID}}?PageName=Master&CustType={{CUSTOMER_TYPE}}&CustId={{admin.CUSTOMER_ID}}" style="color:black" title="View" class="btn btn-xs btn-primary">View </a>
@@ -309,7 +373,7 @@
 
                                             <div class="form-group col-md-6">
                                                 <label class="control-label">Quotation Date:</label>
-                                                <input type="text" name="QUOTATION_DATE" ng-model="QUOTATION_DATE" readonly @*id="QUOTATION_DATE"*@ class="form-control" placeholder="Quotation Date." />
+                                                <input type="text" name="QUOTATION_DATE" ng-model="QUOTATION_DATE" readonly @*id="QUOTATION_DATE" *@ class="form-control" placeholder="Quotation Date." />
                                             </div>
 
                                             <div class="form-group col-md-6">
@@ -337,7 +401,7 @@
                                                 </span>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label class="control-label">P.O Date:</label>@*<label style="color:red;">*</label>*@
+                                                <label class="control-label">P.O Date:</label>@*@<label style="color:red;"></label>*@
                                                 <input type="text" id="PO_DATE" name="PO_DATE" ng-model="PO_DATE" class="form-control" placeholder="Enter P.O Date" @*required*@ />
                                                 <span ng-show="(AddPayment.PO_DATE.$invalid && (AddPayment.PO_DATE.$touched || AddPayment.PO_DATE.$dirty))">
                                                     <span class="error" ng-show="AddPayment.PO_DATE.$error.required">P.O Date is required</span>
@@ -448,20 +512,40 @@
     </script>
     <script>
         function filterFunction() {
-        const input = document.getElementById("myInput");
-        const filter = input.value.toUpperCase();
-        const div = document.getElementById("myDropdown");
-        const a = div.getElementsByTagName("a");
-        for (let i = 0; i < a.length; i++) {
-        txtValue = a[i].textContent || a[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        a[i].style.display = "";
-        } else {
-        a[i].style.display = "none";
+            const input = document.getElementById("myInput");
+            const filter = input.value.toUpperCase();
+            const div = document.getElementById("myDropdown");
+            const a = div.getElementsByTagName("a");
+            for (let i = 0; i < a.length; i++) {
+                txtValue = a[i].textContent || a[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
         }
-        }
-}
-</script>
+    </script>
+
+
+
+
+    @*Added By Kajal Gurav*@
+
+    <script>
+
+
+
+        $scope.selectedProduct = null;
+
+        $scope.selectProduct = function (product) {
+            $scope.selectedProduct = product;
+            $scope.P_ID = product.P_ID; // Set the selected product ID
+            // Trigger any additional logic like GetData()
+            $scope.GetData();
+        };
+    </script>
+
 
 
 }

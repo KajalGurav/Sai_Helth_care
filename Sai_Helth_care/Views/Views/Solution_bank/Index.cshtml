@@ -1,0 +1,250 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<link href="~/dist/css/Imagestylesheet.css" rel="stylesheet" />
+<link href="~/dist/css/Paging.css" rel="stylesheet" />
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Solution Bank</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @*<div class="col-lg-4">
+                    <div class="form-group">
+                        <select ng-model="STATUS" class="form-control" id="STATUS" name="STATUS" required>
+                            <option value="">Select Product</option>
+                            <option value="BMD Machine">BMD Machine</option>
+                            <option value="MRI Scan Machine">MRI Scan Machine</option>
+                            <option value="Ultrasound Machine">Ultrasound Machine</option>
+                            <option value="X-Ray Machine">X-Ray Machine</option>
+                            <option value="OPG">OPG</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                </div>*@
+                        <div class="col-lg-9"></div>
+                        <div class="col-lg-3" style="padding-bottom:10px; padding-top:10px;">
+                            <input type="text" class="form-control" placeholder="Search Solution" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr No</th>
+                                    <th>Product Category</th>
+                                    <th>Manufacturer</th>
+                                    <th>Product Name</th>
+                                    <th>Service Eng. Name</th>
+                                    <th>Reported Issue / Nature of problem</th>
+                                    @*<th>Observation & Solution</th>*@
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="sb in SolutionBankList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{sb.CAT_NAME}}</td>
+                                    <td>{{sb.M_NAME}}</td>
+                                    <td>{{sb.PRODUCT_NAME}}</td>
+                                    <td>{{sb.SEVICE_ENGG_NAME}}</td>
+                                    <td>{{sb.PROBLEM_DESCRIPTION}}</td>
+                                    @*<td>{{sb.SOLUTION_DESCRIPTION}}</td>*@
+                                    <td>
+                                        <a data-toggle="modal" ng-click="getForUpdate(sb)" title="Update" class="btn btn-xs btn-success">Edit </a>
+                                        <a data-toggle="modal" ng-if="sb.SOLUTION_DESCRIPTION" ng-click="ViewSoltion(sb.SOLUTION_DESCRIPTION)" title="Obeservation and solution" class="btn btn-xs btn-success">View solution</a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="8" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                                @*<tr>
+                            <td>Akshay Patil</td>
+                            <td>City Scan</td>
+                            <td>External Monitor Connection Problem and printer problem</td>
+                            <td>printer problem is solve</td>
+                            <td> <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a> </td>
+                        </tr>
+                        <tr>
+                            <td>Deepak Magar</td>
+                            <td>X-Ray Machine</td>
+                            <td>Printer Installation</td>
+                            <td>Printer installation done</td>
+                            <td> <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a> </td>
+                        </tr>
+                        <tr>
+                            <td>Jitendra Mokal</td>
+                            <td>MRI Machine</td>
+                            <td>Add New Graphics Card.</td>
+                            <td>GRAPHICS CARD FOUND FAULTY NEEDS TO REPLACE</td>
+                            <td> <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a> </td>
+                        </tr>*@
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Admin_Addupdate">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b> {{Admin_Action}}</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form role="form" name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator">
+                                        <div class="row">
+                                            <input type="text" class="form-control" ng-model="SB_ID" style="display:none">
+                                            <div class="col-lg-12">
+                                                <label>Solution Description:</label><label style="color:red;">*</label>
+                                                <textarea ng-model="SOLUTION_DESCRIPTION" name="SOLUTION_DESCRIPTION" placeholder="Enter Solution" class="form-control" required></textarea>
+                                                <span ng-show="(AddPayment.SOLUTION_DESCRIPTION.$invalid && (AddPayment.SOLUTION_DESCRIPTION.$touched || AddPayment.SOLUTION_DESCRIPTION.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.SOLUTION_DESCRIPTION.$error.required">Solution Description is required</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <button type="button" class="btn btn-sm" style="background-color:green;font-size:14px;color:white" ng-disabled="AddPayment.$invalid" ng-click="UpdateAdmin()">{{Admin_Action}}</button>
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="SolutionView">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b> Observation & Solution</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <p>
+                                        {{ObservationAndSoltion}}
+                                    </p>
+                                    @*<form role="form" name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator">
+                                        <div class="row">
+                                            <input type="text" class="form-control" ng-model="SB_ID" style="display:none">
+                                            <div class="col-lg-12">
+                                                <label>Solution Description:</label><label style="color:red;">*</label>
+                                                <textarea ng-model="SOLUTION_DESCRIPTION" name="SOLUTION_DESCRIPTION" placeholder="Enter Solution" class="form-control" required></textarea>
+                                                <span ng-show="(AddPayment.SOLUTION_DESCRIPTION.$invalid && (AddPayment.SOLUTION_DESCRIPTION.$touched || AddPayment.SOLUTION_DESCRIPTION.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.SOLUTION_DESCRIPTION.$error.required">Solution Description is required</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>*@
+                                </div>
+                            </div>
+                            <!--<div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                     <input type="button" value="Cancel"--> @*ng-click="Cancel()"*@ <!--class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/SolutionBank.js"></script>
+}

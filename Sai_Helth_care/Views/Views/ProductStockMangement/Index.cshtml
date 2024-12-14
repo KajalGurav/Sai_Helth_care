@@ -1,0 +1,415 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@*<style>
+        .table td, .table th {
+            padding: 0.50rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+            font-size: 12px;
+        }
+    </style>*@
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 0;
+        color: white;
+        top: 0;
+    }
+
+    .fixed-width-dropdown {
+        width: 150px; /* Set the desired fixed width */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .fixed-width-dropdown option {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section ng-controller="ProductStockCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-7 col-md-7 col-sm-7" style="text-align:left;">
+                                <h3 class="card-title"><b>Product Stock Management</b></h3>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <input type="text" class="form-control" placeholder="Search Product" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="exportToExcel()">Export</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="START_DATE" name="START_DATE" id="START_DATE" autocomplete="off" placeholder="Select From Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="END_DATE" name="END_DATE" id="END_DATE" autocomplete="off" placeholder="Select To Date" />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <select ng-model="M_ID" id="M_ID" class="form-control" ng-change="GetProductChange()"
+                                    ng-options="Manufac.M_ID as Manufac.M_NAME for Manufac in ManufacturerList1"
+                                    ng-selected="Manufac.M_ID == M_ID"
+                                    ng-required="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'">
+                                <option value="">Select Manufacturer</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <select ng-model="P_ID" id="P_ID" class="form-control fixed-width-dropdown"
+                                    ng-options="Product.P_ID as Product.PRODUCT_NAME for Product in ProductList"
+                                    ng-selected="Product.P_ID == P_ID" required>
+                                <option value="">Select Product</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-1 col-md-1 col-sm-1">
+                            <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="SearchAdmin()">Get Data</button>
+                        </div>
+                        <div class="col-lg-1 col-md-1 col-sm-1"></div>
+                        <div class="col-lg-2 col-md-2 col-sm-2" style="text-align:right;">
+                            <button type="button" class="btn btn-default" style="background-color: green; color: white;" data-toggle="modal" data-target="#Product_add" ng-click="AddAdmin()" title="Add Product Stock">Add Product Stock</button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; text-align:center; ">
+                                    <th>Sr. No.</th>
+                                    <th>Stock Id.</th>
+                                    <th>Stock Date</th>
+                                    <th>Product Category</th>
+                                    <th>Manufacturer</th>
+                                    <th>Product/Model</th>
+                                    <th>Product Sr.No.</th>
+                                    <th>Product Qty.</th>
+                                    <th>Pending Qty.</th>
+                                    <th>Supplier</th>
+                                    <th>URD</th>
+                                    <th>Contact Person</th>
+                                    <th>Arrived From</th>
+                                    <th>Customer Invoice Number</th>
+                                    <th>Customer Name</th>
+                                    <th>Customer Type</th>
+                                    <th>Customer Invoice Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="stock in StockEntryList">
+                                    <td>{{$index+1}}</td>
+                                    <td><b>{{stock.P_STOCK_NO}}</b></td>
+                                    <td>{{stock.STOCK_ENTRY_DATE}}</td>
+                                    <td>{{stock.CAT_NAME}}</td>
+                                    <td>{{stock.M_NAME}}</td>
+                                    <td>{{stock.PRODUCT_NAME}}</td>
+                                    <td>{{stock.P_SERIAL_NO}}</td>
+                                    <td>{{stock.P_QTY}}</td>
+                                    <td>{{stock.PENDING_QTY}}</td>
+                                    <td>{{stock.SUPPLIER_NAME}}</td>
+                                    <td>
+                                        <span ng-if="stock.IS_URD_SUPPLIER === 0 ? WORD = 'No' : WORD = 'Yes'" ng-style="stock.IS_URD_SUPPLIER === 0 ? {'color' : 'red'} : {'color' : 'green'}" href=""><b>{{WORD}}</b></span>
+                                    </td>
+                                    <td>{{stock.SUPPLIER_CONTACT_PERSON}}</td>
+                                    <td>{{stock.DEPART_FROM}}</td>
+                                    <td>{{stock.INVOICE_NUMBER}}</td>
+                                    <td>{{stock.CUSTOMER_NAME}}</td>
+                                    <td>{{stock.CUSTOMER_TYPE}}</td>
+                                    <td>{{stock.ASSIGN_ON_DATE}}</td>
+                                    <td><span ng-style="stock.STATUS === 'Available' ? {'color' : 'green'} : {'color' : 'red'}" href=""><b>{{stock.STATUS}}</b></span></td>
+                                    <td>
+                                        <a data-toggle="modal" data-target="#Product_add" title="Edit Stock" ng-click="getForUpdate(stock)" class="btn btn-xs btn-success">Edit</a>
+                                        <a href="~/SparePartMangement/Index?STOCK_NO={{stock.P_STOCK_NO}}" style="margin-top:10px;color:black" title="View" class="btn btn-xs btn-primary">Add Spare Part </a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="19" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(1)">First</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                                <span ng-if="pager.currentPage==1">Previous</span>
+                            </li>
+                            <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                                <a ng-click="setPage(page)">{{page}}</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.totalPages)">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal fade" id="Product_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>{{Admin_Action}} </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="AddProductStock" ng-submit="AddProductStock(AddProductStock.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+
+                                            <div class="form-group col-md-6">
+                                                <input hidden id="P_STOCK_ID" ng-model="P_STOCK_ID" />
+                                                <label class="control-label">Stock Number:</label>
+                                                <input type="text" name="P_STOCK_NO" class="form-control" readonly ng-model="P_STOCK_NO" placeholder="Stock Id" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Stock Entry Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Stock Entry Date" readonly class="form-control" ng-model="STOCK_ENTRY_DATE" @*id="STOCK_ENTRY_DATE"*@ placeholder="Enter Stock Entry Date" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Product Type:</label><label style="color:red;">*</label>
+                                                <select class="form-control" ng-model="PRODUCT_TYPE" ng-change="GetProductTypeChange()" required>
+                                                    <option value="">Select Product Type</option>
+                                                    <option value="Regular">Regular</option>
+                                                    <option value="Mindray">Mindray</option>
+                                                    <option value="Medtronic">Medtronic</option>
+                                                </select>
+                                            </div>
+
+                                            <div ng-show="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'" class="form-group col-md-6">
+                                                <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
+                                                <select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()"
+                                                        ng-options="Category.CAT_ID as Category.CAT_NAME for Category in CategoryList"
+                                                        ng-selected="Category.CAT_ID == CAT_ID"
+                                                        ng-required="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'">
+                                                    <option value="">Select Product Category</option>
+                                                </select>
+                                            </div>
+
+                                            <div ng-show="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'" class="form-group col-md-6">
+                                                <label class="control-label">Select Manufacturer:</label><label style="color:red;">*</label>
+                                                <select ng-model="M_ID" id="M_ID" class="form-control" ng-change="GetProductChange()"
+                                                        ng-options="Manufac.M_ID as Manufac.M_NAME for Manufac in ManufacturerList"
+                                                        ng-selected="Manufac.M_ID == M_ID"
+                                                        ng-required="PRODUCT_TYPE === 'Regular' || PRODUCT_TYPE === 'Mindray'">
+                                                    <option value="">Select Manufacturer</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Product/Model:</label><label style="color:red;">*</label>
+                                                <select ng-model="P_ID" id="P_ID" class="form-control"
+                                                        ng-options="product.P_ID as product.PRODUCT_NAME for product in ProductList1"
+                                                        required>
+                                                    <option value="">Select Product</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Part Serial No:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Part Serial No" class="form-control" ng-model="P_SERIAL_NO" placeholder="Enter Part Serial No" required />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Author Name" class="form-control" ng-model="P_QTY" ng-pattern="/^[1-9][0-9]*$/" placeholder="Enter Quantity" required />
+
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">URD Supplier:</label><label style="color:red;">*</label>
+                                                <select name="IS_URD_SUPPLIER" class="form-control" ng-model="IS_URD_SUPPLIER" ng-change="GetSupplierChange()" required>
+                                                    <option ng-value=1>Yes</option>
+                                                    <option ng-value=0>No</option>
+                                                </select>
+                                            </div>
+
+                                            <div ng-show="IS_URD_SUPPLIER === 1" class="form-group col-md-6">
+                                                <label class="control-label">Select Customer:</label><label style="color:red;">*</label>
+                                                <select ng-model="URD_SUPPLIER_ID" id="URD_SUPPLIER_ID" class="form-control" ng-change="GetContactPersonChange(URD_SUPPLIER_ID,1)"
+                                                        ng-options="cust.Customer_ID as cust.FIRM_NAME for cust in AllCustomerList"
+                                                        ng-selected="cust.Customer_ID == URD_SUPPLIER_ID"
+                                                        ng-required="IS_URD_SUPPLIER === 1">
+                                                    <option value="">Select Customer</option>
+                                                </select>
+                                            </div>
+                                            <div ng-show="IS_URD_SUPPLIER === 0" class="form-group col-md-6">
+                                                <label class="control-label">Select Supplier:</label><label style="color:red;">*</label>
+                                                <select ng-model="VENDOR_SUPPLIER_ID" id="VENDOR_SUPPLIER_ID" class="form-control" ng-change="GetContactPersonChange(VENDOR_SUPPLIER_ID,0)"
+                                                        ng-options="ven.V_ID as ven.VENDOR_COMPANY for ven in AllVendorList"
+                                                        ng-selected="ven.V_ID == VENDOR_SUPPLIER_ID"
+                                                        ng-required="IS_URD_SUPPLIER === 0">
+                                                    <option value="">Select Supplier</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contact Person Name:</label>
+                                                <textarea type="text" class="form-control" readonly ng-model="SUPPLIER_CONTACT_PERSON"> </textarea>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Depart From:</label>
+                                                <input type="text" name="Depart From" class="form-control" ng-model="DEPART_FROM" placeholder="Enter Depart From" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Invoice No:</label>
+                                                <input type="text" name="Invoice No" class="form-control" ng-model="INVOICE_NO" placeholder="Enter Invoice No" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Material Received Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Material Received Date" class="form-control" ng-model="MATERIAL_RECEIVED_DATE" id="MATERIAL_RECEIVED_DATE" placeholder="Enter Material Received Date" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">DC No:</label>
+                                                <input type="text" name="DC No" class="form-control" ng-model="DC_NO" placeholder="Enter DC No" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Vehicle No:</label>
+                                                <input type="text" name="Vehical No" class="form-control" ng-model="VEHICAL_NO" placeholder="Enter Vehical No" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Enter Location:</label>
+                                                <input type="text" name="Arrive At" class="form-control" ng-model="ARRIVE_AT" placeholder="Enter Arrive At" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Employee:</label>
+                                                <select ng-model="EMPLOYEE_ID" id="EMPLOYEE_ID" name="EMPLOYEE_ID" class="form-control"
+                                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                                        ng-selected="emp.EMP_ID == EMPLOYEE_ID">
+                                                    <option value="">Select Employee</option>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Any Comments:</label>
+                                                <textarea type="text" name="Comments" class="form-control" ng-model="COMMENTS" placeholder="Enter Comments"></textarea>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Short Shipment Details:</label>
+                                                <textarea type="text" name="Shipment Details" class="form-control" ng-model="SHIPMENT_DETAILS" placeholder="Enter Shipment Details"> </textarea>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">HSN No:</label>
+                                                <input type="text" name="HSN No" class="form-control" ng-model="HSN_CODE" placeholder="Enter HSN No" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddProductStock.$invalid" ng-click="AddUpdateAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts
+{
+    <script src="~/AngularJs/ProductStock.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#STOCK_ENTRY_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#STOCK_ENTRY_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STOCK_ENTRY_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STOCK_ENTRY_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#STOCK_ENTRY_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+        $(function () {
+            $("#MATERIAL_RECEIVED_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#MATERIAL_RECEIVED_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#MATERIAL_RECEIVED_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#MATERIAL_RECEIVED_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#MATERIAL_RECEIVED_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+        $("#START_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#START_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#START_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#START_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#START_DATE").datepicker("option", "yearRange", "2000:2060");
+
+        $("#END_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+        $("#END_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#END_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#END_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#END_DATE").datepicker("option", "yearRange", "2000:2060");
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectElement = document.getElementById('P_ID');
+
+            selectElement.addEventListener('mouseover', function () {
+                const options = selectElement.options;
+                for (let i = 0; i < options.length; i++) {
+                    options[i].title = options[i].text;
+                }
+            });
+        });
+    </script>
+
+
+}
+

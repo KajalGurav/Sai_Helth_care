@@ -82,7 +82,7 @@
         var response = $http({
             method: "GET",
             url: "/AMC_Master/GetCategoryList"
-           
+
         });
         return response;
     };
@@ -206,6 +206,7 @@
 
 
 app.controller("AMCCtrl", function ($scope, CustomerService) {
+    $scope.COMPANY_ID = window.companyId || null;
 
     var PARAM = window.location.search.replace(/\?/, '').split('&');
     $scope.CUSTOMER_TYPE_NAME = PARAM[0].split('=').pop();
@@ -232,6 +233,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
     $scope.FARMER_SEARCH = null;
     $scope.COMPANY_ID = null;
     $scope.STATE_SEARCH = null;
+
     GetTotalcount();
     GetAllState();
     GetAllCustomers();
@@ -443,7 +445,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         //$scope.CUSTOMER_TYPE_ID = Customer.CUSTOMER_TYPE_ID;
         console.log(Customer);
         GetAllCustomerFirm();
-        
+
     };
     function GetAllCustomerFirm() {
         var getAdmin = CustomerService.GetFirmList($scope.CUSTOMER_ID);
@@ -456,7 +458,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
     $scope.OnProductChange = function () {
         if ($scope.P_ID === undefined || $scope.P_ID === null || $scope.P_ID === "") {
             $scope.AccessoriesList = [];
-            
+
         }
         else {
             GetAllAccessories();
@@ -471,7 +473,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         });
     }
 
-    function GetAllCategories(){
+    function GetAllCategories() {
         var getAdmin = CustomerService.GetCategoryList();
         getAdmin.then(function (response) {
             $scope.CategoryList = response.data;
@@ -501,7 +503,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
 
             });
         }
-        
+
     }
 
     //
@@ -511,7 +513,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         getAdmin.then(function (response) {
             $scope.AMCAccessories = response.data;
             $scope.FEES = 0;
-            for (let i = 0; i < $scope.AMCAccessories.length;i++) {
+            for (let i = 0; i < $scope.AMCAccessories.length; i++) {
                 $scope.FEES = parseFloat($scope.FEES) + (parseFloat($scope.AMCAccessories[i].AMC_AMOUNT) * parseInt($scope.AMCAccessories[i].QUANTITY));
             }
             console.log($scope.FEES);
@@ -527,7 +529,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
 
     $scope.CalAmtIncTaxReg = function () {
         if ($scope.IS_FEES_INC_GST === null || $scope.IS_FEES_INC_GST === "" || $scope.IS_FEES_INC_GST === undefined) {
-            alert("Please select Is Fees Including GST field");
+            /*       alert("Please select Is Fees Including GST field");*/
             return;
         }
         if ($scope.IS_FEES_INC_GST === "true" || $scope.IS_FEES_INC_GST === true) {
@@ -556,12 +558,12 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
                 }
             }
         }
-        
+
     }
 
     $scope.CalAmtIncTax = function () {
         if ($scope.IS_FEES_INC_GST === null || $scope.IS_FEES_INC_GST === "" || $scope.IS_FEES_INC_GST === undefined) {
-            alert("Please select Is Fees Including GST field");
+            /*    alert("Please select Is Fees Including GST field");*/
             return;
         }
         if ($scope.IS_FEES_INC_GST === "true" || $scope.IS_FEES_INC_GST === true) {
@@ -579,9 +581,9 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
             else {
                 $scope.FEES_IN_GST = $scope.FEES + ($scope.FEES * ((parseInt($scope.GST_PERCENTAGE)) / 100));
             }
-        } 
-        
-        
+        }
+
+
     }
 
     $scope.AddPartsAccessories = function () {
@@ -611,7 +613,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
 
 
 
-       
+
         tb_AddPartsAccessories = {
             AMC_CMC_ID: $scope.AMC_CMC_ID,
             AMC_For: $scope.AMC_For,
@@ -657,7 +659,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
 
     $scope.DeleteAMCAccessories = function (data) {
 
-        
+
         var datalist = CustomerService.DeleteAMCAccessories(data.AMC_MEDACC_ID);
         datalist.then(function (d) {
             if (d.data.success === true) {
@@ -775,12 +777,12 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
                 $scope.CONTRACT_DATE = today;
             });
         }
-        
-       
+
+
         $scope.Admin_Action = "Add AMC/CMC";
-        
+
         $("#AMC_AddUpdate").modal({ backdrop: 'static', keyboard: false }).modal("show");
-       
+
         //document.getElementById('divProfile').style.display = "none";
         //document.getElementById('Profile1').style.display = "none";
         //document.getElementById('Profile2').style.display = "none";
@@ -832,7 +834,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         $scope.COMMENTS = admin.COMMENTS;
         $scope.AMC_CMC_STATUS = admin.AMC_CMC_STATUS;
         $scope.Admin_Action = "Update AMC/CMC";
-       
+
         $("#AMC_AddUpdate").modal({ backdrop: 'static', keyboard: false }).modal("show");
         //let d = new Date(admin.CONTRACT_FROM);
         //let datestring = d.getFullYear().toString().padStart(4, '0') + '-' + (d.getMonth() + 1).toString().padStart(2, '0') + '-' + d.getDate().toString().padStart(2, '0');
@@ -853,7 +855,7 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         $scope.CONTRACT_TYPE_DETAILS = admin.CONTRACT_TYPE_DETAILS;
         //$scope.CONTRACT_TO = new Date(admin.CONTRACT_TO);
         //document.getElementById("CONTRACT_TO").value = new Date(admin.CONTRACT_TO);
-        
+
 
 
         //setTimeout(function myfunction() {
@@ -865,31 +867,24 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         //    $("#FIRM_ID").val($scope.FIRM_ID);
         //    $("#CAT_ID").val($scope.CAT_ID);
         //    $("#P_ID").val($scope.P_ID);
-          
+
         //}, 900);
-        
+
     };
 
     $scope.AddUpdateAccount = function () {
-
-        $("#loader").css("display", '');
-        if ($("#CONTRACT_DATE").val() === undefined || $("#CONTRACT_DATE").val() === "" || $("#CONTRACT_DATE").val() === null) {
-            alert("Please Select Contract Date!");
+        // Mandatory field check for specific companies
+        if ((companyId === 1 || companyId === 13) &&
+            (!$scope.FEES_IN_GST || $scope.IS_FEES_INC_GST === undefined)) {
+            alert("Please fill all mandatory fields for Fees In GST and Is Fees Including GST!");
             return;
         }
 
-        $scope.CONTRACT_DATE = $("#CONTRACT_DATE").val();
-        $scope.CONTRACT_FROM = $("#CONTRACT_FROM").val();
-        $scope.CONTRACT_TO = $("#CONTRACT_TO").val();
-
-        if ($scope.CONTRACT_TYPE !== 'CMC') {
-            $scope.CONTRACT_TYPE_DETAILS = null;
-        }
-        
+        // Existing data preparation
         tb_Admin = {
-            CONTRACT_DOCUMENT_NO : $scope.CONTRACT_DOCUMENT_NO,
-            CONTRACT_TYPE : $scope.CONTRACT_TYPE,
-            CONTRACT_PERIOD : $scope.CONTRACT_PERIOD,
+            CONTRACT_DOCUMENT_NO: $scope.CONTRACT_DOCUMENT_NO,
+            CONTRACT_TYPE: $scope.CONTRACT_TYPE,
+            CONTRACT_PERIOD: $scope.CONTRACT_PERIOD,
             CUSTOMER_ID: $scope.CUSTOMER_ID,
             CUSTOMER_NAME: $scope.CUSTOMER_NAME,
             CUSTOMER_TYPE: $scope.CUSTOMER_TYPE_ID,
@@ -899,17 +894,17 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
             PRODUCT_NAME: $scope.PRODUCT_NAME,
             P_ID: $scope.P_ID,
             MODEL_NAME: $scope.MODEL_NAME,
-            MODEL_SERIAL_NO : $scope.MODEL_SERIAL_NO,
-            PM_VISIT : $scope.PM_VISIT,
-            CM_VISIT : $scope.CM_VISIT,
+            MODEL_SERIAL_NO: $scope.MODEL_SERIAL_NO,
+            PM_VISIT: $scope.PM_VISIT,
+            CM_VISIT: $scope.CM_VISIT,
             IS_FEES_INC_GST: $scope.IS_FEES_INC_GST,
-            FEES : $scope.FEES,
-            FEES_IN_GST : $scope.FEES_IN_GST,
-            GST_PERCENTAGE : $scope.GST_PERCENTAGE,
-            PAID_FEES : $scope.PAID_FEES,
-            FEES_PAID_BY : $scope.FEES_PAID_BY,
-            COMMENTS : $scope.COMMENTS,
-            AMC_CMC_STATUS : $scope.AMC_CMC_STATUS,
+            FEES: $scope.FEES,
+            FEES_IN_GST: $scope.FEES_IN_GST,
+            GST_PERCENTAGE: $scope.GST_PERCENTAGE,
+            PAID_FEES: $scope.PAID_FEES,
+            FEES_PAID_BY: $scope.FEES_PAID_BY,
+            COMMENTS: $scope.COMMENTS,
+            AMC_CMC_STATUS: $scope.AMC_CMC_STATUS,
             CONTRACT_DATE: $scope.CONTRACT_DATE,
             CONTRACT_FROM: $scope.CONTRACT_FROM,
             CONTRACT_TO: $scope.CONTRACT_TO,
@@ -919,11 +914,11 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
 
         if ($scope.Admin_Action === "Add AMC/CMC") {
             AddAdminRecord(tb_Admin);
-        }
-        else if ($scope.Admin_Action === "Update AMC/CMC") {
+        } else if ($scope.Admin_Action === "Update AMC/CMC") {
             EditAdminRecord(tb_Admin);
         }
     };
+
 
 
 
@@ -1163,16 +1158,42 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         var WindowObject = window.open();
         WindowObject.document.write(elementPage);
         WindowObject.document.close();
-        
+
         setTimeout(function () {
             WindowObject.focus();
             WindowObject.print();
             WindowObject.close();
             window.location.href = window.location.href;
         }, 1000);
-        
-    }
 
+    }
+    $scope.updateFees = function () {
+        // Ensure that IS_FEES_INC_GST is not null, undefined, or empty
+        if ($scope.IS_FEES_INC_GST === null || $scope.IS_FEES_INC_GST === undefined || $scope.IS_FEES_INC_GST === "") {
+            return; // Exit if the field is not selected
+        }
+
+        // Handle "Yes" for including GST
+        if ($scope.IS_FEES_INC_GST === true || $scope.IS_FEES_INC_GST === "true") {
+            if ($scope.CUSTOMER_TYPE_ID === 3 || $scope.CUSTOMER_TYPE_ID === "3") {
+                $scope.FEES_IN_GST = 0; // Set Fees In GST to 0 for customer type 3
+            } else {
+                // Set Fees In GST to the value of FEES when GST is included
+                $scope.FEES_IN_GST = ($scope.FEES && $scope.FEES !== "") ? $scope.FEES : 0;
+            }
+        }
+        // Handle "No" for including GST
+        else if ($scope.IS_FEES_INC_GST === false || $scope.IS_FEES_INC_GST === "false") {
+            if ($scope.CUSTOMER_TYPE_ID === 3 || $scope.CUSTOMER_TYPE_ID === "3") {
+                $scope.FEES_IN_GST = 0; // Set Fees In GST to 0 for customer type 3
+            } else {
+                // If FEES is provided, calculate the fee with 18% GST
+                $scope.FEES_IN_GST = ($scope.FEES && $scope.FEES !== "")
+                    ? $scope.FEES + ($scope.FEES * (18 / 100))
+                    : 0;
+            }
+        }
+    };
 
 
     $scope.GoToPreviousNextPage = function (pagehistory) {

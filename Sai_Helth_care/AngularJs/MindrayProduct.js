@@ -77,8 +77,15 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
     $scope.pageSize = 30;
     $scope.FARMER_SEARCH = null;
     $scope.STATE_SEARCH = null;
+    $scope.searchText = "";
+    $scope.CAT_ID = null;
     GetTotalcount();
     GetAllCategory();
+
+
+
+
+
     function GetAllCategory() {
         var getAdmin = CategoryService.GetCategory();
         getAdmin.then(function (response) {
@@ -104,7 +111,17 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
     }
 
 
+    $scope.updateCategoryID = function () {
+        var selectedCategory = $scope.CategoryList.find(function (category) {
+            return category.CAT_NAME === $scope.searchText;
+        });
 
+        if (selectedCategory) {
+            $scope.CAT_ID = selectedCategory.CAT_ID;  // Set CAT_ID based on selected category
+        } else {
+            $scope.CAT_ID = null;  // Reset CAT_ID if no match is found
+        }
+    };
 
     function GetSearchingConditions() {
 
@@ -286,7 +303,7 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
             CKEDITOR.instances.editor_AnswerEngConf.setData($scope._Party.CONFIGURATION);
 
             $scope.Admin_Action = "Update Product";
-           
+
             $("#Admin_Addupdate").modal({ backdrop: 'static', keyboard: false }).modal("show");
             document.getElementById('divProfile').style.display = "block";
         });
@@ -300,23 +317,21 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
 
         tb_Admin = {
 
-            CAT_ID: $scope.CAT_ID, 
+            CAT_ID: $scope.CAT_ID,
             P_ID: $scope.P_ID, //for update table
             PRODUCT_NAME: $scope.PRODUCT_NAME,
             HSN_CODE: $scope.HSN_CODE,
             DESCRIPTION: CKEDITOR.instances.editor_AnswerEng.getData(),
             CONFIGURATION: CKEDITOR.instances.editor_AnswerEngConf.getData(),
         };
-        
-        //if (CKEDITOR.instances.editor_AnswerEng.getData().length < 1) {
-        //    alert("Product Description is required.");
-        //    return false;
-        //}
+
+
         if (CKEDITOR.instances.editor_AnswerEngConf.getData().length < 1) {
             alert("Product Configuration is required.");
             return false;
         }
         if ($scope.Admin_Action === "Add Product") {
+            debugger;
             tb_Admin = getImageData(Profile_photo, tb_Admin);
             tb_Admin.PRODUCT_IMAGE = tb_Admin.IsImageChoosen;
             // alert(tb_Admin.PRODUCT_IMAGE);
@@ -326,16 +341,8 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
                 $("#loader").css("display", 'none');
                 return false;
             }
-            else if ((tb_Admin.PRODUCT_IMAGE === null || tb_Admin.PRODUCT_IMAGE === "No" ||tb_Admin.PRODUCT_IMAGE === undefined) && tb_Admin.docSize == "Wrong Image Size") {
-                alert("Image should be of Dimension: 512 * 512 pixels.")
-                $("#loader").css("display", 'none');
-                return false;
-            }
-            else if ((tb_Admin.PRODUCT_IMAGE === null || tb_Admin.PRODUCT_IMAGE === "No" || tb_Admin.PRODUCT_IMAGE === undefined) && tb_Admin.docSize == "Large Size") {
-                alert("Please Select Image Less Than 500 KB Size.")
-                $("#loader").css("display", 'none');
-                return false;
-            }
+
+
             else if ((tb_Admin.PRODUCT_IMAGE === null || tb_Admin.PRODUCT_IMAGE === "No" || tb_Admin.PRODUCT_IMAGE === undefined) && tb_Admin.docSize == "Please Choose Image First") {
                 alert("Product image is required.")
                 $("#loader").css("display", 'none');
@@ -345,39 +352,16 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
                 alert("Please Use Another Browser, This Browser is Not Supporting Image Uploader.")
                 return false;
             }
-            else if (tb_Admin.IsImageChoosen === "Yes"){
+            else if (tb_Admin.IsImageChoosen === "Yes") {
                 AddAdminRecord(tb_Admin);
-                
+
             }
             //AddAdminRecord(tb_Admin);
         }
         else if ($scope.Admin_Action === "Update Product") {
             tb_Admin = getImageData(Profile_photo, tb_Admin);
             tb_Admin.PRODUCT_IMAGE = tb_Admin.IsImageChoosen;
-            //if ((tb_Admin.PRODUCT_IMAGE === null || tb_Admin.PRODUCT_IMAGE === undefined) && tb_Admin.docSize == "Sorry... Invalid File") {
-            //    alert("Sorry... Invalid File! Please Rename or upload another Image.")
-            //    $("#loader").css("display", 'none');
-            //    return false;
-            //}
-            //else if ((tb_Admin.PRODUCT_IMAGE === null || tb_Admin.PRODUCT_IMAGE === undefined) && tb_Admin.docSize == "Wrong Image Size") {
-            //    alert("Image should be of Dimension: 512 * 512 pixels.")
-            //    $("#loader").css("display", 'none');
-            //    return false;
-            //}
-            //else if ((tb_Admin.PRODUCT_IMAGE === null || tb_Admin.PRODUCT_IMAGE === undefined) && tb_Admin.docSize == "Large Size") {
-            //    alert("Please Select Image Less Than 500 KB Size.")
-            //    $("#loader").css("display", 'none');
-            //    return false;
-            //}
-            //else if ((tb_Admin.PRODUCT_IMAGE === null || tb_Admin.PRODUCT_IMAGE === undefined) && tb_Admin.docSize == "Please Choose Image First") {
-            //    alert("Product image is required.")
-            //    $("#loader").css("display", 'none');
-            //    return false;
-            //}
-            //else if (( tb_Admin.IsImageChoosen === null || tb_Admin.IsImageChoosen === undefined) && tb_Admin.docSize == "Please Use Another Browser, This Browser is Not Supporting Image Uploader.") {
-            //    alert("Please Use Another Browser, This Browser is Not Supporting Image Uploader.")
-            //    return false;
-            //}
+
 
             if (tb_Admin.IsImageChoosen === "Yes") {
                 tb_Admin.PRODUCT_IMAGE = "Yes";
@@ -388,16 +372,7 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
                     $("#loader").css("display", 'none');
                     return false;
                 }
-                else if (tb_Admin.docSize == "Wrong Image Size") {
-                    alert("Image should be of Dimension: 512 * 512 pixels.")
-                    $("#loader").css("display", 'none');
-                    return false;
-                }
-                else if (tb_Admin.docSize == "Large Size") {
-                    alert("Please Select Image Less Than 500 KB Size.")
-                    $("#loader").css("display", 'none');
-                    return false;
-                }
+
                 else if (tb_Admin.docSize == "Please Use Another Browser, This Browser is Not Supporting Image Uploader.") {
                     alert("Please Use Another Browser, This Browser is Not Supporting Image Uploader.")
                     return false;
@@ -409,6 +384,8 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
             EditAdminRecord(tb_Admin);
         }
     };
+
+
 
 
 
@@ -522,51 +499,24 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
                 width = this.width;
                 height = this.height;
             };
-                        
+
         };
     }
 
+
     function validateFileReader(fileuploader) {
+        debugger;
         if (typeof (FileReader) !== "undefined") {
-            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png|.pdf)$/;
+            // Remove file type regex check
+            // var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png|.pdf)$/;
 
             if (fileuploader.val() === '') {
-                return "Please Choose Image First";
-            }
-            else {
-
-                if (width !== 512 && height !== 512) {
-
-                   return "Wrong Image Size" ;
-                }
-
+                return "Please Choose an Image First";
+            } else {
                 var file = $(fileuploader[0].files);
-                //if (regex.test(file[0].name.toLowerCase())) {
 
 
-                //    var imageSize = Math.round(file[0].size / 1024);
-                //    //Check Image Size
-                //    if (imageSize < 2048) {
-                //        return "SaveImage";
-                //    }
-                //    else {
-                //        return 'Large Size';
-                //        //return 'Please Select Image Less Than 5 MB Size';
-                //    }
-
-                //} else {
-                //    return "Sorry... Invalid File";
-                //}
-
-                var imageSize = Math.round(file[0].size / 1024);
-                //Check Image Size
-                if (imageSize < 2048) {
-                    return "SaveImage";
-                }
-                else {
-                    return 'Large Size';
-                    //return 'Please Select Image Less Than 5 MB Size';
-                }
+                return "SaveImage";
             }
 
         } else {
@@ -574,88 +524,8 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
         }
     }
 
-    //function validateFileReader(fileuploader, callback) {
-    //    if (typeof (FileReader) !== "undefined") {
-    //        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png)$/;
-
-    //        if (fileuploader.val() === '') {
-    //            callback("Please Choose Image First") ;
-    //        }
-    //        else {
-    //            var file = $(fileuploader[0].files);
-    //            if (regex.test(file[0].name.toLowerCase())) {
-
-    //                var imageSize = Math.round(file[0].size / 1024);
-
-
-                    
-    //                var reader = new FileReader();
-
-    //                //Read the contents of Image File.
-    //                reader.readAsDataURL(file[0]);
-    //                reader.onload = function (e) {
-
-    //                    //Initiate the JavaScript Image object.
-    //                    var image = new Image();
-
-    //                    //Set the Base64 string return from FileReader as source.
-    //                    image.src = e.target.result;
-
-    //                    //Validate the File Height and Width.
-
-    //                    image.onload = function () {
-
-    //                        var width = this.width;
-    //                        var height = this.height;
-    //                        if (width !== 512 && height !== 512) {
-
-    //                            callback("Wrong Image Size") ;
-    //                        }
-    //                        //Check Image Size
-    //                        else if (imageSize < 512) {
-    //                            callback("SaveImage") ;
-    //                        }
-    //                        else {
-    //                            callback("Large Size") ;
-    //                        }
-    //                    };
-    //                };
-                    
-
-    //            } else {
-    //                callback("Sorry... Invalid File") ;
-    //            }
-    //        }
-
-    //    } else {
-    //        callback("Please Use Another Browser, This Browser is Not Supporting Image Uploader.") ;
-    //    }
-    //}
-
-    //function getImageData(chooseimageFileUploader, tb_object) {
-    //    var result;
-    //    validateFileReader(chooseimageFileUploader, function (val) {
-    //        result = val;
-
-    //        var IsImageChoosen = "No";
-    //        if (result === "SaveImage") {
-    //            IsImageChoosen = "Yes";
-    //            // alert('success Save Image');
-    //            var imageName = fileName.substring(0, fileName.lastIndexOf('.'));
-    //            var imageExtension = '.' + fileName.substring(fileName.lastIndexOf('.') + 1);
-    //            var imageBase64Data = reader.result;
-    //            imageBase64Data = imageBase64Data.split(';')[1].replace("base64,", "");
-    //        }
-    //        tb_object.IsImageChoosen = IsImageChoosen;
-    //        tb_object.ImageName = imageName;
-    //        tb_object.ImageExtension = imageExtension;
-    //        tb_object.ImageBase64Data = imageBase64Data;
-    //        tb_object.docSize = result;
-    //        return tb_object;
-    //    });
-    //}
-
     function getImageData(chooseimageFileUploader, tb_object) {
+        debugger;
         var result = validateFileReader(chooseimageFileUploader);
         var IsImageChoosen = "No";
         if (result === "SaveImage") {
@@ -672,7 +542,7 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
         tb_object.ImageBase64Data = imageBase64Data;
         tb_object.docSize = result;
         return tb_object;
-        
+
     }
 
 
@@ -684,4 +554,4 @@ app.controller("ProductCtrl", function ($scope, CategoryService) {
         //language: 'fr',
         uiColor: '#9AB8F3'
     });
-});
+})

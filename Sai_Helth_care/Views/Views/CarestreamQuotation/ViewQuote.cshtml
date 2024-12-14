@@ -1,0 +1,944 @@
+﻿
+@{
+    ViewBag.Title = "ViewQuote";
+}
+
+
+
+<style>
+    .catStyle_Desc {
+        color: black;
+        cursor: pointer;
+        font-size: 15px;
+        border: 1px solid green;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .catStyle_active_Desc {
+        color: white;
+        background-color: green;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: 1px solid green;
+        border-radius: 5px;
+    }
+
+    .wrapper.overflow {
+        overflow-y: scroll;
+        display: inline-block;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid;
+    }
+
+    ul.no-bullets {
+        list-style-type: none;
+        margin: 1px;
+        padding: 5px;
+        align-content: center;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<div class="page-content fade-in-up" ng-controller="CarestreamQuotationCtrl">
+    <div class="ibox">
+        <input type="hidden" id="tempCustId" />
+        <div class="ibox-body">
+            <div class="card">
+                <div class="col-lg-1">
+                    <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                </div>
+                <div class="card-body">
+                    <div style="overflow-y:auto">
+                        <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+                            <thead style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; ">
+                                <tr>
+                                    <th>Quote No.</th>
+                                    <th>Quot Type</th>
+                                    <th>Quote. Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    @*<th>Product Name</th>*@
+                                    <th> PNDT Status</th>
+                                    @*<th>Model No/Name.</th>*@
+                                    <th>Status</th>
+                                    @*<th>Quotation For</th>*@
+                                    <th>P.O.Date </th>
+                                </tr>
+                            </thead>
+                            <tbody style="color:black;">
+                                <tr ng-repeat="Quotation in QuotationList">
+                                    <td>{{Quotation.Q_ID}}</td>
+                                    <td>{{Quotation.QUOTATION_TYPE}}</td>
+                                    <td>{{Quotation.QUOTATION_DATE}}</td>
+                                    <td>{{Quotation.CUSTOMER_NAME}}</td>
+                                    <td>{{Quotation.FIRM_NAME}}</td>
+                                    <td>{{Quotation.PNDT_STATUS}}</td>
+                                    <td>{{Quotation.STATUS}}</td>
+                                    <td>{{Quotation.PO_DATE}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div style="overflow: auto; white-space: nowrap; padding:15px 0px;">
+                            <center>
+                                <span>
+                                    <span class="catmenu_button_Desc catStyle_active_Desc" id="1_catId_Desc" ng-click="OnCategoryClick('1')" style="padding:5px; margin:5px;font-size:12px;"><b>Quotation Product</b></span>
+                                </span>
+                                <span>
+                                    <span class="catmenu_button_Desc catStyle_Desc" id="0_catId_Desc" ng-click="OnCategoryClick('0')" style="padding:5px; margin:5px;font-size:12px;"><b>Edit Quotation </b></span>
+                                </span>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="card-body" id="Demoexample_0" style="display:none;">
+                <div style="overflow-y:auto">
+                    <div class="col-lg-12 " style="margin-bottom:10px">
+                        <form name="AddPayment1" ng-submit="AddPayment1(AddPayment1.$valid)" data-toggle="validator" role="form">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Quot Type:</label><label style="color:red;">*</label>
+                                    <select name="QUOTATION_TYPE" class="form-control" ng-model="QUOTATION_TYPE" id="QUOTATION_TYPE" required>
+                                        <option value="">Select Quot Type </option>
+                                        <option value="Sales">Sales</option>
+                                        <option value="Service">Service</option>
+                                    </select>
+                                    <span ng-show="(AddPayment1.QUOTATION_TYPE.$invalid && (AddPayment1.QUOTATION_TYPE.$touched || AddPayment1.QUOTATION_TYPE.$dirty))">
+                                        <span class="error" ng-show="AddPayment1.QUOTATION_TYPE.$error.required">Quot Type is required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label"> Quotation Number:</label>
+                                    <input type="text" name="QUOTATION_NO" ng-model="QUOTATION_NO" class="form-control" readonly placeholder="Enter Quotation No." />
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Select Customer Name:</label><label style="color:red;">*</label>
+                                    <select id="CUSTOMER_ID" class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID"
+                                        ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in CustomerList"
+                                        ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-change="GetFirmChange()" required>
+                                        <option value="">Select Customer Name</option>
+                                    </select>
+                                    @*<select class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID" id="CUSTOMER_ID" ng-change="GetFirmChange()" required>
+                                        <option value="">Select Customer Name</option>
+                                        <option ng-repeat="Customer in CustomerList" value="{{Customer.Customer_ID}}">{{Customer.CUSTOMER_NAME}}</option>
+                                    </select>*@
+                                    <span ng-show="(AddPayment1.CUSTOMER_ID.$invalid && (AddPayment1.CUSTOMER_ID.$touched || AddPayment1.CUSTOMER_ID.$dirty))">
+                                        <span class="error" ng-show="AddPayment1.CUSTOMER_ID.$error.required">Customer Name is required</span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label class="control-label">Select Customer Firm Name :</label><label style="color:red;">*</label>
+                                    <select id="FIRM_ID" class="form-control" name="FIRM_ID" ng-model="FIRM_ID"
+                                        ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in CustomerFirmList"
+                                        ng-selected="Customer.F_ID == FIRM_ID" required>
+                                        <option value="">Select Firm Name</option>
+                                    </select>
+                                    @*<select name="FIRM_ID" id="FIRM_ID" class="form-control" ng-model="FIRM_ID" required>
+                                        <option value="">Select Firm Name</option>
+                                        <option ng-repeat="Customer in CustomerFirmList" value="{{Customer.F_ID}}">{{Customer.FIRM_NAME}}</option>
+                                    </select>*@
+                                    <span ng-show="(AddPayment1.FIRM_ID.$invalid && (AddPayment1.FIRM_ID.$touched || AddPayment1.FIRM_ID.$dirty))">
+                                        <span class="error" ng-show="AddPayment1.FIRM_ID.$error.required">Customer Firm Name is required</span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Quotation Date:</label>
+                                    <input type="text" name="QUOTATION_DATE" ng-model="QUOTATION_DATE" readonly @*id="QUOTATION_DATE"*@ class="form-control" placeholder="Quotation Date." />
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">PNDT Status:</label>
+                                    <input type="text" name="PNDT_STATUS" ng-model="PNDT_STATUS" maxlength="50" class="form-control" placeholder="Enter PNDT Status" />
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">PNDT No.:</label>
+                                    <input type="text" name="PNDT_NO" id="PNDT_NO" ng-model="PNDT_NO" ng-pattern="/^[ A-Za-z0-9_@('@')./#&+-]*$/" maxlength="100" class="form-control" placeholder="Enter PNDT No" />
+                                    <span ng-show="(AddPayment1.PNDT_NO.$invalid && (AddPayment1.PNDT_NO.$touched || AddPayment1.PNDT_NO.$dirty))">
+                                        <span class="error" ng-show="AddPayment1.PNDT_NO.$error.required">PNDT Number is required</span>
+                                        <span class="error" ng-show="AddPayment1.PNDT_NO.$error.pattern">Invalid PNDT Number</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Status:</label><label style="color:red;">*</label>
+                                    <select name="STATUS" class="form-control" ng-model="STATUS" id="STATUS" required>
+                                        <option value="">Select Status </option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Done">Done</option>
+                                    </select>
+                                    <span ng-show="(AddPayment1.STATUS.$invalid && (AddPayment1.STATUS.$touched || AddPayment1.STATUS.$dirty))">
+                                        <span class="error" ng-show="AddPayment1.STATUS.$error.required">Status is required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">P.O Date:</label><label style="color:red;">*</label>
+                                    <input type="text" id="PO_DATE" name="PO_DATE" ng-model="PO_DATE" class="form-control" placeholder="Enter P.O Date" required />
+                                    <span ng-show="(AddPayment1.PO_DATE.$invalid && (AddPayment1.PO_DATE.$touched || AddPayment1.PO_DATE.$dirty))">
+                                        <span class="error" ng-show="AddPayment1.PO_DATE.$error.required">P.O Date is required</span>
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Payment Term(%):</label><label style="color:red;">*</label>
+                                    <input type="text" name="PAYMENT_TERM" ng-model="PAYMENT_TERM" id="PAYMENT_TERM" class="form-control" placeholder="Enter Payment Term" required />
+                                    <span ng-show="(AddPayment1.PAYMENT_TERM.$invalid && (AddPayment1.PAYMENT_TERM.$touched || AddPayment1.PAYMENT_TERM.$dirty))">
+                                        <span class="error" ng-show="AddPayment1.PAYMENT_TERM.$error.required">Payment Term(%) is required</span>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Note:</label>
+                                    <textarea class="form-control" ng-model="NOTE" id="NOTE" name="NOTE" placeholder="Enter Note"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                        <br />
+                        <div class="modal-footer">
+                            <div class="form-group col-md-12">
+                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment1.$invalid" ng-click="getForUpdate()" value="Edit Quotation" />
+                                <input type="button" value="Cancel" ng-click="OnCategoryClick('1')" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body" id="Demoexample_1">
+                <div class="ibox-body" style="height:700px; overflow-y:auto;">
+                    <div class="col-lg-12" style="margin-bottom:15px;">
+                        <div class="row">
+                            <div id="example-table" data-myval="5" class="table-responsive col-lg-6" style="background-color:white;">
+
+                                <table class="table table-striped table-bordered table-hover " id="example-table" cellspacing="0">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Product Details</th>
+                                            @*<th style="width:150PX">Quantity</th>
+                                                <th style="width:150PX">Price</th>*@
+                                            <th>Action</th>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <input style="width:150PX" id="searchInTb" class="form-control" type="text" placeholder="Search Product" />
+                                            </th>
+                                            @*<th></th>
+                                                <th></th>*@
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;">
+                                        <tr ng-repeat="Product in ProductList">
+                                            <td>{{Product.PRODUCT_NAME}}</td>
+                                            <td>
+                                                <a href="" title="Add" ng-click="Getspare(Product)" data-toggle="modal" data-target="#AddProductAccessories" class="btn btn-xs btn-success">Add </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive col-lg-6" style="background-color:white;">
+                                <table class="table table-striped table-bordered table-hover " id="example-table" cellspacing="0" width="50%">
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr><b>*Note: If main product is removed all spare parts will be removed</b></tr>
+                                    </thead>
+                                    <thead style="background-color: gray; color: white; ">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Product Name</th>
+                                            <th>Quantity</th>
+                                            <th>With STD Accessories</th>
+                                            <th>Price</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;" ng-repeat="P in GroupProductList">
+
+                                        <tr>
+                                            <td>{{$index+1}}</td>
+                                            <td>{{P.PRODUCTNAME}}</td>
+                                            <td>{{P.QUANTITY}}</td>
+                                            <td>{{P.IS_WITH_STANDARD_ACC}}</td>
+                                            <td>{{P.PRODUCTPRICE}}</td>
+                                            <td>
+                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                        </tr>
+                                        @*<td colspan="2">Product Name: {{P.PRODUCTNAME}}&nbsp;Quantity:{{P.QUANTITY}}&nbsp;Price:{{P.PRODUCTPRICE}}</td>
+                                            <td>
+                                                <a ng-click="getFordelete(P)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>*@
+
+                                        @*<tr *ngIf="">
+                                                <th>Accessories</th>
+                                                <th>Accessories Price</th>
+                                                <th>Action</th>
+                                            </tr>*@
+                                        <tr ng-repeat="Quotation in ProductQuotationList | filter:{QUOTATION_ID:P.QUOTATION_ID} : true |filter:search:strict"
+                                            ng-if="Quotation.SPARE_PART!='' && Quotation.ACCPRICE!=0">
+                                            <td colspan="5"><b>SparePart Name:</b> {{Quotation.SPARE_PART}}&nbsp;<b>SparePart Price:</b>{{Quotation.ACCPRICE}}&nbsp; <b>Quantity:</b>{{Quotation.SPARE_QUANTITY}}&nbsp;</td>
+                                            <td>
+                                                <a ng-click="getFordelete(Quotation)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                            </td>
+                                            @*<td>{{Quotation.SPARE_PART}} </td>
+                                                <td>{{Quotation.ACCPRICE}} </td>
+                                                <td>
+                                                    <a ng-click="getFordelete(Quotation)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                </td>*@
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 " style="margin-bottom:10px">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label class="control-label">Total Amount:</label>
+                                <input class="form-control" readonly type="text" ng-model="final" />
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Including All Taxes:</label>
+                                <label style="color:red;">*</label>
+                                <input type="radio" id="contactChoice1" name="contact" value="Yes" ng-model="result" ng-change="IsIncludeTax(result)" />
+                                <label for="contactChoice1">Yes</label>
+                                <input type="radio" id="contactChoice2" name="contact" value="No" ng-model="result" ng-change="IsIncludeTax(result)" />
+                                <label for="contactChoice2">No</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="control-label">GST(%):</label>
+                                <select class="form-control" name="gstamt" ng-disabled="IsDisabled" ng-model="gstamt" ng-change="calTax(gstamt)">
+                                    <option value="0">0</option>
+                                    <option value="5">5</option>
+                                    <option value="12">12</option>
+                                    <option value="18">18</option>
+                                    <option value="28">28</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="control-label">Tax Amount:</label>
+                                <input class="form-control" readonly type="text" placeholder="Enter Tax Amount" ng-model="Ttax" />
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="control-label">Amount Inc. Tax:</label>
+                                <input class="form-control" readonly type="text" placeholder="Enter Amount Inc Tax" ng-model="AItax" />
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="control-label">Warranty (Days or Months or Years):</label>
+                                <select ng-model="WARRANTY_PERIOD" id="WARRANTY_PERIOD" name="WARRANTY_PERIOD" class="form-control" value="Months">
+                                    <option value="">Select Warranty Period</option>
+                                    <option value="Days">Days</option>
+                                    <option value="Months">Months</option>
+                                    <option value="Years">Years</option>
+                                </select>
+                                <input ng-model="WARRANTY_VALUE" id="WARRANTY_VALUE" name="WARRANTY_VALUE" class="form-control" value="0" type="text" placeholder="Enter Warranty" />
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="control-label">Note:</label>
+                                <textarea ng-model="REMARKS" id="REMARKS" class="form-control" rows="3" type="text" placeholder="Enter Note"></textarea>
+                                @*<input ng-model="REMARKS" id="REMARKS" name="REMARKS" class="form-control" value="" type="text" placeholder="Enter Remarks" />*@
+                            </div>
+                            @*<div style="margin-left:40%;margin-top:11px;">
+                                    <input class="form-control" type="button" value="Total Calculate" style="background-color:red;color:white" />
+                                </div>*@
+
+                        </div>
+                        <div style="margin-left: 45%; margin-right: 45%; margin-top: 11px; ">
+                            <input id="PrintQuotation" class="form-control" data-toggle="modal" data-target="#QUotationAdd" type="button" value="Print" style="background-color:aquamarine;color:black" ng-click="numTowords()" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="AddProductAccessories">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:gray; color: white; padding: 10px; ">
+                            <h4 class="modal-title">
+                                <b> Add Product Accessories </b>
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <div>
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    @*<div class="form-group col-md-4">
+                                                            <label class="control-label">Product Name:</label><label style="color:red;">*</label>
+                                                           <input class="form-control" type="text" ng-model="{{Product.PRODUCT_NAME}}" />
+                                                        </div>*@
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label">Quantity:</label>
+                                                        <label style="color:red;">*</label>
+                                                        <input class="form-control" type="number" name="PRODUCT_QUANTITY" ng-model="PRODUCT_QUANTITY" min="0" ng-pattern="/^([1-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value = 0; return false; }" required />
+                                                        <span ng-show="(AddPayment.PRODUCT_QUANTITY.$invalid && (AddPayment.PRODUCT_QUANTITY.$touched || AddPayment.PRODUCT_QUANTITY.$dirty))">
+                                                            <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.required">Quantity is required</span>
+                                                            <span class="error" ng-show="AddPayment.PRODUCT_QUANTITY.$error.number">Please enter a valid Quantity</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label">MRP:</label>
+                                                        <label style="color:red;">*</label>
+                                                        <input class="form-control" type="number" name="PROCUCT_PRICE" ng-model="PROCUCT_PRICE" min="0" ng-pattern="/^([1-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; }" required />
+                                                        <span ng-show="(AddPayment.PROCUCT_PRICE.$invalid && (AddPayment.PROCUCT_PRICE.$touched || AddPayment.PROCUCT_PRICE.$dirty))">
+                                                            <span class="error" ng-show="AddPayment.PROCUCT_PRICE.$error.required">MRP is required</span>
+                                                            <span class="error" ng-show="AddPayment.PROCUCT_PRICE.$error.number">Please enter valid MRP</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <div class="row">
+
+                                                        <input id="STDACCESSORIES" type="checkbox" class="STD_ACC" ng-model="IS_WITH_STANDARD_ACC" ng-click="ShowHideStdAcc()" value="Std_Acc" style="margin-bottom: 8px;" />
+
+                                                        <div class="col-8" @*style="margin-bottom:4px;"*@>
+                                                            <label>With Standard Accessories</label>
+                                                        </div>
+                                                        <table id="StdAccTB" class="table table-bordered StdAccClass" style="font-size: 0.9rem;color:black;display:none;">
+
+                                                            <thead>
+                                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                                    <th>
+                                                                        <input id="checkAllChkboxStd" type="checkbox" onclick="CheckALLStd()" />
+                                                                    </th>
+                                                                    @*<th> No</th>*@
+                                                                    <th>Std Accessories Name</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-if="StdAccPartList.length>0" ng-repeat="StdAccpart in StdAccPartList">
+                                                                    <td scope="row" class="checkbox_std">
+                                                                        <input id="prodStdAcc" class="StdAccParts" value="{{StdAccpart.STD_ID}}" ng-model="STD_ID" type="checkbox" />
+                                                                    </td>
+                                                                    @*<td ng-click="GotoPage(Sparepart)">{{Sparepart.SP_ID}}</td>*@
+                                                                    <td>{{StdAccpart.STD_ACC_NAME}}</td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                        <div class="col-5"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                            <thead>
+
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th>
+                                                        <input id="checkAllChkbox" type="checkbox" onclick="CheckALL()" />
+                                                    </th>
+                                                   @* <th> No</th>*@
+                                                    <th>Spare Accessories Name</th>
+                                                    <th style="width:150px;">Quantity</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="Sparepart in SparepartList">
+                                                    @*<td scope="row" class="checkbox_th">
+            <input value="{{user.USER_ID}}" type="checkbox" />
+        </td>*@
+
+                                                    <td scope="row" class="checkbox_th">
+                                                        <input id="prodSpare" class="SparePart" value="{{Sparepart.SP_ID}}" ng-model="SP_ID" type="checkbox" />
+                                                    </td>
+                                                    @* <td ng-click="GotoPage(Sparepart)">{{Sparepart.SP_ID}}</td>*@
+                                                    <td>{{Sparepart.SPARE_PART}}</td>
+                                                    <td><input class="form-control qid" type="number" name="Q{{Sparepart.SP_ID}}" id="Q{{Sparepart.SP_ID}}" value="1" min="1" max="300" ng-pattern="/^(^[-][1-9]\d*)$/" onkeyup="if(parseInt(this.value)<1){ this.value =1; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" /></td>
+                                                    <td>{{Sparepart.PRICE}}</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="form-group col-md-12">
+                                <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddProduct(Sparepart)" value="Add Product" />
+                                <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="QUotationAdd">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="PrintSection" class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+                            <div>
+                                <div id="PrintMain" style="border: 2px solid #000;">
+                                    <div class="header-section" style=" padding:10px 10px 0;">
+                                        <div class="table-responsive">
+                                            <table style="width: 100%; border:2px solid #000;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <div align="center" class="right-logo" style="border-right: 2px solid #2B5794; padding-right: 30px;">
+                                                                <img src="~/Images/sai-logo.png" style="margin: 0 auto; width:100%" />
+                                                            </div>
+                                                        </td>
+                                                        <td valign="top">
+                                                            <div class="left-text-logo" style="margin-left: 30px; ">
+                                                                <img src="~/Images/sai-name-logo.jpg" style="width:100%">
+                                                            </div>
+                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
+                                                            <h4 style="margin:0 0 0 40px; font-size:24px; color:#2B5794; padding:5px 0;">  Sales & Services of Refurbished -</h4>
+                                                            <p style="margin:0 0 0 40px; color: #000; font-size:14px;">CT Scan // MRI // Ultra Sound & Colour Doppler // Mammography Machine // BMD Machine</p>
+                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
+                                                            <div style="float: left; width:40%; text-align: left; font-size: 16px; color: #2B5794; margin:0 0 0 40px;">
+                                                                www.saihealthcare.co.in
+                                                            </div>
+                                                            <div style="float: right; width: 50%; text-align:right; font-size:16px; color:#2b6793; ">
+                                                                sagar.borade@saihealthcare.co.in
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <table style="margin-top:30px; width: 100%;">
+                                            <tbody>
+                                                <tr align="center">
+                                                    <td style="font-size: 16px; color: #000;">
+                                                        <span style="font-weight: 600; font-size:18px;">Admin. Office:</span> {{cbd.COMPANY_REG_ADDRESS}} {{cbd.ZIP_CODE}} Contact No: {{cbd.MOBILE_NO}}
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                    <div class="quotation-heading-section" style="border-top: 2px solid #000; border-bottom: 2px solid #000; padding:15px 15px 0;">
+                                        <h1 style="font-size: 40px; margin: 0px; text-align: center;">Quotation</h1>
+                                        <!--<p style="padding:60px 0 0;  margin: 0px; text-align: center; font-size:21px;  font-weight: 600; color: #000;">Quotation for {{ProductQuotationList[0].PRODUCTNAME}}--> @*MRI Scan Machine (Symphony 1.5T MRI)*@<!--</p>-->
+
+                                    </div>
+                                    <div class="address-section">
+                                        <table style="margin-top:30px; padding: 10px 10px; width: 100%;">
+                                            <tbody>
+                                                <tr valign="top">
+                                                    <td style="font-size: 16px; color: #000; ">
+                                                        <table width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="text-align: left; font-weight: 600;">To,</td>
+                                                                    <td style="text-align: right;"> Date : {{QuotationList[0].QUOTATION_DATE}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="text-align: left;">{{QuotationList[0].FIRM_NAME}},</td>
+                                                                    <td style="text-align: right;">Quotation Ref.No: {{QuotationList[0].QUOTATION_NO}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="1" style="text-align: left;">{{QuotationList[0].FIRM_ADDRESS}},</td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td colspan="1" style="text-align: left; font-weight: 600;">Zip Code: {{QuotationList[0].ZIP_CODE}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="1" style="text-align: left; font-weight: 600;"> Mobile No: {{QuotationList[0].CONTACT_NO}}@*9011462844.*@</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="1" style="text-align: left; font-weight: 600;"> Email Id: {{QuotationList[0].EMAIL}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="description-section" style="border-top:2px solid #000; border-bottom:2px solid #000; padding:5px 10px 0;">
+                                        <table width="100%">
+                                            <tbody>
+                                                <tr align="left">
+                                                    <td style="font-size: 16px; color: #000;">
+                                                        <span style="font-weight: 600; font-size:18px;">Description :</span>
+
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="amount-section" style="padding:5px 10px 0;">
+                                        <table align="center" style="width:100%; ">
+                                            <tbody>
+                                                <tr style="border:2px solid #000;">
+                                                    <th style="border:2px solid #000; font-size: 18px;">Particular</th>
+                                                    <th style="border:2px solid #000; font-size: 16px;">Price</th>
+                                                    <th style="border:2px solid #000; font-size: 16px;"> Quantity</th>
+                                                    <th style="border:2px solid #000; font-size: 16px;">Total Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left" style="border: 2px solid #000; font-size: 13px;">
+                                                        <div ng-if="ProductQuotList.length>0" ng-repeat="obj in ProductQuotList">
+                                                            <span>{{$index+1}}) {{obj.M_NAME}} {{obj.PRODUCTNAME}} {{obj.IS_WITH_STANDARD_ACC}}</span><br>
+                                                            <span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories'">Std Acc:</span>
+                                                            <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories'" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                <span style="padding : 10px">{{itm.STD_ACC_NAME}}</span>
+                                                            </div>
+                                                            <span ng-if="obj.SPARE_PARTLIST.length>0">Spare Parts:</span>
+                                                            <div ng-if="obj.SPARE_PARTLIST.length>0" ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                <span style="padding : 10px">{{item.SPARE_PART}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td align="center" style="border:2px solid #000; font-size: 13px;">
+                                                        <div ng-repeat="obj in ProductQuotList">
+                                                            <span>{{obj.PRODUCTPRICE}}</span><br>
+                                                            <span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories'" style="color : white"> - </span>
+                                                            <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories'" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                <span style="color : black"> - </span>
+                                                            </div>
+                                                            <span ng-if="obj.SPARE_PARTLIST.length>0" style="color : white"> - </span>
+                                                            <div ng-if="obj.SPARE_PARTLIST.length>0" ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                <span>{{item.ACCPRICE}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td align="center" style="border:2px solid #000; font-size: 13px;">
+                                                        <div ng-repeat="obj in ProductQuotList">
+                                                            <span>{{obj.QUANTITY}}</span><br>
+                                                            <span ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories'" style="color : white"> - </span>
+                                                            <div ng-if="StdAccDisplay== 'Yes' && obj.IS_WITH_STANDARD_ACC == ' with Standard Accessories'" ng-repeat="itm in obj.STD_ACC_LIST">
+                                                                <span style="color : black"> {{obj.QUANTITY}} </span>
+                                                            </div>
+                                                            <span ng-if="obj.SPARE_PARTLIST.length>0" style="color : white"> - </span>
+                                                            <div ng-repeat="item in obj.SPARE_PARTLIST">
+                                                                <span>{{item.SPARE_QUANTITY}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td align="center" style="border:2px solid #000; font-size: 16px;">{{FinalAmount}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="font-size:16px;">Amount In Words : Rs. {{amtInwords}}</td>
+                                                    <td align="right" style="font-weight: 600;">Total</td>
+                                                    <td align="right" style="font-weight: 600;">{{FinalAmount}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="payment-details">
+                                        <table style="width:100% ; border-top:2px solid #000; border-bottom:2px solid #000; padding: 10px 10px;">
+                                            <tr>
+                                                <td>
+                                                    <table style="width:100%;">
+                                                        <tr>
+                                                            <td colspan="3" style="color:#00ccff; font-size:18px;">Details Of making payment</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;">Account Name  </td>
+                                                            <td>:</td>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px; text-transform: uppercase;">{{cbd.COMPANY_NAME}}</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;">Account No.</td>
+                                                            <td>:</td>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;">{{cbd.ACC_NO}}</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;">IFSC Code</td>
+                                                            <td>:</td>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;">{{cbd.IFSC_CODE}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;"> Name of the Bank</td>
+                                                            <td>:</td>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px; text-transform: uppercase;">{{cbd.BANK_NAME}} </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;">Address</td>
+                                                            <td>:</td>
+                                                            <td style="font-size:16px; color:#000; line-height: 22px;">{{cbd.BRANCH_NAME}} </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td align="center" style="border-left: 2px solid #000;">
+                                                    <div class="">
+                                                        <img src="~/Images/signture-stamp-img.jpg" style="width:300px; max-width:100%;" />
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="terms-ssection">
+                                        <div id="REMARKS_SECTION" class="Remarks" style="display:block;">
+                                            <p style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                <span style="font-weight: 600;">Note: </span> {{REMARKS}}
+                                            </p>
+                                        </div>
+                                        <table style="width:100%; border-top: 2px solid #000; border-bottom:2px solid #000;">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="font-size: 20px; font-weight: 600; border-bottom:2px solid #000; padding: 10px 0;">  Terms and Conditions:       </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 1. Validity of offer </span> This offer is valid for a period of 30 days.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td ng-model="IncludingTaxes" style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 2. Taxes and Levies </span> {{IncludingTaxes}}@*Excluding*@ GST / LBT and any other taxes. (GST {{gstamt}}%)
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 3. Delivery</span> Within two months from the date of receipt of technically and commercially clear order along with
+                                                        dispatch instructions.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 4. Payment</span> 25 % advance and balance along with taxes before dispatch.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 5. Installation / Assembly – Demonstration SAI MEDICAL SERVICES </span> shall carry out installation of the
+                                                        equipment and shall not be responsible for any Preliminaries, Site alterations, etc. The purchaser shall provide
+                                                        a suitable site. Proper uninterrupted power supply as per our requirement.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 6. Operational requirements </span> The purchaser shall maintain the environmental conditions recommended by us
+                                                        for proper functioning of the equipment so as to neither ensure that the equipment does nor suffer damage due
+                                                        to humidity. Dust, pests, severe temperature etc. The purchaser shall ensure that the equipment is operated as
+                                                        per the operating instructions and manufacturer’s recommendations. The purchaser shall also ensure that
+                                                        competent, trained and skilled personnel operate the equipment. We shall not be responsible for any loss
+                                                        damage or injuries caused due to purchaser’s non-fulfillment of these conditions. Obtaining all necessary
+                                                        permissions from concerned competent authorities (AERB) to operate the unit will be scope of purchaser and
+                                                        <span>SAI MEDICAL SERVICES</span> shall not be held responsible for the same.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 7.Warranty  </span> The equipment offered is covered by guarantee under proper use for faulty material or
+                                                        workmanship for
+                                                        <span><b>{{WARRANTY_VALUE}} {{WARRANTY_PERIOD}} </b></span> from date of dispatch.
+                                                        <span>SAI MEDICAL SERVICES</span> shall not be responsible for
+                                                        any defect or damaged caused due to any alterations, addition or repair carried out to the equipment by any
+                                                        person not authorized by the us to carry out such alterations, addition or repair SAI MEDICAL SERVICES
+                                                        shall not be responsible for any defect or damaged caused to the equipment, directly or indirectly, due to
+                                                        mishandling misconduct or negligence on the part of the purchaser or his employees, failure to operate the
+                                                        equipment as recommended by the manufacturer or failure to maintain the environmental conditions
+                                                        recommended. Parts which deteriorate due to wear and tear, consumables or any such parts not specifically
+                                                        covered under this guarantee shall be outside the scope of this guarantee.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600; font-style: italic;">
+                                                            Special warranty term “The purchaser shall be entitled for pro-rata credit up to maximum of 12 months
+                                                            from the date of dispatch or 100000 Scan second on Spiral CT Scan tubes whichever is earlier.”
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-size:16px; padding: 10px 0; border-bottom:2px solid #000;">
+                                                        <span style="font-weight: 600;"> 8. General Conditions  </span> of Supply These General Conditions of Supply form an integral part of the offer and
+                                                        the offer shall be read and understood in conjunction with the General Conditions of Supply. The General
+                                                        Conditions of Supply shall be applicable and prevail, unless otherwise accepted by the
+                                                        <span>
+                                                            SAI MEDICAL
+                                                            SERVICES
+                                                        </span> in writing.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style="clear:both; display:block;">
+                                        <div class="thanks-msg-section">
+                                            <table style="width:100%">
+                                                <tbody>
+                                                    <tr align="left">
+                                                        <td style="font-weight: 600; font-size:16px; padding-top: 20px;">"Thanks for your enquiry, we will be happy to serve you quality services."</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('PrintMain')" />
+                                    @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script src="~/AngularJs/CarestreamQuotation.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script>
+        $(function () {
+            $("#PO_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#PO_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#PO_DATE").datepicker("option", "maxDate", null);
+            $("#PO_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#PO_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#PO_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>*@
+    <script>
+        // Write on keyup event of keyword input element
+        $("#searchInTb").keyup(function () {
+
+            var searchText = $(this).val().toLowerCase();
+
+            // Show only matching TR, hide rest of them
+            $.each($("#example-table tbody tr"), function () {
+                //alert(searchText);
+                if ($(this).text().toLowerCase().indexOf(searchText) === -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+    </script>
+
+    <script>
+        function CheckALL() {
+            //alert();
+            //console.log(document.getElementById("checkAllChkbox").checked);
+            $("#checkAllChkbox").change(function () {
+                if (this.checked) {
+                    $(".SparePart").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".SparePart").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".SparePart").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".SparePart").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkbox").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkbox").prop("checked", false);
+                }
+            });
+        }
+
+        function CheckALLStd() {
+            $("#checkAllChkboxStd").change(function () {
+                if (this.checked) {
+                    $(".StdAccParts").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".StdAccParts").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".StdAccParts").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+
+                    $(".StdAccParts").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    });
+
+                    if (isAllChecked == 0) {
+                        $("#checkAllChkboxStd").prop("checked", true);
+                    }
+                }
+                else {
+                    $("#checkAllChkboxStd").prop("checked", false);
+                }
+            });
+        }
+    </script>
+
+
+}
+
+

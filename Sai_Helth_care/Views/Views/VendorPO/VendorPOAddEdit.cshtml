@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewBag.Title = "VendorPOAddEdit";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<section ng-controller="VendorPOAddEditCtrl">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>{{Action}} {{CUSTOMER_TYPE}} Vendor PO</b></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                        <div class="row">
+
+                            <div class="form-group col-md-4">
+                                <label class="control-label"> PO Number:</label>
+                                <input type="text" name="VPO_NUMBER" ng-model="VPO_NUMBER" class="form-control" readonly placeholder="Enter PO No." />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="control-label">PO Date:</label><label style="color:red;">*</label>
+                                <input type="text" name="VPO_DATE" ng-model="VPO_DATE" id="VPO_DATE" class="form-control" placeholder="PO Date." />
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Select Vendor Name:</label><label style="color:red;">*</label>
+                                <select id="VENDOR_ID" class="form-control" name="VENDOR_ID" ng-model="VENDOR_ID"
+                                        ng-options="Vendor.V_ID as Vendor.VENDOR_COMPANY for Vendor in VendorList"
+                                        ng-selected="Vendor.V_ID == VENDOR_ID" required>
+                                    <option value="">Select Vendor Name</option>
+                                </select>
+                                <span ng-show="(AddPayment.VENDOR_ID.$invalid && (AddPayment.VENDOR_ID.$touched || AddPayment.VENDOR_ID.$dirty))">
+                                    <span class="error" ng-show="AddPayment.VENDOR_ID.$error.required">Vendor Name is required</span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div>
+                                    <label>Terms and Conditions:</label>
+                                    <textarea class="form-control" ng-model="TERMS_AND_CONDITIONS" id="TERMS_AND_CONDITIONS" name="TERMS_AND_CONDITIONS" placeholder="Enter Terms and Conditions"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <div class="form-group col-md-12">
+                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAdmin()" value="{{Admin_Action}}" />
+
+                            <input type="button" value="Cancel" ng-click="Clearall()" class="btn btn-danger btn-sm" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+
+    <script src="~/AngularJs/VendorPOAddEdit.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#VPO_DATE").datepicker({ changeMonth: true, changeYear: true});
+            $("#VPO_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#VPO_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#VPO_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#VPO_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+    </script>
+}

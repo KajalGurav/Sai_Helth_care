@@ -1,0 +1,264 @@
+﻿﻿﻿
+@{
+    ViewBag.Title = "IncentiveScheme";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Incentive Master</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()" data-target="#Emp_add">Add Incentive</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Employee Name" ng-model="SEARCH_NAME" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>#</th>
+                                    <th>Sr.No</th>
+                                    <th>Date</th>
+                                    <th>Employee Name</th>
+                                    <th>Incentive Type</th>
+                                    <th>Incentive Service Type</th>
+                                    @*<th>Reference No</th>*@
+                                    <th>Incentive Amount</th>
+                                    <th>Comment</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="emp in IncentiveSchemeList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td>{{emp.SERIAL_NO}}</td>
+                                    <td>{{emp.INCENTIVE_DATE}}</td>
+                                    <td>{{emp.EMP_NAME}}</td>
+                                    <td>{{emp.INC_TYPE_NAME}}</td>
+                                    <td>{{emp.INC_SERVICE_TYPE_NAME}}</td>
+                                    @*<td>{{emp.REF_NO}}</td>*@
+                                    <td>{{emp.INCENTIVE_AMOUNT}}</td>
+                                    <td>{{emp.COMMENT}}</td>
+                                    <td>
+                                        <a data-toggle="modal" data-target="#Emp_add" ng-click="getForUpdate(emp)" title="Edit" class="btn btn-xs btn-success">Edit </a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="10" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                                @*<tr>
+                                        <td>101</td>
+                                        <td>KHAIRNAR DIPAKKUMAR</td>
+                                        <td>11000</td>
+                                        <td>0</td>
+                                        <td>11000</td>
+                                        <td>2019</td>
+                                        <td>Good Product</td>
+                                        <td>
+                                            <a data-toggle="modal" data-target="#Emp_add" title="Add Language" class="btn btn-xs btn-success">Edit </a>
+                                        </td>
+                                    </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Emp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+                                <h4 class="modal-title"><b> Add Incentive </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Serial No:</label>
+                                                <input type="text" name="SERIAL_NO" class="form-control" ng-model="SERIAL_NO" readonly />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="INCENTIVE_DATE" id="INCENTIVE_DATE" ng-model="INCENTIVE_DATE" class="form-control" placeholder="Enter Date" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Employee Name:</label><label style="color:red;">*</label>
+                                                <select ng-model="EMP_ID" id="EMP_ID" name="EMP_ID" class="form-control"
+                                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmployeeList"
+                                                        ng-selected="emp.EMP_ID == EMP_ID" required>
+                                                    <option value="">Select Employee</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.EMP_ID.$invalid && ( AddPayment.EMP_ID.$touched || AddPayment.EMP_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.EMP_ID.$error.required">
+                                                        Employee is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Incentive Type :</label><label style="color:red;">*</label>
+                                                <select ng-model="INC_TYPE_ID" id="INC_TYPE_ID" name="INC_TYPE_ID" class="form-control"
+                                                        ng-options="itl.INC_TYPE_ID as itl.INC_TYPE_NAME for itl in IncentiveTypeList"
+                                                        ng-selected="itl.INC_TYPE_ID == INC_TYPE_ID" required>
+                                                    <option value="">Select Incentive Type</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.INC_TYPE_ID.$invalid && ( AddPayment.INC_TYPE_ID.$touched || AddPayment.INC_TYPE_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.INC_TYPE_ID.$error.required">
+                                                        Incentive Type is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Service Type:</label><label style="color:red;">*</label>
+                                                <select ng-model="INC_SERVICE_TYPE_ID" id="INC_SERVICE_TYPE_ID" name="INC_SERVICE_TYPE_ID" class="form-control"
+                                                        ng-options="istl.INC_SERVICE_TYPE_ID as istl.INC_SERVICE_TYPE_NAME for istl in IncentiveServiceTypeList"
+                                                        ng-selected="istl.INC_SERVICE_TYPE_ID == INC_SERVICE_TYPE_ID" required>
+                                                    <option value="">Select Service Type</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.INC_SERVICE_TYPE_ID.$invalid && ( AddPayment.INC_SERVICE_TYPE_ID.$touched || AddPayment.INC_SERVICE_TYPE_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.INC_TYPE_ID.$error.required">
+                                                        Service Type is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <!--<div class="form-group col-md-6">
+                                                <label class="control-label">Select Ref.No:</label>-->
+                                            @*<label style="color:red;">*</label>*@
+                                            <!--<select name="REF_NO" class="form-control" ng-model="REF_NO" id="REF_NO" disabled>
+                                                    <option value="">Select Ref.No </option>
+                                                    <option value="Sale">Sale</option>
+                                                    <option value="Service">Service</option>
+                                                    <option value="AMC Done">AMC Done</option>
+                                                    <option value="CMC Done">CMC Done</option>
+                                                </select>
+                                            </div>-->
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Amount:</label><label style="color:red;">*</label>
+                                                <input type="text" name="INCENTIVE_AMOUNT" class="form-control" ng-model="INCENTIVE_AMOUNT" placeholder="Enter Amount" required />
+                                                <span ng-show="(AddPayment.INCENTIVE_AMOUNT.$invalid && ( AddPayment.INCENTIVE_AMOUNT.$touched || AddPayment.INCENTIVE_AMOUNT.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.INCENTIVE_AMOUNT.$error.required">
+                                                        Amount is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Any Comments:</label>
+                                                <textarea name="COMMENT" rows="2" class="form-control" ng-model="COMMENT" placeholder="Enter Any Comments"></textarea>
+
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/IncentiveScheme.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#INCENTIVE_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#INCENTIVE_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#INCENTIVE_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#INCENTIVE_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#INCENTIVE_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+    </script>
+}

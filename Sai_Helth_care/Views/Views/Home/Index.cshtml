@@ -1,0 +1,1636 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.30rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+</style>
+
+
+<style>
+    th {
+        background-color: #BE7833;
+        position: sticky;
+        top: 0;
+        color: white
+    }
+
+    .dashboard-container a {
+        color: black;
+    }
+</style>
+
+<link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+
+<section class="content" ng-controller="HomeCtrl">
+    <div class="container-fluid dashboard-container" ng-show="'@ViewBag.EmpType'!=50">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-12"><h3 class="card-title"><b>Dashboard</b></h3></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="d-md-flex">
+                            <div class="col-lg-12">
+                                <div class="row" style="background-color:#e8ffd8ff">
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Customer </span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_CUSTOMER_COUNT}}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Customer</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Customer</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_CUSTOMER_COUNT}}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Customer</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Product/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Product</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/MindrayProduct/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Product</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <!-- /.col -->
+                                    <!-- /.col -->
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Company_Master/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-dark"><i class="fas fa-industry"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Company Registration</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_COMPANY_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Employee_Regi/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="far fa-star"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Employee Registration</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_EMPLOYEE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Vendor_Registration/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="far fa-user"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Vendor Registration</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_VENDOR_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!--<div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                            <div class="info-box-content">
+                                                <a href="~/SparePartMangement/Index">
+                                                    <span class="info-box-text" style="color:black">Spare Part Management</span>
+                                                    <span class="info-box-number" style="color:black">13,648</span>
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                    <!-- /.col -->
+                                    <!--<div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-dark"><i class="fas fa-industry"></i></span>
+                                            <div class="info-box-content">
+                                                <a href="~/ProductStockMangement/Index">
+                                                    <span class="info-box-text" style="color:black">Product Stock</span>
+                                                    <span class="info-box-number" style="color:black">93,139</span>
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-3"><h3 class="card-title"><b>Todays Summary</b></h3></div>
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-3"> <input type="text" id="STARTING_DATE1" name="Service" class="form-control" placeholder="To Date" /></div>
+                                <div class="col-lg-3"> <input type="text" id="ENDING_DATE1" name="Service" class="form-control" placeholder="From Date" /></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="d-md-flex">
+                            <div class="col-lg-12">
+                                <div class="row" style="background-color:#e8ffd8ff">
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!--<div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+
+                                        <a href="~/AMC_Master/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-ad"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TODAYS_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>-->
+                                    <!-- /.col -->
+                                    <!--<div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="fas fa-chart-line"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TODAYS_DELIVERY_CHALLAN_COUNT  }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>-->
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+
+                                        <a href="~/Product/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Product</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+
+                                        <a href="~/MindrayProduct/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Product</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-ad"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Company_Master/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-industry"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Company Registration</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_COMPANY_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+
+                                        <a href="~/Employee_Regi/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="far fa-star"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Employee Registration</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_EMPLOYEE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Vendor_Registration/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="far fa-user"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Vendor Registration</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_VENDOR_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container-fluid dashboard-container" ng-show="'@ViewBag.EmpType'==50">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-12"><h3 class="card-title"><b>Dashboard</b></h3></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="d-md-flex">
+                            <div class="col-lg-12">
+                                <div class="row" style="background-color:#e8ffd8ff">
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Customer </span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_CUSTOMER_COUNT}}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Customer</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Customer</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_CUSTOMER_COUNT}}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Customer</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Quotation</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Invoice</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_AERB_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MEDTRONIC_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Service Call</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Product</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_REGULAR_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Product</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_MINDRAY_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <!-- /.col -->
+                                    <!-- /.col -->
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-dark"><i class="fas fa-industry"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Company Registration</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_COMPANY_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="far fa-star"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Employee Registration</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_EMPLOYEE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="far fa-user"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Vendor Registration</span>
+                                                    <span class="info-box-number">{{HomeList[0].TOTAL_VENDOR_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!--<div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-warning"><i class="fas fa-receipt"></i></span>
+                                            <div class="info-box-content">
+                                                <a href="~/SparePartMangement/Index">
+                                                    <span class="info-box-text" style="color:black">Spare Part Management</span>
+                                                    <span class="info-box-number" style="color:black">13,648</span>
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                    <!-- /.col -->
+                                    <!--<div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-dark"><i class="fas fa-industry"></i></span>
+                                            <div class="info-box-content">
+                                                <a href="~/ProductStockMangement/Index">
+                                                    <span class="info-box-text" style="color:black">Product Stock</span>
+                                                    <span class="info-box-number" style="color:black">93,139</span>
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-3"><h3 class="card-title"><b>Todays Summary</b></h3></div>
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-3">
+                                    <input type="text" class="form-control" ng-model="FROM_DATE" id="STARTING_DATE" autocomplete="off" placeholder="Select From Date" />
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="text" class="form-control" ng-model="TO_DATE" id="ENDING_DATE" autocomplete="off" placeholder="Select To Date" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="d-md-flex">
+                            <div class="col-lg-12">
+                                <div class="row" style="background-color:#e8ffd8ff">
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Customer_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-users"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Customer</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_CUSTOMER_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/Quotation_Registration/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-primary"><i class="fas fa-receipt"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Quotation</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_QUOTATION_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-chart-line"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_DELIVERY_CHALLAN_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/InvoiceMaster/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Invoice</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_INVOICE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=AERB">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AERB Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AERB_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Medtronic">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Medtronic Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MEDTRONIC_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Customer_Service_Master/Index?CustType=Mindray">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-wrench"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Service Call</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_SERVICE_CALL_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!--<div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+
+                                        <a href="~/AMC_Master/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-ad"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">AMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>-->
+                                    <!-- /.col -->
+                                    <!--<div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Dilivery_Challan/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="fas fa-chart-line"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Delivery Challan</span>
+                                                    <span class="info-box-number">{{HomeList[0].TODAYS_DELIVERY_CHALLAN_COUNT  }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>-->
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+
+                                        <a href="~/Product/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular Product</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+
+                                        <a href="~/MindrayProduct/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fas fa-book-medical"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Mindray Product</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_MINDRAY_PRODUCT_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12" style="margin-top:10px">
+                                        <a href="~/AMC_Master/Index?CustType=Regular">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-danger"><i class="fas fa-ad"></i></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Regular AMC/CMC</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_REGULAR_AMC_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Company_Master/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-secondary"><i class="fas fa-industry"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Company Registration</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_COMPANY_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+
+                                        <a href="~/Employee_Regi/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="far fa-star"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Employee Registration</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_EMPLOYEE_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <a href="~/Vendor_Registration/Index">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="far fa-user"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Vendor Registration</span>
+                                                    <span class="info-box-number">{{HomeList1[0].TODAYS_VENDOR_COUNT }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+@section Scripts{
+
+    <script src="~/AngularJs/Dashboard.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+
+        $(function () {
+            $("#STARTING_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#STARTING_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#STARTING_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#STARTING_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#STARTING_DATE").datepicker("option", "yearRange", "2000:2060");
+
+            $("#STARTING_DATE").datepicker({ maxDate: 0 });
+        });
+
+        $(function () {
+            $("#ENDING_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#ENDING_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#ENDING_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#ENDING_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#ENDING_DATE").datepicker("option", "yearRange", "2000:2060");
+            $("#ENDING_DATE").datepicker({ maxDate: 0 });
+        });
+    </script>
+}
+

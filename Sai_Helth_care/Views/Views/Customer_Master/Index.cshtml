@@ -1,0 +1,508 @@
+﻿﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@*<style>
+        .table td, .table th {
+            padding: 0.50rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+            font-size: 12px;
+        }
+    </style>*@
+
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+
+    #PAN {
+        text-transform: uppercase;
+    }
+
+    #GSTN {
+        text-transform: uppercase;
+    }
+
+    #TIN {
+        text-transform: uppercase;
+    }
+</style>
+
+<script>
+    function validate(check) {
+        console.log(check);
+        var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
+        //var name = document.getElementById(id).value;
+        var name = check.value;
+        if (!regName.test(name)) {
+            alert('Please enter your full name (first & last name eg. John Doe).');
+            document.getElementById('name').focus();
+            return false;
+        } else {
+            alert('Valid name given.');
+            return true;
+        }
+    }
+</script>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section ng-controller="RegularCustomerCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                @*<h3 class="card-title"><b>Regular Customer Master</b></h3>*@
+                                <h3 class="card-title"><b>{{CUSTOMER_TYPE}} Customer Master</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <a href="~/Customer_Master/AddUpdateCustomer?CustType={{CUSTOMER_TYPE}}&CustId=0" class="btn btn-sm pull-left" style="background-color: green; color: white" title="Add Customer">Add Customer</a>
+                                @*<button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()">Add Customer</button>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Customer" ng-model="CUSTOMER_NAME" ng-keyup="SearchAdmin()">
+                            <div class="col-3">
+                                <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" id="exportButton1" ng-click="exportToExcel()">Export</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Customer Name</th>
+                                    <th>Firm Name</th>
+                                    <th>Firm Place</th>
+                                    @*<th>Address</th>*@
+                                    <th>Contact No. </th>
+                                    <th>Email Id </th>
+                                    <th>GST NO.</th>
+                                    <th>Status</th>
+                                    <th>Reg Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="admin in RegCustomerList">
+                                    <td>{{page*30+$index+1}}</td>
+                                    <td><a href="~/Customer_Master/CustomerDetails?CustType={{CUSTOMER_TYPE}}&CustId={{admin.Customer_ID}}&TabId=0">{{admin.CUSTOMER_NAME}}</a> </td>
+                                    <td>{{admin.FIRM_NAME}}</td>
+                                    <td>{{admin.BILLING_ADDRESS}}</td>
+                                    <td>{{admin.CONTACT_NO}}</td>
+                                    <td>{{admin.EMAIL}}</td>
+                                    <td>{{admin.GST_NO}}</td>
+                                    <td ng-show="admin.STATUS=='Active'"><a href="" ng-click="getAdmin(admin)"><b style="color:green">{{admin.STATUS}}</b></a></td>
+                                    <td ng-show="admin.STATUS=='Deactive'"><a href="" ng-click="getAdmin(admin)"><b style="color:red">{{admin.STATUS}}</b></a></td>
+                                    <td>{{admin.REG_DATE}}</td>
+                                    <td>
+                                        <a href="~/Customer_Master/AddUpdateCustomer?CustType={{CUSTOMER_TYPE}}&CustId={{admin.Customer_ID}}" title="Update" class="btn btn-xs btn-success">Edit</a>
+                                        @*<a data-toggle="modal" ng-click="getForUpdate(admin)" title="Update" class="btn btn-xs btn-success">Edit </a>*@
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="9" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Admin_Addupdate">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+                                <h4 class="modal-title"><b>@*{{Admin_Action}}*@ Regular Customer</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Customer Name:</label><label style="color:red;">*</label>
+                                                <input type="text" name="CUSTOMER_NAME" id="regName" ng-model="CUSTOMER_NAME" ng-pattern="/^([a-zA-Z]+) ([a-zA-Z]+)$/" maxlength="400" @*onchange="validate(this)"*@ class="form-control" placeholder="Enter Customer Name" required />
+                                                <span ng-show="(AddPayment.CUSTOMER_NAME.$invalid && (AddPayment.CUSTOMER_NAME.$touched || AddPayment.CUSTOMER_NAME.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CUSTOMER_NAME.$error.required">Customer Name is required</span>
+                                                    <span class="error" ng-show="AddPayment.CUSTOMER_NAME.$error.pattern">Please enter full name (first & last name => eg. John Doe)</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Firm/Hospital Name:</label><label style="color:red;">*</label>
+                                                <input type="text" name="FIRM_NAME" ng-model="FIRM_NAME" class="form-control" ng-pattern="/^((?:\s*[a-zA-Z0-9,_\.\077\0100\*\+\&\#\'\~\;\-\!\@('@')\;]{2,}\s*)*)$/" maxlength="600" placeholder="Enter Firm Name" required />
+                                                <span ng-show="(AddPayment.FIRM_NAME.$invalid && (AddPayment.FIRM_NAME.$touched || AddPayment.FIRM_NAME.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FIRM_NAME.$error.required">Firm/Hospital Name is required</span>
+                                                    <span class="error" ng-show="AddPayment.FIRM_NAME.$error.pattern">Please enter valid Firm/Hospital Name</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Contact No.:</label><label style="color:red;">*</label>
+                                                <input type="number" name="CONTACT_NO" ng-model="CONTACT_NO" onkeydown="if(this.key==='.' || this.key==='-' ||  this.key==='+' ){this.preventDefault();} javascript: return this.keyCode == 69 ? false : true" class="form-control ng-pristine ng-valid ng-touched" id="txt_contact_no" autocomplete="off" ng-pattern="/^([1-9]\d*)$/" onkeypress="if(this.value.length==10) return false;" onpaste="return false" maxlength="10" placeholder="Enter Contact No" required />
+                                                <span ng-show="(AddPayment.CONTACT_NO.$invalid && (AddPayment.CONTACT_NO.$touched || AddPayment.CONTACT_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CONTACT_NO.$error.required">Contact No. is required</span>
+                                                    <span class="error" ng-show="AddPayment.CONTACT_NO.$error.number">Enter numbers only</span>
+                                                    <span class="error" ng-show="AddPayment.CONTACT_NO.$error.pattern">Enter valid Contact No. </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Alternate Contact No.:</label>
+                                                <input type="number" name="ALTERNATE_CONTACT_NO" ng-model="ALTERNATE_CONTACT_NO" onkeydown="if(this.key==='.' || this.key==='-' ||  this.key==='+' ){this.preventDefault();} javascript: return this.keyCode == 69 ? false : true" class="form-control ng-pristine ng-valid ng-touched" autocomplete="off" maxlength="10" ng-pattern="/^([1-9]\d*)$/" onkeypress="if(this.value.length==10) return false;" onpaste="return false" placeholder="Enter Alternate Contact No" />
+                                                <span ng-show="(AddPayment.ALTERNATE_CONTACT_NO.$invalid && (AddPayment.ALTERNATE_CONTACT_NO.$touched || AddPayment.ALTERNATE_CONTACT_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.ALTERNATE_CONTACT_NO.$error.required">Alternate Contact No. is required</span>
+                                                    <span class="error" ng-show="AddPayment.ALTERNATE_CONTACT_NO.$error.number">Enter numbers only</span>
+                                                    <span class="error" ng-show="AddPayment.ALTERNATE_CONTACT_NO.$error.pattern">Enter valid Alternate Contact No. </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Email Id:</label><label style="color:red;">*</label>
+                                                <input type="email" name="EMAIL" maxlength="200" ng-model="EMAIL" class="form-control" placeholder="Enter Email" required />
+                                                <span ng-show="(AddPayment.EMAIL.$invalid && (AddPayment.EMAIL.$touched || AddPayment.EMAIL.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.EMAIL.$error.required">Email Id is required</span>
+                                                    <span class="error" ng-show="AddPayment.EMAIL.$error.email">Please enter a valid email.</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Alternate Email Id:</label>
+                                                <input type="email" name="ALTERNATE_EMAIL" maxlength="200" ng-model="ALTERNATE_EMAIL" class="form-control" placeholder="Enter Alternate Email" />
+                                                <span ng-show="(AddPayment.ALTERNATE_EMAIL.$invalid && (AddPayment.ALTERNATE_EMAIL.$touched || AddPayment.ALTERNATE_EMAIL.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.ALTERNATE_EMAIL.$error.email">Please enter a valid Alternate email.</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Billing Address:</label><label style="color:red;">*</label>
+                                                <input type="text" name="BILLING_ADDRESS" maxlength="600" ng-model="BILLING_ADDRESS" class="form-control" placeholder="Enter Billing Address" required />
+                                                <span ng-show="(AddPayment.BILLING_ADDRESS.$invalid && (AddPayment.BILLING_ADDRESS.$touched || AddPayment.BILLING_ADDRESS.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.BILLING_ADDRESS.$error.required">Billing Address is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Shipping Address:</label>
+                                                <input type="text" name="SHIPPING_ADDRESS" maxlength="600" ng-model="SHIPPING_ADDRESS" class="form-control" placeholder="Enter Shipping Address" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">State:</label><label style="color:red;">*</label>
+                                                <select ng-model="STATE_ID" id="STATE_ID" name="STATE_ID" class="form-control"
+                                                        ng-options="state.STATE_ID as state.STATE_NAME for state in StateList"
+                                                        ng-selected="state.STATE_ID == STATE_ID" ng-change="GetstateChange('STATE_ID')" required>
+                                                    <option value="">Select State</option>
+                                                    @*<option ng-repeat="state in StateList" value="{{state.STATE_ID}}">{{state.STATE_NAME}}</option>*@
+                                                </select>
+                                                <span ng-show="(AddPayment.STATE_ID.$invalid && (AddPayment.STATE_ID.$touched || AddPayment.STATE_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.STATE_ID.$error.required">State is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">City:</label><label style="color:red;">*</label>
+                                                <select ng-model="CITY_ID" id="CITY_ID" name="CITY_ID" class="form-control"
+                                                        ng-options="city.CITY_ID as city.CITY_NAME for city in CityList"
+                                                        ng-selected="city.CITY_ID == CITY_ID" required>
+                                                    <option value="">Select City</option>
+                                                    @*<option ng-repeat="city in CityList" value="{{city.CITY_ID}}">{{city.CITY_NAME}}</option>*@
+                                                </select>
+                                                <span ng-show="(AddPayment.CITY_ID.$invalid && (AddPayment.CITY_ID.$touched || AddPayment.CITY_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.CITY_ID.$error.required">City is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Billing Zip Code:</label><label style="color:red;">*</label>
+                                                <input type="number" name="ZIP_CODE" ng-model="ZIP_CODE" ng-pattern="/^[1-9]{1}[0-9]{2}[0-9]{3}$/" onkeypress="if(this.value.length==6) return false;" max="999999" maxlength="6" onkeyup="if(parseInt(this.value)>999999){ this.value =999999; return false; }" class="form-control" placeholder="Enter Zip Code" required />
+                                                <span ng-show="(AddPayment.ZIP_CODE.$invalid && (AddPayment.ZIP_CODE.$touched || AddPayment.ZIP_CODE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.ZIP_CODE.$error.required">Zip Code is required</span>
+                                                    <span class="error" ng-show="AddPayment.ZIP_CODE.$error.number">Enter numbers only</span>
+                                                    <span class="error" ng-show="AddPayment.ZIP_CODE.$error.pattern">Zip Code is invalid</span>
+                                                </span>
+                                            </div>
+                                            <div style="display:none;" class="form-group col-md-6">
+                                                <label class="control-label">Firm Address:</label><label style="color:red;">*</label>
+                                                <input type="text" name="FIRM_ADDRESS" maxlength="700" ng-model="FIRM_ADDRESS" class="form-control" placeholder="Enter Firm Address" @*required*@ />
+                                                <span ng-show="(AddPayment.FIRM_ADDRESS.$invalid && (AddPayment.FIRM_ADDRESS.$touched || AddPayment.FIRM_ADDRESS.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.FIRM_ADDRESS.$error.required">Firm Address is required</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Degree Of Customer:</label>
+                                                <input type="text" name="DEGREE_OF_CUSTOMER" maxlength="200" ng-model="DEGREE_OF_CUSTOMER" class="form-control" placeholder="Enter Degree Of Customer" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Shipping State:</label>@*<label style="color:red;">*</label>*@
+                                                <select ng-model="SHIP_STATE_ID" id="SHIP_STATE_ID" name="SHIP_STATE_ID" class="form-control"
+                                                        ng-options="state.STATE_ID as state.STATE_NAME for state in StateList"
+                                                        ng-selected="state.STATE_ID == SHIP_STATE_ID" ng-change="GetstateChange('SHIP_STATE_ID')" @*required*@>
+                                                    <option value="">Select Shipping State</option>
+                                                    @*<option ng-repeat="state in StateList" value="{{state.STATE_ID}}">{{state.STATE_NAME}}</option>*@
+                                                </select>
+                                                <span ng-show="(AddPayment.SHIP_STATE_ID.$invalid && (AddPayment.SHIP_STATE_ID.$touched || AddPayment.SHIP_STATE_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.SHIP_STATE_ID.$error.required">State is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Shipping City:</label>@*<label style="color:red;">*</label>*@
+                                                <select ng-model="SHIP_CITY_ID" id="SHIP_CITY_ID" name="SHIP_CITY_ID" class="form-control"
+                                                        ng-options="city.CITY_ID as city.CITY_NAME for city in ShipCityList"
+                                                        ng-selected="city.CITY_ID == SHIP_CITY_ID" @*required*@>
+                                                    <option value="">Select Shipping City</option>
+                                                    @*<option ng-repeat="city in ShipCityList" value="{{city.CITY_ID}}">{{city.CITY_NAME}}</option>*@
+                                                </select>
+                                                <span ng-show="(AddPayment.SHIP_CITY_ID.$invalid && (AddPayment.SHIP_CITY_ID.$touched || AddPayment.SHIP_CITY_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.SHIP_CITY_ID.$error.required">City is required</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Shipping Zip Code:</label>
+                                                <input type="number" name="SHIPPING_ZIP_CODE" ng-model="SHIPPING_ZIP_CODE" maxlength="6" onkeypress="if(this.value.length==6) return false;" ng-pattern="/^[1-9]{1}[0-9]{2}[0-9]{3}$/" max="999999" onkeyup="if(parseInt(this.value)>999999){ this.value =999999; return false; }" class="form-control" placeholder="Enter Zip Code" />
+                                                <span ng-show="(AddPayment.SHIPPING_ZIP_CODE.$invalid && (AddPayment.SHIPPING_ZIP_CODE.$touched || AddPayment.SHIPPING_ZIP_CODE.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.SHIPPING_ZIP_CODE.$error.number">Enter numbers only</span>
+                                                    <span class="error" ng-show="AddPayment.SHIPPING_ZIP_CODE.$error.pattern">Zip Code is invalid</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PAN Card No:</label>@*<label style="color:red;">*</label>*@
+                                                <input id="PAN" type="text" name="PAN_NO" ng-model="PAN_NO" minlength="10" maxlength="10"
+                                                       @*ng-pattern="/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}$/"*@ class="form-control" placeholder="Enter PAN No" @*required*@ />
+                                                <span ng-show="(AddPayment.PAN_NO.$invalid && (AddPayment.PAN_NO.$touched || AddPayment.PAN_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PAN_NO.$error.required">PAN Number is required</span>
+                                                    @*<span class="error" ng-show="AddPayment.PAN_NO.$error.pattern">Invalid PAN Number</span>*@
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">GST No.:</label>
+                                                <input id="GSTN" type="text" name="GST_NO" minlength="15" maxlength="15" ng-model="GST_NO"
+                                                       @*ng-pattern="/^([0][1-9]|[1-2][0-9]|[3][0-8])[a-zA-Z]{3}[abcfghljptABCFGHLJPT]{1}[a-zA-Z]{1}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[z|Z][0-9a-zA-Z]{1}$/"*@
+                                                       class="form-control" placeholder="Enter GST No" />
+                                                <span ng-show="(AddPayment.GST_NO.$invalid && (AddPayment.GST_NO.$touched || AddPayment.GST_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.GST_NO.$error.required">GST Number is required</span>
+                                                    @*<span class="error" ng-show="AddPayment.GST_NO.$error.pattern">Invalid GST Number</span>*@
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Tin No:</label>
+                                                <input id="TIN" type="text" name="TIN_NO" minlength="15" maxlength="15" ng-model="TIN_NO"
+                                                       @*ng-pattern="/^([0][1-9]|[1-2][0-9]|[3][0-8])[a-zA-Z]{3}[abcfghljptABCFGHLJPT]{1}[a-zA-Z]{1}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[z|Z][0-9a-zA-Z]{1}$/"*@
+                                                       class="form-control" placeholder="Enter Tin No." />
+                                                <span ng-show="(AddPayment.TIN_NO.$invalid && (AddPayment.TIN_NO.$touched || AddPayment.TIN_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.TIN_NO.$error.required">TIN Number is required</span>
+                                                    @*<span class="error" ng-show="AddPayment.TIN_NO.$error.pattern">Invalid TIN Number</span>*@
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PNDT No:</label>
+                                                <input type="text" name="PNDT_NO" ng-model="PNDT_NO" ng-pattern="/^[ A-Za-z0-9_@('@')./#&+-]*$/" maxlength="100" class="form-control" placeholder="Enter PNDT No." />
+                                                <span ng-show="(AddPayment.PNDT_NO.$invalid && (AddPayment.PNDT_NO.$touched || AddPayment.PNDT_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.required">PNDT Number is required</span>
+                                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.pattern">Invalid PNDT Number</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PNDT No:</label>
+                                                <input type="text" name="PNDT_NO" ng-model="PNDT_NO" ng-pattern="/^[ A-Za-z0-9_@('@')./#&+-]*$/" maxlength="100" class="form-control" placeholder="Enter PNDT No." />
+                                                <span ng-show="(AddPayment.PNDT_NO.$invalid && (AddPayment.PNDT_NO.$touched || AddPayment.PNDT_NO.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.required">PNDT Number is required</span>
+                                                    <span class="error" ng-show="AddPayment.PNDT_NO.$error.pattern">Invalid PNDT Number</span>
+                                                </span>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">PNDT Validity:</label>
+                                                <input type="date" name="PNDT_VALIDITY" ng-model="PNDT_VALIDITY" id="PNDT_VALIDITY" maxlength="10" class="form-control" placeholder="Enter Validity In Date" />
+                                                <span ng-show="(AddPayment.PNDT_VALIDITY.$invalid && (AddPayment.PNDT_VALIDITY.$touched || AddPayment.PNDT_VALIDITY.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.PNDT_VALIDITY.$error.required">PNDT Number is required</span>
+                                                    <span class="error" ng-show="AddPayment.PNDT_VALIDITY.$error.date">Invalid PNDT Validity</span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Upload PNDT Certificate:</label>
+                                                <input type="file" ng-model="UPLOAD_PNDT_CERTIFICATE" class="form-control" accept="image/*" style="height:38px;" id="UPLOAD_PNDT_CERTIFICATE">
+                                                <a href="#" style="display:none" id="divProfile">
+                                                    <img src={{_Party.UPLOAD_PNDT_CERTIFICATE}} style="height: 100px; width: 100px; object-fit: contain;">&nbsp; &nbsp; &nbsp;
+                                                </a>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> PAN Card:</label>
+                                                <input type="file" ng-model="UPLOAD_PAN_CERTIFICATE" class="form-control" accept="image/*" style="height:38px;" id="UPLOAD_PAN_CERTIFICATE">
+                                                <label style="color:green;font-size:14px;">Note:Image size should be less than 500 kb and Dimension: 512 * 220 pixels.</label>
+                                                <a href="#" style="display:none" id="Profile1">
+                                                    <img src={{_Party.UPLOAD_PAN_CERTIFICATE}} style="height: 100px; width: 100px; object-fit: contain;">&nbsp; &nbsp; &nbsp;
+                                                </a>
+                                            </div>
+
+
+
+
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+
+                                    <button type="button" class="btn btn-sm" style="background-color:green;font-size:14px;color:white" ng-disabled="AddPayment.$invalid" ng-click="AddAdmin()">{{Admin_Action}}</button>
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/RegularCustomer.js"></script>
+
+    @*<script src="~/AngularJs/Customermaster.js"></script>*@
+
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        function checkNumber(check) {
+            var a = check.value;
+            var x = a.keyCode;
+            if (!(a >= 48 || a <= 57)) {
+
+                alert("Enter only Numbers");
+                return false;
+            }
+            else if (a == "" || a == null) {
+
+                alert("field is Blank");
+                return false;
+            }
+            else if (a.length <= 9) {
+                alert("Enter Minimum 10 Characters");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script>
+@*Added by kajal Gurav 16/8/2024*@
+
+
+        $scope.customers = [
+            { id: 1, name: 'mr.omkar' },
+            { id: 2, name: 'Customer 2' },
+            { id: 3, name: 'Customer 3' },
+            // Add more customers as needed
+        ];
+
+        $scope.selectedCustomer = null;
+
+        $scope.onCustomerSelect = function () {
+            console.log('Selected Customer:', $scope.selectedCustomer);
+            // Perform any action you need upon selecting a customer
+        };
+
+    </script>
+    <script>
+
+
+        document.getElementById("exportButton1").addEventListener("click", function () {
+            // Get the value from the AngularJS model
+            var searchValue = angular.element(document.querySelector('[ng-controller="RegularCustomerCtrl"]')).scope().CUSTOMER_NAME;
+
+            // Get the CustType from the URL or define it directly
+            var urlParams = new URLSearchParams(window.location.search);
+            var custType = urlParams.get('CustType');
+
+            // Determine which export URL to call based on the CustType
+            var exportUrl;
+            if (custType) {
+                exportUrl = '/Customer_Master/CustomerMasterExport?CUSTOMER_NAME=' + encodeURIComponent(searchValue || '') + '&CustType=' + encodeURIComponent(custType);
+            } else {
+                exportUrl = '/Customer_Master/CustomerMasterExportByName?CUSTOMER_NAME=' + encodeURIComponent(searchValue || '');
+            }
+
+            // Redirect to the export URL
+            window.location.href = exportUrl;
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+}

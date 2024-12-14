@@ -107,6 +107,7 @@
                     <div class="row">
                         <div class="col-lg-3" ng-show="@Session["COMPANY_ID"]==0">
                             <div class="form-group">
+
                                 <select ng-model="COMPANY_ID" id="COMPANY_ID" name="COMPANY_ID" class="form-control"
                                         ng-options="c.COMPANY_ID as c.COMPANY_NAME for c in CompanyList"
                                         ng-selected="c.COMPANY_ID == COMPANY_ID" ng-change="SearchAdmin()">
@@ -120,6 +121,7 @@
                             <a href="~/AMC_Master/UpcomingPmCm?CustType={{CUSTOMER_TYPE_ID}}" type="button" class="form-control btn btn-sm pull-left" style="background-color: green; color: white ">
                                 <div style="margin-top: 5px;">Upcoming Pm/Cm</div>
                             </a>
+
                         </div>
                         <div class="col-lg-2" style="text-align:center">
                             <a href="~/AMC_Master/UpcomingExpiry" type="button" class="form-control btn btn-sm pull-left" style="background-color: green; color: white; ">
@@ -459,6 +461,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="form-group col-md-6">
                                                 <label class="control-label">Contract From:</label><label style="color:red;">*</label>
                                                 <input type="text" name="CONTRACT_FROM" ng-model="CONTRACT_FROM" id="CONTRACT_FROM" maxlength="10" class="form-control" placeholder="Enter Contract From date" />
@@ -472,7 +475,7 @@
                                                 <input type="text" name="CONTRACT_TO" ng-model="CONTRACT_TO" id="CONTRACT_TO" maxlength="10" class="form-control" placeholder="Enter Contract To date" />
                                                 <span ng-show="(AddPayment.CONTRACT_TO.$invalid && (AddPayment.CONTRACT_TO.$touched || AddPayment.CONTRACT_TO.$dirty))">
                                                     <span class="error" ng-show="AddPayment.CONTRACT_TO.$error.required">Contract To date is required</span>
-                                                    @* <span class="error" ng-show="AddPayment.CONTRACT_TO.$error.date">Invalid Contract To date</span>*@
+
                                                 </span>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -493,9 +496,10 @@
                                                 </span>
                                             </div>
 
-                                            <div class="form-group col-md-6">
+                                            <div class="form-group col-md-6" ng-show="companyId === 1 || companyId === 13">
                                                 <label class="control-label">Is Fees Including GST:</label><label style="color:red;">*</label>
-                                                <select name="IS_FEES_INC_GST" id="IS_FEES_INC_GST" class="form-control" ng-model="IS_FEES_INC_GST" required>
+                                                <select name="IS_FEES_INC_GST" id="IS_FEES_INC_GST" class="form-control"
+                                                        ng-model="IS_FEES_INC_GST" ng-change="updateFees()" required>
                                                     <option ng-value="true">Yes</option>
                                                     <option ng-value="false">No</option>
                                                 </select>
@@ -522,19 +526,15 @@
                                                     @* <span class="error" ng-show="AddPayment.PAID_FEES.$error.pattern">Invalid Paid Fees</span>*@
                                                 </span>
                                             </div>
-
-                                            <div class="form-group col-md-6">
-                                                <label class="control-label">Fees In. GST:</label>@*<label style="color:red;">*</label>*@
-                                                <input type="number" id="FEES_IN_GST" name="FEES_IN_GST" class="form-control" ng-model="FEES_IN_GST" step="0.01" @* min="0" ng-pattern="/^([1-9]\d*)$/" onkeyup="if (parseInt(this.value) < 0) { this.value = 0; return false; }" *@ readonly placeholder="Fees In GST" @*required*@ />
+                                            <div class="form-group col-md-6" ng-show="companyId === 1 || companyId === 13">
+                                                <label class="control-label">Fees In. GST:</label>
+                                                <input type="number" id="FEES_IN_GST" name="FEES_IN_GST" class="form-control" ng-model="FEES_IN_GST" step="0.01" readonly placeholder="Fees In GST" />
                                                 <span ng-show="(AddPayment.FEES_IN_GST.$invalid && (AddPayment.FEES_IN_GST.$touched || AddPayment.FEES_IN_GST.$dirty))">
                                                     <span class="error" ng-show="AddPayment.FEES_IN_GST.$error.required">Fees In. GST is required</span>
                                                     <span class="error" ng-show="AddPayment.FEES_IN_GST.$error.number">Invalid Fees In. GST</span>
-                                                    <span class="error" ng-show="AddPayment.FEES_IN_GST.$error.pattern">Invalid Fees In. GST</span>
-                                                </span>
-                                                <span ng-show="CUSTOMER_TYPE_NAME!='Medtronic'" style="color:red;">
-                                                    18% GST
                                                 </span>
                                             </div>
+
                                             <div class="form-group col-md-6">
                                                 <label class="control-label">Paid Fees:</label>
                                                 <input type="number" id="PAID_FEES" name="PAID_FEES" class="form-control" ng-model="PAID_FEES" min="0" ng-pattern="/^([0-9]\d*)$/" onkeyup="if (parseInt(this.value) < 0) { this.value = 0; return false; }" @*else { checkAmount('FEES_IN_GST', 'PAID_FEES'); }" value="0"*@ placeholder="Paid Fees" />
@@ -546,7 +546,7 @@
                                             </div>
 
                                             <div class="form-group col-md-6">
-                                                <label class="control-label"> Fees Paid By:</label><!--<label--> @*ng-show="CUSTOMER_TYPE_NAME!='Medtronic'"*@ <!--style="color:red;">*</label>-->
+                                                <label class="control-label"> Fees Paid By:</label>
                                                 <select name="FEES_PAID_BY" class="form-control" ng-model="FEES_PAID_BY" @*ng-required="CUSTOMER_TYPE_NAME!='Medtronic'"*@>
                                                     <option value="">Select Fees Paid By</option>
                                                     <option value="Cash"> Cash </option>
@@ -559,7 +559,7 @@
                                             </div>
 
                                             <div class="form-group col-md-6">
-                                                <label class="control-label"> Comments:</label>@*<label style="color:red;">*</label>*@
+                                                <label class="control-label"> Comments:</label>
                                                 <textarea name="COMMENTS" class="form-control" ng-model="COMMENTS" placeholder="Enter Comments" @*required*@></textarea>
                                                 <span ng-show="(AddPayment.COMMENTS.$invalid && (AddPayment.COMMENTS.$touched || AddPayment.COMMENTS.$dirty))">
                                                     <span class="error" ng-show="AddPayment.COMMENTS.$error.required">Comments is required</span>
@@ -593,7 +593,9 @@
                             </div>
                             <div class="modal-footer">
                                 <div class="form-group col-md-12">
-                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;"
+                                           ng-click="AddUpdateAccount()" value="{{Admin_Action}}" />
+
                                     <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
                                 </div>
                             </div>
@@ -647,59 +649,35 @@
                                                 }
                                             </style>
 
-                                            @*<div class="header-section" style=" padding:10px 10px 0;">
-            <div class="table">
-                <table style="width: 100%; border:2px solid #000;">
 
-                    <tbody>
-                        <tr>
-                            <td>
-                                <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <table style="margin-top:0px; width: 100%;">
-                <tbody>
-                    <tr align="center">
-                        <td style="font-size: 16px; color: #000;">
-                            <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                            <br /><br />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>*@
-
-                                            <div class="page-header" style="text-align: center">
-                                                <div class="header-section">
-                                                    <div class="table-responsive">
-                                                        <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td valign="top">
-                                                                        <div class="header-section" style="object-fit:contain;">
-                                                                            <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
+                                            @*<div class="page-header" style="text-align: center">
+                                                <div class="header-section">*@
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                <div class="header-section" style="object-fit:contain;">
+                                                                    <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                    @*<img src="~/Images/Quotation/HeaderImages/SaiHealthCareMindrayHeader.png" style="width:100%; max-height:200px;">*@
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
+                                            @*</div>
+                                                </div>*@
                                             @*<table style="margin-top:0px; width: 100%;">
-                                                <tbody>
-                                                    <tr align="center">
-                                                        <td style="font-size: 16px; color: #000;">
-                                                            <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                                                            <br /><br />
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>*@
+                                                    <tbody>
+                                                        <tr align="center">
+                                                            <td style="font-size: 16px; color: #000;">
+                                                                <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
+                                                                <br /><br />
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>*@
 
                                             <table>
                                                 <thead>
@@ -816,8 +794,8 @@
                                                                                                             <span ng-if="CONTRACT_DETAILS.EMAIL!=''"> <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}<br /></span>
                                                                                                             <span ng-if="CONTRACT_DETAILS.CONTACT_NO!=''"><strong>Mobile No:</strong>{{CONTRACT_DETAILS.CONTACT_NO}}</span>
                                                                                                             @*<strong ng-if="CONTRACT_DETAILS.EMAIL==''">Mobile No: </strong> {{CONTRACT_DETAILS.CONTACT_NO}}
-                                                                    <br />
-                                                                    <strong ng-if="CONTRACT_DETAILS.CONTACT_NO!='' && CONTRACT_DETAILS.EMAIL!=''">Mobile No: </strong> {{CONTRACT_DETAILS.CONTACT_NO}}*@
+                                                                                                                <br />
+                                                                                                                <strong ng-if="CONTRACT_DETAILS.CONTACT_NO!='' && CONTRACT_DETAILS.EMAIL!=''">Mobile No: </strong> {{CONTRACT_DETAILS.CONTACT_NO}}*@
                                                                                                         </div>
                                                                                                         <div class="col-md-6 s">
                                                                                                             <strong>Product Name:</strong> {{CONTRACT_DETAILS.PRODUCT_NAME}}<br />
@@ -854,7 +832,7 @@
                                                                         <tr>
                                                                             <td style="font-size: 16px;">
                                                                                 <strong style="float: left">Contract Fees:</strong>
-                                                                                <span id="ContractFees1" style="display:none;">{{CONTRACT_DETAILS.FEES}}/-</span>
+                                                                                <span id="ContractFees1" style="display:none;">{{CONTRACT_DETAILS.FEES}}/- Excluding GST  @('@')18 %</span>
                                                                                 <span id="ContractFees2" style="display:none;">{{CONTRACT_DETAILS.FEES_IN_GST}}/- Including GST @('@') 18 %.</span>
                                                                             </td>
                                                                         </tr>
@@ -921,7 +899,7 @@
                                                                                 <td style="font-size:16px;">
                                                                                     &nbsp;&nbsp;&nbsp;&nbsp;Please accept My/Our {{CONTRACT_DETAILS.MODEL_NAME}} into your Annual Maintenance Contract. The machine is functional and in
                                                                                     use. We have read and understood the full Terms & Conditions of the Contract as enshrined overleaf and in agreement of which
-                                                                                    I/We have signed and affixed My/Our stamp herein. 
+                                                                                    I/We have signed and affixed My/Our stamp herein.
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -940,7 +918,8 @@
                                                                                 <td style="text-align:right;  padding-top:0rem;">
                                                                                     <div style="text-align:right"></div>
                                                                                     <div>
-                                                                                        <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                        @*<img src="{{//CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />*@
+                                                                                        <img src="~/Images/signture-stamp-img.jpg" style=" height: 100%; width:300px; max-width: 100%;" />
                                                                                     </div>
                                                                                     <div style="font-size:16px; padding: 10px 0; ">
                                                                                         <strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong>
@@ -1079,8 +1058,8 @@
                                                                             <td style="text-align:left;  padding-top:0rem;">
                                                                                 <div style="text-align:left"></div>
                                                                                 <div>
-                                                                                    @*<img src="~/Images/signture-stamp-img.jpg" style=" height: 100%; width:300px; max-width: 100%;" />*@
-                                                                                    <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                    <img src="~/Images/signture-stamp-img.jpg" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                    @*<img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />*@
                                                                                 </div>
 
                                                                             </td>
@@ -1183,7 +1162,7 @@
                                                                 <tr>
                                                                     <td valign="top">
                                                                         <div class="header-section" style="object-fit:contain;">
-                                                                            <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                            <img src="~/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg" style="width:100%; max-height:200px;">
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -1194,35 +1173,35 @@
                                             </div>
 
                                             <!--<div class="header-section" style=" padding:10px 10px 0;">
-        <div class="table">
-            <table style="width: 100%; border:2px solid #000;">
-                <tbody>
-                    <tr>
+                                            <div class="table">
+                                                <table style="width: 100%; border:2px solid #000;">
+                                                    <tbody>
+                                                        <tr>
 
-                        <td>
-                            <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>-->
+                                                            <td>
+                                                                <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>-->
                                             @*<table style="margin-top:0px; width: 100%;">
-            <tbody>
-                <tr align="center">
-                    <td style="font-size: 16px; color: #000;">
-                        <span style="font-weight: 600; font-size:18px;">Admi. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                        <br /><br />
-                    </td>
-                </tr>
-            </tbody>
-        </table>*@
+                                                    <tbody>
+                                                        <tr align="center">
+                                                            <td style="font-size: 16px; color: #000;">
+                                                                <span style="font-weight: 600; font-size:18px;">Admi. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
+                                                                <br /><br />
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>*@
                                             <!--</div>-->
 
                                             <table>
                                                 <thead>
                                                     <tr>
                                                         <td>
-                                                            <div class="page-header-space"></div>
+                                                            @*<div class="page-header-space"></div>*@
                                                         </td>
                                                     </tr>
                                                 </thead>
@@ -1428,10 +1407,10 @@
                                                                             </td>
                                                                         </tr>
                                                                         @*<tr>
-                                        <td style="font-size: 16px;">
-                                        <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/-  <strong>Balance Amount: </strong>{{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-
-                                        </td>
-                                    </tr>*@
+                                                                                <td style="font-size: 16px;">
+                                                                                <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/-  <strong>Balance Amount: </strong>{{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-
+                                                                                </td>
+                                                                            </tr>*@
 
                                                                     </tbody>
                                                                 </table>
@@ -1446,7 +1425,7 @@
                                                                                 <td style="font-size:16px;">
                                                                                     &nbsp;&nbsp;&nbsp;&nbsp;Please accept My/Our  {{CONTRACT_DETAILS.MODEL_NAME}} into your Comprehensive Maintenance Contract. The machine is functional
                                                                                     and in use. We have read and understood the full Terms & Conditions of the Contract as enshrined overleaf and in
-                                                                                    agreement of which I/We have signed and affixed My/Our stamp herein. 
+                                                                                    agreement of which I/We have signed and affixed My/Our stamp herein.
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -1468,7 +1447,8 @@
                                                                                 <td style="text-align:right;  padding-top:0rem;">
                                                                                     <div style="text-align:right"></div>
                                                                                     <div>
-                                                                                        <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                        @*<img src="{{//CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />*@
+                                                                                        <img src="~/Images/signture-stamp-img.jpg" style=" height: 100%; width:300px; max-width: 100%;" />
                                                                                     </div>
                                                                                     <div style="font-size:16px; padding: 10px 0; ">
                                                                                         <strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong>
@@ -1606,7 +1586,8 @@
                                                                             <td style="text-align:left;  padding-top:0rem;">
                                                                                 <div style="text-align:left"></div>
                                                                                 <div>
-                                                                                    <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />
+                                                                                    @*<img src="{{//CmpDetailsList[0].COMPANY_SEAL}}" style=" height: 100%; width:300px; max-width: 100%;" />*@
+                                                                                    <img src="~/Images/signture-stamp-img.jpg" style=" height: 100%; width:300px; max-width: 100%;" />
                                                                                 </div>
 
                                                                             </td>
@@ -1823,7 +1804,8 @@
                                                                     <td>
                                                                         <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px; margin-top:20px; font-weight: bold; ">
                                                                             For {{CmpDetailsList[0].COMPANY_NAME}}<br>
-                                                                            <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="float:left;padding-right:0px;height:100%; width:250px; padding-top:0px;" />
+                                                                            @*<img src="{{//CmpDetailsList[0].COMPANY_SEAL}}" style="float:left;padding-right:0px;height:100%; width:250px; padding-top:0px;" />*@
+                                                                            <img src="~/Images/signture-stamp-img.jpg" style="float:left;padding-right:0px;height:100%; width:250px; padding-top:0px;" />
                                                                         </p>
 
 
@@ -1860,7 +1842,7 @@
         </div>
     </div>
 </section>
-@section scripts
+@section Scripts
 {
     <script src="~/AngularJs/AMCmaster.js"></script>
     <link href="~/css/Paging.css" rel="stylesheet" />
@@ -1869,26 +1851,41 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
-        $(function () {
-            $("#CONTRACT_FROM").datepicker({ changeMonth: true, changeYear: true, /*maxDate: 0 */ });
-            $("#CONTRACT_FROM").datepicker("option", "dateFormat", "dd/mm/yy");
-            $("#CONTRACT_FROM").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
-            $("#CONTRACT_FROM").datepicker("option", "showMonthAfterYear", false);
-            $("#CONTRACT_FROM").datepicker("option", "yearRange", "2000:2060");
-        });
-        $(function () {
-            $("#CONTRACT_TO").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0 */ });
-            $("#CONTRACT_TO").datepicker("option", "dateFormat", "dd/mm/yy");
-            $("#CONTRACT_TO").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
-            $("#CONTRACT_TO").datepicker("option", "showMonthAfterYear", false);
-            $("#CONTRACT_TO").datepicker("option", "yearRange", "2000:2060");
-        });
-        $(function () {
-            $("#CONTRACT_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0 */ });
-            $("#CONTRACT_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
-            $("#CONTRACT_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
-            $("#CONTRACT_DATE").datepicker("option", "showMonthAfterYear", false);
-            $("#CONTRACT_DATE").datepicker("option", "yearRange", "2000:2060");
+        // Fetching companyId from session and binding to AngularJS
+        var companyId = @Html.Raw(Json.Encode(Session["COMPANY_ID"] ?? "null"));
+        console.log("Hello", companyId); // Debugging purpose
+
+        angular.element(document).ready(function () {
+            // Ensure AngularJS picks up the value
+            var scope = angular.element(document.querySelector('[ng-app]')).scope();
+            scope.$apply(function () {
+                scope.companyId = parseInt(companyId, 10); // Ensure it's treated as a number
+            });
         });
     </script>
+}
+
+<script>
+    $(function () {
+        $("#CONTRACT_FROM").datepicker({ changeMonth: true, changeYear: true, /*maxDate: 0 */ });
+        $("#CONTRACT_FROM").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#CONTRACT_FROM").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#CONTRACT_FROM").datepicker("option", "showMonthAfterYear", false);
+        $("#CONTRACT_FROM").datepicker("option", "yearRange", "2000:2060");
+    });
+    $(function () {
+        $("#CONTRACT_TO").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0 */ });
+        $("#CONTRACT_TO").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#CONTRACT_TO").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#CONTRACT_TO").datepicker("option", "showMonthAfterYear", false);
+        $("#CONTRACT_TO").datepicker("option", "yearRange", "2000:2060");
+    });
+    $(function () {
+        $("#CONTRACT_DATE").datepicker({ changeMonth: true, changeYear: true,/* maxDate: 0 */ });
+        $("#CONTRACT_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+        $("#CONTRACT_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+        $("#CONTRACT_DATE").datepicker("option", "showMonthAfterYear", false);
+        $("#CONTRACT_DATE").datepicker("option", "yearRange", "2000:2060");
+    });
+</script>
 }

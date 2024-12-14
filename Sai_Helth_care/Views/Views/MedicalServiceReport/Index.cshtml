@@ -1,0 +1,856 @@
+﻿@{
+    Layout = null;
+}
+
+<div id="PrintSection" class="wrapper"
+     style="width:100%; margin: 0 auto; font-size:13px;">
+    <div class="wrapper" style="width:100%; margin: 0 auto; font-size:13px;">
+        <div class="container">
+            <div id="PrintMain">
+                <style>
+                                .container {
+                                    max-width: 1200px;
+                                    margin: 50px auto;
+                                    display: block;
+                                }
+
+                                table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                }
+
+                                th {
+                                    white-space: nowrap;
+                                }
+
+                                .cover {
+                                    object-fit: cover;
+                                    width: 512px;
+                                    height: 512px;
+                                }
+
+                                p {
+                                    padding-left: 15px;
+                                }
+
+                                .page {
+                                    page-break-after: always;
+                                    padding-bottom: 55px;
+                                }
+
+                                @@page {
+                                    margin: 5mm
+                                }
+
+                                @@media print {
+                                    .page-header {
+                                        position: fixed;
+                                        top: 0mm;
+                                        width: 100%;
+                                        height: 200px;
+                                    }
+
+                                    table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                    }
+
+                                    .page-header,
+                                    .page-header-space {
+                                        height: 220px;
+                                    }
+
+                                    thead {
+                                        display: table-header-group;
+                                    }
+
+                                    body {
+                                        margin: 0;
+                                    }
+                                }
+
+                                p {
+                                    font-size: 18px;
+                                }
+
+                                .page-header {
+                                    text-align: center;
+                                }
+
+                                .table-container {
+                                    border-radius: 30px;
+                                    border: 1px solid black;
+                                    margin-bottom: 20px;
+                                    margin-top: 20px;
+                                    width: 100%;
+                                }
+
+                                    .table-container img {
+                                        width: 100%;
+                                        object-fit: contain;
+                                        max-width: 500px;
+                                    }
+
+                                img {
+                                    width: 400px;
+                                    margin-block-start: 15px;
+                                    margin: auto;
+                                    display: block;
+                                    margin-block-end: 15px;
+                                    max-width: 100%;
+                                }
+
+                                .bordered {
+                                    border-radius: 30px;
+                                    border-top-style: solid;
+                                    border-top-width: 1px;
+                                    border-left-style: solid;
+                                    border-color: #000;
+                                    border-left-width: 1px;
+                                    border-right-style: solid;
+                                    border-right-width: 1px;
+                                    border-bottom-style: solid;
+                                    border-bottom-width: 1px;
+                                    max-width: 100%;
+                                    padding: 20px;
+                                }
+
+                                @@media(max-width:1350) {
+                                    .bordered {
+                                        overflow-x: scroll;
+                                        border-top-style: solid;
+                                        border-top-width: 1px;
+                                        border-left-style: solid;
+                                        border-color: #000;
+                                        border-left-width: 1px;
+                                        border-bottom-style: solid;
+                                        border-bottom-width: 1px;
+                                        border-right-style: solid;
+                                        border-right-width: 1px;
+                                        max-width: 100%;
+                                        padding: 20px;
+                                    }
+                                }
+
+                                table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                }
+
+                                th, td {
+                                    text-align: left;
+                                }
+
+                                td {
+                                    word-break: break-word; /* Ensure words break */
+                                }
+
+                                @@media (max-width: 600px) {
+                                    /* For smaller screens, display the table as a block */
+                                    table, tr, td {
+                                        display: block;
+                                        word-break: break-all;
+                                    }
+
+                                    table {
+                                        width: 90% !important;
+                                    }
+                                    /* Adjust padding or any other styles as needed */
+                                    td {
+                                        padding: 4px;
+                                        padding-left: 0 !important;
+                                    }
+                                }
+
+                                table {
+                                    width: 100%; /* Table takes 100% width of its container */
+                                    border-collapse: collapse;
+                                }
+
+                                @@media print {
+                                    .table-container {
+                                        overflow: hidden;
+                                    }
+
+                                    img {
+                                        width: 400px;
+                                        margin-block-start: 15px;
+                                        margin: auto;
+                                        display: block;
+                                        margin-block-end: 15px;
+                                        max-width: 100%;
+                                    }
+                                }
+                </style>
+
+                <!-- add below style -->
+                <style>
+                                .text-word-wrap{
+                                    word-break: break-all;
+                                }
+                                /* Extra small devices (phones, less than 576px) */
+                                @@media (max-width: 575.98px) {
+                                    .container {
+                                        padding-right: 15px;
+                                        padding-left: 15px;
+                                        max-width: none;
+                                    }
+                                }
+
+                                /* Small devices (tablets, 576px and up) */
+                                @@media (min-width: 576px) {
+                                    .container {
+                                        padding-right: 15px;
+                                        padding-left: 15px;
+                                        max-width: 540px;
+                                    }
+                                }
+
+                                /* Medium devices (desktops, 768px and up) */
+                                @@media (min-width: 768px) {
+                                    .container {
+                                        padding-right: 15px;
+                                        padding-left: 15px;
+                                        max-width: 720px;
+                                    }
+                                }
+
+                                /* Large devices (desktops, 992px and up) */
+                                @@media (min-width: 992px) {
+                                    .container {
+                                        padding-right: 15px;
+                                        padding-left: 15px;
+                                        max-width: 960px;
+                                    }
+                                }
+
+                                /* Extra large devices (large desktops, 1200px and up) */
+                                @@media (min-width: 1200px) {
+                                    .container {
+                                        padding-right: 15px;
+                                        padding-left: 15px;
+                                        max-width: 1140px;
+                                    }
+                                }
+                </style>
+
+                <table style="
+            width: 100%;
+
+            margin: 15px 0;
+
+        ">
+                    <tbody style="border-radius: 15px;
+                width: 100%;
+                border-radius: 15px;
+                border: 1px solid #000;
+                display: flex;
+                justify-content: center;">
+                        <tr>
+                            <td valign="top" style="text-align: center;">
+                                <div class="header-section">
+                                    <center>
+                                        <img style="border-radius: 15px; width: 100%; height: 100%; object-fit: contain; "
+                                             alt="Logo"
+                                             src="http://admin.saihealthcare.co//UploadedImages/Header71848670738509062023.jpg">
+                                    </center>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="bordered">
+                    <table style="width: 100%;" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <table style="width: 100%; margin-bottom: 20px;"
+                                               cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width: 300px;
+                              padding-left: 10px;
+                            " colspan="1">
+                                                        <p class="s1 ng-binding"
+                                                           style="
+                                          font-size: 16px;
+                                          font-weight: 600;
+                                          margin: 0;
+                                          text-align: left; ">
+                                                            GSTIN : 26ALJPB5748E1Z7
+                                                        </p>
+                                                    </td>
+                                                    <td style="
+                              padding-left: 15.9px;
+                              font-size: 16px;
+                              font-weight: 600;
+                              margin: 0;
+                              text-align: center;" rowspan="3">
+                                                        <p class="s1">
+                                                            SERVICE REPORT
+                                                        </p>
+                                                    </td>
+
+                                                    <td style="width: 300px;
+                              padding-left: 10px;
+                            " colspan="1">
+                                                        <p class="s1 ng-binding"
+                                                           style="
+                                          font-size: 16px;
+                                          font-weight: 600;
+                                          margin: 0;
+                                          text-align: left; ">
+                                                            No.
+                                                            013
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <table cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table style=" margin-bottom: 20px;"
+                                                               cellspacing="0">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="border-top-style: solid;
+                                          border-top-width: 1px;
+                                          border-left-style: solid;
+                                          border-left-width: 1px;
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          border-right-style: solid;
+                                          border-right-width: 1px;
+                                          vertical-align: baseline;
+                                          padding-left: 15.9px;" rowspan="3">
+                                                                        <p class="s1 ng-binding"
+                                                                           style="
+                                                            font-size: 16px;
+                                                            font-weight: 600;
+                                                            margin: 0;
+                                                            padding: 10px 0;
+                                                        ">
+                                                                            Customer
+                                                                            details:<br>
+
+                                                                        </p>
+                                                                    </td>
+                                                                    <td style="width: 350px;
+                                          border-top-style: solid;
+                                          border-top-width: 1px;
+                                          border-left-style: solid;
+                                          border-left-width: 1px;
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          border-right-style: solid;
+                                          border-right-width: 1px;padding-left: 10px;
+                                          padding: 10px 0;
+                                        " colspan="1">
+                                                                        <p class="s1 ng-binding"
+                                                                           style="
+                                                      font-size: 16px;
+                                                      font-weight: 600;
+                                                      margin: 0; ">
+                                                                            Date:
+                                                                            /
+                                                                            /20
+                                                                        </p>
+                                                                        <p class="s2 ng-binding"
+                                                                           style="
+                                                      font-size: 18px;
+                                                      font-weight: 600;
+                                                      margin: 0 0 0 0; ">
+                                                                            Model
+                                                                            No.
+                                                                            :
+                                                                        </p>
+                                                                        <p class="s2 ng-binding"
+                                                                           style="
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    margin: 0;">
+                                                                            Make
+                                                                            :
+                                                                        </p>
+
+                                                                        <p class="s2"
+                                                                           style="
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    margin: 0; ">
+                                                                            Sir.
+                                                                            No.
+                                                                            :
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <table style="  margin-bottom: 20px;"
+                                                                   cellspacing="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td style="border-top-style: solid;
+                                            border-top-width: 1px;
+                                            border-left-style: solid;
+                                            border-left-width: 1px;
+                                            border-bottom-style: solid;
+                                            border-bottom-width: 1px;
+                                            border-right-style: solid;
+                                            border-right-width: 1px;
+                                            vertical-align: baseline;
+                                            padding-left: 15.9px;
+                                            padding: 10px 0;" colspan="2"
+                                                                            rowspan="3">
+                                                                            <p class="s1 ng-binding"
+                                                                               style="
+                                                                font-size: 16px;
+                                                                font-weight: 600;
+                                                                margin: 0;
+                                                                margin-bottom: 90px;
+                                                            ">
+                                                                                Nature
+                                                                                of
+                                                                                Problem:
+                                                                                <br>
+
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <table style="width: 100%; margin-bottom: 20px;"
+                                                                   cellspacing="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td style="border-top-style: solid;
+                                            border-top-width: 1px;
+                                            border-left-style: solid;
+                                            border-left-width: 1px;
+                                            border-bottom-style: solid;
+                                            border-bottom-width: 1px;
+                                            border-right-style: solid;
+                                            border-right-width: 1px;
+                                            vertical-align: baseline;
+                                            padding-left: 15.9px;
+                                            padding: 10px 0;" colspan="2"
+                                                                            rowspan="3">
+                                                                            <p class="s1 ng-binding"
+                                                                               style="
+                                                                font-size: 16px;
+                                                                font-weight: 600;
+                                                                margin: 0;
+                                                                margin-bottom: 90px;
+                                                            ">
+                                                                                Work
+                                                                                done
+                                                                                /
+                                                                                Solution:
+                                                                                <br>
+
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+
+
+                                        <table style="width: 100%;"
+                                               cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <table style="width: 100%;"
+                                                                   cellspacing="0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                          ">
+                                                                            <p class="s1"
+                                                                               style="text-indent: 0pt; text-align: center">
+                                                                                Spare
+                                                                                Part
+                                                                                used
+
+                                                                            </p>
+                                                                        </th>
+                                                                        <th style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                          ">
+                                                                            <p class="s6"
+                                                                               style="
+
+                                                              text-indent: 0pt;
+                                                              text-align: center;
+                                                            ">
+                                                                                Charges
+
+                                                                            </p>
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td style="width: 350px;
+                                          border-top-style: solid;
+                                          border-top-width: 1px;
+                                          border-left-style: solid;
+                                          border-left-width: 1px;
+                                          border-bottom-style: solid;
+                                          border-bottom-width: 1px;
+                                          border-right-style: solid;
+                                          border-right-width: 1px;padding-left: 10px;
+                                          padding: 10px 0;
+                                        " colspan="1">
+                                                                            <p class="s1 ng-binding"
+                                                                               style="
+                                                      font-size: 16px;
+                                                      font-weight: 600;
+                                                      margin: 0; ">
+                                                                                1)
+                                                                            </p>
+                                                                            <p class="s2 ng-binding"
+                                                                               style="
+                                                      font-size: 18px;
+                                                      font-weight: 600;
+                                                      margin: 0 0 0 0; ">
+                                                                                2)
+                                                                            </p>
+                                                                            <p class="s2 ng-binding"
+                                                                               style="
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    margin: 0;">
+                                                                                3)
+                                                                            </p>
+
+                                                                            <p class="s2"
+                                                                               style="
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    margin: 0; ">
+                                                                                4)
+                                                                            </p>
+                                                                            <p class="s2"
+                                                                               style="
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    margin: 0; ">
+                                                                                5)
+                                                                            </p>
+                                                                        </td>
+                                                                        <!-- <td style="
+                                                                          border-top-style: solid;
+                                                                          border-top-width: 1pt;
+                                                                          border-left-style: solid;
+                                                                          border-left-width: 1pt;
+                                                                          border-bottom-style: solid;
+                                                                          border-bottom-width: 1pt;
+                                                                          border-right-style: solid;
+                                                                          border-right-width: 1pt;
+                                                                          padding: 10px 0;
+                                                                        ">
+                                                                                              </td> -->
+                                                                        <td style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                          ">
+                                                                            <!-- ngRepeat: part in SparePartList -->
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                          ">
+                                                                            <div style="display: flex; padding: 10px 0;flex-wrap: wrap;">
+                                                                                <p class="s2"
+                                                                                   style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                  margin: 0; ">
+                                                                                    Service
+                                                                                    Charges
+                                                                                </p>
+
+                                                                        </td>
+                                                                        <td style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                          ">
+                                                                            <p class="s6"
+                                                                               style="
+
+                                                              text-indent: 0pt;
+                                                              text-align: center;
+                                                            "></p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                            padding: 10px 0;
+                                                          ">
+                                                                            <p class="s2"
+                                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Total</p>
+                                                                        </td>
+                                                                        <td style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                          ">
+                                                                            <p class="s6 ng-binding"
+                                                                               style="
+
+                                                              text-indent: 0pt;
+                                                              text-align: center;
+                                                            "> </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2"
+                                                                            style="
+                                                            border-top-style: solid;
+                                                            border-top-width: 1pt;
+                                                            border-left-style: solid;
+                                                            border-left-width: 1pt;
+                                                            border-bottom-style: solid;
+                                                            border-bottom-width: 1pt;
+                                                            border-right-style: solid;
+                                                            border-right-width: 1pt;
+                                                            padding: 10px 0;
+                                                          ">
+                                                                            <p class="s2 ng-binding"
+                                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Amount in Words:</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                        <table style="width: 100%;"
+                                               cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div style="display: flex; padding: 10px 0;flex-wrap: wrap;">
+                                                            <p class="s2"
+                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                  margin: 0; ">
+                                                                Payment
+                                                                Details:
+                                                            </p>
+
+                                                            <p class="s2"
+                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Cash</p>
+                                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                <!-- ngIf: ServiceCallDetailsList.CONTRACT_TYPE_NAME == 'CMC' -->
+                                                            </div>
+                                                            <p class="s2"
+                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Cheque</p>
+                                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                <!-- ngIf: ServiceCallDetailsList.CONTRACT_TYPE_NAME == 'Paid' -->
+                                                            </div>
+                                                            <p class="s2"
+                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">DD</p>
+                                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 30px; height: 10px; margin-left: 10px;">
+                                                                <!-- ngIf: ServiceCallDetailsList.CONTRACT_TYPE_NAME == 'Warranty' -->
+                                                            </div>
+
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div style="display: flex; padding: 10px 0;flex-wrap: wrap;">
+
+                                                            <p class="s2"
+                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Paid Amount</p>
+                                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 120px; height: 10px; margin-left: 10px;">
+                                                                <!-- ngIf: ServiceCallDetailsList.CONTRACT_TYPE_NAME == 'CMC' -->
+                                                            </div>
+                                                            <p class="s2"
+                                                               style="
+                                  font-size: 18px;
+                                  font-weight: 600;
+                                    margin: 0; ">Balance Amount</p>
+                                                            <div style="display: flex; justify-content: center; align-items: center; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-left-style: solid; width: 100%; border-left-width: 1pt; border-right-style: solid; border-right-width: 1pt; padding: 8px; width: 120px; height: 10px; margin-left: 10px;">
+                                                                <!-- ngIf: ServiceCallDetailsList.CONTRACT_TYPE_NAME == 'Paid' -->
+                                                            </div>
+
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <table style="width: 100%; margin-bottom: 20px;"
+                                           cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td valign="bottom"
+                                                    style="border-top-style: solid;
+                                                          border-top-width: 1pt; border-bottom-style: solid;
+                                                          border-bottom-width: 1pt;
+                                                          border-left-style: solid;
+                                                          border-left-width: 1pt;
+                                                          border-radius: 0 0 0px 30px;">
+                                                    <p>
+                                                        <b>
+                                                            Seal
+                                                            &amp;
+                                                            Signature
+                                                            of
+                                                            Customer
+                                                        </b>
+                                                    </p>
+                                                </td>
+                                                <td colspan="2"
+                                                    valign="bottom"
+                                                    style="border-collapse: collapse;
+                              padding-left: 2%;
+                              padding-right: 2%;
+                              border: 1px solid;
+                  border-left: none;
+                  text-align: right;
+                  border-radius: 0 0 30px 0px;
+                  ">
+                                                    <p style="margin-top: 100px;">
+
+                                                        <b class="ng-binding">
+                                                            Signature
+                                                            of
+                                                            Service
+                                                            Engg.
+                                                        </b>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div id="sidebar-overlay"></div>
+        </div>
+        <div id="sidebar-overlay"></div>
+    </div>
+</div>
+

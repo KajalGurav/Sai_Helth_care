@@ -32,11 +32,12 @@ namespace Sai_Helth_care.Controllers
 
         public class Search_Admin
         {
-            public int PageNo { get; set; }
+            public int PageNo { get; set;   }
             public int PageSize { get; set; }
             public string FARMER_NAME { get; set; }
             public string STATE_ID { get; set; }
             public string ROLE_ID { get; set; }
+
         }
 
         public JsonResult TotalRecordCount(Search_Admin tB_Admin)

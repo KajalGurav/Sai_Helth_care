@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "PaymentReceiptAddUpdate";
+}
+
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+<style type="text/css">
+    body {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+    .error {
+        color: Red;
+    }
+</style>
+
+<section ng-controller="PaymentCtrl">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <h4 class="modal-title"><b>{{Action}} {{CUSTOMER_TYPE}} Payment Receipt</b></h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Receipt No:</label>
+                                <input type="text" name="RECEIPT_NO" id="RECEIPT_NO" ng-model="RECEIPT_NO" class="form-control" readonly placeholder="Receipt Number" />
+                                <span ng-show="(AddPayment.RECEIPT_NO.$invalid && (AddPayment.RECEIPT_NO.$touched || AddPayment.RECEIPT_NO.$dirty))">
+                                    <span class="error" ng-show="AddPayment.RECEIPT_NO.$error.required">Receipt No is required</span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label"> Select Customer Name:</label>
+                                <select id="CUSTOMER_ID" class="form-control" name="CUSTOMER_ID" ng-model="CUSTOMER_ID"
+                                        ng-options="Customer.Customer_ID as Customer.CUSTOMER_NAME for Customer in PaymentCustomerList"
+                                        ng-selected="Customer.Customer_ID == CUSTOMER_ID" ng-change="GetCustomerChange()" ng-disabled="PAGE_NAME==='Customer'">
+                                    <option value="">Select Customer Name</option>
+                                </select>
+                                <span ng-show="(AddPayment.CUSTOMER_ID.$invalid && (AddPayment.CUSTOMER_ID.$touched || AddPayment.CUSTOMER_ID.$dirty))">
+                                    <span class="error" ng-show="AddPayment.CUSTOMER_ID.$error.required">Customer Name is required</span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                                <select id="FIRM_ID" class="form-control" name="FIRM_ID" ng-model="FIRM_ID"
+                                        ng-options="Customer.F_ID as Customer.FIRM_NAME for Customer in PaymentCustomerFirmList"
+                                        ng-selected="Customer.F_ID == FIRM_ID" ng-change="GetFirmChange()" required>
+                                    <option value="">Select Firm Name</option>
+                                </select>
+                                <span ng-show="(AddPayment.FIRM_ID.$invalid && (AddPayment.FIRM_ID.$touched || AddPayment.FIRM_ID.$dirty))">
+                                    <span class="error" ng-show="AddPayment.FIRM_ID.$error.required">Customer Firm Name is required</span>
+                                </span>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Payment Receipt Type: </label><label style="color:red;">*</label>
+                                <select name="PAYMENT_RECEIPT_TYPE" class="form-control" ng-model="PAYMENT_RECEIPT_TYPE" ng-change="GetReferenceNo()" required>
+                                    <option value="">Select Payment Receipt</option>
+                                    <option value="Quotation">Quotation</option>
+                                    <option value="PurchaseOrder">Purchase Order</option>
+                                    <option value="Invoice">Invoice</option>
+                                    <option value="AMC">AMC</option>
+                                    <option value="CMC">CMC</option>
+                                    @*<option value="Services">Services</option>
+                                        <option value="Other">Other</option>*@
+                                </select>
+                                <span ng-show="(AddPayment.PAYMENT_RECEIPT_TYPE.$invalid && (AddPayment.PAYMENT_RECEIPT_TYPE.$touched || AddPayment.PAYMENT_RECEIPT_TYPE.$dirty))">
+                                    <span class="error" ng-show="AddPayment.PAYMENT_RECEIPT_TYPE.$error.required">Payment Receipt Type is required</span>
+                                </span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Select Ref. No.:</label><label style="color:red;">*</label>
+                                <select id="RECORD_ID" class="form-control" name="RECORD_ID" ng-model="RECORD_ID"
+                                        ng-options="Customer.Quot_ID as Customer.REF_NO_LIST for Customer in CustomerRecordList"
+                                        ng-selected="Customer.Quot_ID == RECORD_ID" ng-change="GetProductDetails()" required>
+                                    <option value="">Select Ref. No</option>
+                                </select>
+                                <!--<select name="RECORD_ID" id="RECORD_ID" class="form-control" ng-model="RECORD_ID" ng-change="GetProductDetails()" required>
+                                <option value="">Select Ref. No</option>-->
+                                @*<option ng-repeat="Customer in CustomerRecordList" value="{{Customer.REF_NO_LIST}}" ng-if="Customer.REF_NO_LIST!=''">{{Customer.REF_NO_LIST}}</option>*@
+                                <!--<option ng-repeat="Customer in CustomerRecordList" value="{{Customer.Quot_ID}}" ng-if="Customer.REF_NO_LIST!=''">{{Customer.REF_NO_LIST}}</option>
+                                </select>-->
+                                @*<span ng-show="(AddPayment.RECORD_ID.$invalid && (AddPayment.RECORD_ID.$touched || AddPayment.RECORD_ID.$dirty))">
+                                    <span class="error" ng-show="AddPayment.RECORD_ID.$error.required">Ref. No is required</span>
+                                </span>*@
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Receipt For:</label>
+                                <textarea name="RECIEPT_FOR" ng-model="RECIEPT_FOR" id="RECIEPT_FOR" class="form-control" rows="4" type="text" readonly></textarea>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Payment Type: </label><label style="color:red;">*</label>
+                                <select name="PAYMENT_TYPE" class="form-control" ng-model="PAYMENT_TYPE" ng-change="onPaymentType()" required>
+                                    <option value="">Select Payment Type</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Online">Online</option>
+                                    <option value="RTGS">RTGS</option>
+                                    <option value="NEFT">NEFT</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                                @*<span ng-show="(AddPayment.PAYMENT_TYPE.$invalid && (AddPayment.PAYMENT_TYPE.$touched || AddPayment.PAYMENT_TYPE.$dirty))">
+                                    <span class="error" ng-show="AddPayment.PAYMENT_TYPE.$error.required">Payment Type is required</span>
+                                </span>*@
+                            </div>
+
+                            <div id="idTranscrtion" class="form-group col-md-6" style="display:none;">
+                                <label class="control-label">Enter Cheque No./Transaction Id:</label><label style="color:red;">*</label>
+                                <input type="text" id="TXN_ID" name="TXN_ID" ng-model="TXN_ID" class="form-control" />
+                            </div>
+
+                            <div class="form-group col-md-6" id="TranscrtionDate" style="display:none;">
+                                <label class="control-label">Cheque Date:</label><label style="color:red;">*</label>
+                                <input type="text" id="CHEQUE_DATE" ng-model="CHEQUE_DATE" class="form-control" placeholder="Cheque Date" />
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Total Amount to be Paid:</label>
+                                <input type="number" name="TOTAL_AMOUNT" ng-model="TOTAL_AMOUNT" class="form-control" readonly />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Amount Received:</label><label style="color:red;">*</label>
+                                <input type="number" name="AMOUNT_RECEIVED" ng-model="AMOUNT_RECEIVED" class="form-control" min="0" max="{{TOTAL_AMOUNT}}" ng-pattern="/^([1-9]\d*)$/" onkeyup="if(parseInt(this.value)<0){ this.value =0; return false; } if(parseInt(this.value)> this.max){ this.value = this.max; return false; }" ng-change="CalRemainingAmount()" placeholder="Enter Received Amount" required />
+                                @*<span ng-show="(AddPayment.AMOUNT_RECEIVED.$invalid && (AddPayment.AMOUNT_RECEIVED.$touched || AddPayment.AMOUNT_RECEIVED.$dirty))">
+                                    <span class="error" ng-show="AddPayment.AMOUNT_RECEIVED.$error.required">Amount Received is required</span>
+                                    <span class="error" ng-show="AddPayment.AMOUNT_RECEIVED.$error.number">Invalid Amount Received entered</span>
+                                </span>*@
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Amount Remaining:</label>
+                                <input type="number" name="AMOUNT_REMAINING" ng-model="AMOUNT_REMAINING" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <div class="form-group col-md-12">
+                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdatePayment()" value="{{Admin_Action}}" />
+                            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section scripts
+{
+    <script src="~/AngularJs/PaymentReceiptAddUpdate.js"></script>
+    <script src="~/AngularJs/UpcomingPmCm.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $("#CHEQUE_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#CHEQUE_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#CHEQUE_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#CHEQUE_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#CHEQUE_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+}

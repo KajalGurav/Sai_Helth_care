@@ -1,0 +1,246 @@
+﻿
+@{
+    ViewBag.Title = "UpdateAmc";
+}
+
+<section>
+    <div class="card">
+        <div class="card-header">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-1">
+                        <a href="~/Customer_Master/CustomerDetails" ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                    </div>
+                    <div class="col-lg-9" style="margin-left:-50px">
+                        <h3 class="card-title"><b>Update Amc Registration</b></h3>
+                    </div>
+                    @*<div class="col-lg-2" style="text-align:center">
+                            <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" data-target="#Emp_add">Edit</button>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+       
+        <div class="card-body">
+
+            <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Contract Document No:</label><label style="color:red;">*</label>
+                        <input type="number" name="Service" class="form-control" readonly placeholder="Contract Document No" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label"> Select Contact Type:</label>
+                        <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                            <option value="">Select Contact Name</option>
+                            <option value="MANOJ RATHOD">AMC</option>
+                            <option value="Prasad Sunil Sahane">CMC</option>
+                            <option value="Akash Agale">Waranty</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label"> Contract Period (Year): </label><label style="color:red;">*</label>
+                        <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                            <option value="">Select Customer Firm Name</option>
+                            <option value="">1</option>
+                            <option value="">2</option>
+                            <option value="">3</option>
+                            <option value="">4</option>
+                            <option value="">5</option>
+                            <option value="s">6</option>
+                            <option value="s">7</option>
+                            <option value="s">8</option>
+                            <option value="s">9</option>
+                            <option value="s">10</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Contract Date : </label><label style="color:red;">*</label>
+                        <input type="number" name="Service" class="form-control" readonly placeholder="Contract Date" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Select Customer Name: </label><label style="color:red;">*</label>
+                        <select name="Propriatory" class="form-control" ng-model="Physical Disability">
+                            <option value="">Select Custmer Name</option>
+                            <option value="">Akash Ugale</option>
+                            <option value="">Maheh Pawar</option>
+                            <option value="">Alka Yadav</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
+                        <select name="Propriatory" class="form-control" ng-model="CUSTOMER_TYPE" ng-change="GetStatus()">
+                            <option value="">Anand Hospital & Care </option>
+                            <option value="Regular Customer"> Health care Dignostic</option>
+                            <option value="">Anand Hospital & Care 22 </option>
+                            <option value="Regular Customer"> Health care Dignostic 56</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Select Product:</label><label style="color:red;">*</label>
+                        <select name="Propriatory" class="form-control" ng-model="CUSTOMER_TYPE" ng-change="GetStatus()">
+                            <option value="">CT Scan Machine</option>
+                            <option value="Regular Customer"> BMD Machine</option>
+                            <option value="">MRI Scan Machine </option>
+                            <option value="Regular Customer"> X-Ray Machine</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Select Model:</label><label style="color:red;">*</label>
+                        <select name="Propriatory" class="form-control" ng-model="CUSTOMER_TYPE" ng-change="GetStatus()">
+                            <option value="">Highspeed- CT Scan Machine</option>
+                            <option value="Regular Customer">Highspeed- BMD Machine</option>
+                            <option value="">Highspeed- MRI Scan Machine </option>
+                            <option value="Regular Customer">Highspeed- X-Ray Machine</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Model Serial No :</label><label style="color:red;">*</label>
+                        <input type="text" name="" class="form-control" placeholder="Enter Model Serial." required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Contract From :</label><label style="color:red;">*</label>
+                        <input type="number" name="AMOUNT" class="form-control" placeholder="Enter Contract From." required />
+                    </div>
+                    <div class="col-lg-12" style="margin-bottom:15px;">
+                        <div class="row">
+                            <div class="table-responsive col-lg-6" style="background-color:white;">
+                                <table class="table table-striped table-bordered table-hover " id="example-table" cellspacing="0">
+                                    <thead style="background-color: SlateBlue; color: white; ">
+                                        <tr>
+                                            <th>Accessories</th>
+                                            <th style="width:200PX">Serial No</th>
+                                           
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;">
+                                        <tr>
+                                            <td>Radiography (Fixed)</td>
+                                            <td><input type="text" /></td>
+                                           
+                                            <td><a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Add </a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Radiography (Mobile)</td>
+                                            <td><input type="text" /></td>
+                                            <td> <a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Add </a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Radiography (Portable)</td>
+                                            <td><input type="text" /></td>
+                                            <td> <a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Add </a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Inventional Radiology</td>
+                                            <td><input type="text" /></td>
+                                            <td> <a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Add </a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive col-lg-6" style="background-color:white;">
+                                <table class="table table-striped table-bordered table-hover " id="example-table" cellspacing="0" width="50%">
+                                    <thead style="background-color: SlateBlue; color: white; ">
+                                        <tr>
+                                            <th>Accessories </th>
+                                            <th>Serial No</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color:black;">
+                                        <tr>
+                                            <td>Radiography (Fixed)</td>
+                                            <td>50</td>
+                                            <td> <a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Remove </a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Radiography (Mobile)</td>
+                                            <td>5</td>
+                                            <td> <a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Remove </a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Radiography (Portable)</td>
+                                            <td>6</td>
+                                            <td> <a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Remove </a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Inventional Radiology</td>
+                                            <td>10</td>
+                                            <td> <a href="~/#/Index" title="Add Language" class="btn btn-xs btn-success">Remove </a></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Contract To :</label><label style="color:red;">*</label>
+                        <input type="number" name="AMOUNT" class="form-control" readonly placeholder="Enter Quantity." required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">PM Visit:</label><label style="color:red;">*</label>
+                        <input type="text" name="AMOUNT" class="form-control" placeholder="PM Visit" required />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">CM Visit:</label><label style="color:red;">*</label>
+                        <input type="number" name="AMOUNT" class="form-control" placeholder="CM Visit" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Fee:</label><label style="color:red;">*</label>
+                        <input type="number" name="AMOUNT" class="form-control" placeholder="Fee" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Fees In.GST:</label><label style="color:red;">*</label>
+                        <input type="number" name="AMOUNT" class="form-control" placeholder="Fee" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Paid Fees:</label><label style="color:red;">*</label>
+                        <input type="number" name="AMOUNT" class="form-control" placeholder="Fee" required />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label"> Fees Paid By:</label><label style="color:red;">*</label>
+                        <select name="Propriatory" class="form-control" ng-model="CUSTOMER_TYPE" ng-change="GetStatus()">
+                            <option value="">Cash </option>
+                            <option value="Regular Customer"> Cheque</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label"> Comments:</label><label style="color:red;">*</label>
+                        <textarea class="form-control" placeholder="Enter Comments"></textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label"> AMC Status:</label><label style="color:red;">*</label>
+                        <select name="Propriatory" class="form-control" ng-model="CUSTOMER_TYPE" ng-change="GetStatus()">
+                            <option value="">Done </option>
+                            <option value="Regular Customer"> Pending</option>
+                        </select>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+
+
+    </div>
+    <div class="modal-footer">
+        <div class="form-group col-md-12">
+            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAccount()" value="Add Registration" />
+            <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+        </div>
+    </div>
+
+    </div>
+
+</section>
+

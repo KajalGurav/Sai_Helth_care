@@ -36,7 +36,7 @@
     };
 
     this.AddProductDetails = function (tb_Admin) {
-       
+
         var response = $http({
             method: "POST",
             url: "/MindrayQuotation/AddProductDetails",
@@ -54,7 +54,7 @@
 
         return $http.get("/MindrayQuotation/GetProductDetails", config);
     };
-   
+
     this.Admin_Delete = function (tb_Admin) {
         var response = $http({
             method: "POST",
@@ -75,7 +75,7 @@
         });
         return response;
     };
-    
+
     this.GetProductQuotDetails = function () {
         //to get details in specific format
         return $http.get("/MindrayQuotation/GetProductQuotDetails");
@@ -85,7 +85,7 @@
         return $http.get("/MindrayQuotation/GetProducDetails");
     };
 
-    this.UpdateQuotationDetails = function (tb_Admin) {
+    this.UpdateQuotationDetails1 = function (tb_Admin) {
         var response = $http({
             method: "POST",
             url: "/MindrayQuotation/UpdateQuotationDetails",
@@ -109,6 +109,17 @@
     this.GetCategory = function () {
         return $http.get("/Product/GetCategory");
     };
+
+    this.UpdateProductDetails1 = function (tb_Admin) {
+        var response = $http({
+            method: "POST",
+            url: "/MindrayQuotation/UpdateProductDetails", // Ensure this URL matches your controller's action
+            data: JSON.stringify(tb_Admin),
+            dataType: "json"
+        });
+        return response;
+    };
+
 });
 
 app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
@@ -133,7 +144,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
         GetallProductQuotDetails();
         $scope.StdAccDisplay = "No";
     }
-   
+
     function GetAllBanks() {
         var getAdmin = QuotationService.GetCompanyBankDetails(0);
         getAdmin.then(function (response) {
@@ -317,7 +328,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
     function GetProductQuotationDetails() {
         $scope.total_PRODUCTPRICE = 0;
         $scope.total_ACCPRICE = 0;
-       
+
         var getProdList = QuotationService.GetProducDetails();
         getProdList.then(function (response) {
             $scope.GroupProductList = response.data;
@@ -334,7 +345,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             getAdmin.then(function (response) {
                 //console.log(response.data);
                 $scope.ProductQuotList = response.data;
-               
+
                 $scope.total_PRODUCTPRICE = 0;
                 $scope.total_ACCPRICE = 0;
                 $scope._PROBE_PARTLIST2 = "";
@@ -452,57 +463,33 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
                         }
 
 
-                        //console.log(parseInt(($scope.ProductQuotationList[i].ACCPRICE).replace(',', '')));
+
                     }
                 }
-                //console.log($scope.total_PRODUCTPRICE);
-                //console.log($scope.total_ACCPRICE);
+
 
                 $scope.final = $scope.total_PRODUCTPRICE + $scope.total_ACCPRICE;
-               
+
             });
         });
     }
 
     $scope.ShowHideStdAcc = function () {
         if (document.getElementById("STDACCESSORIES").checked === true) {
-            value = $('.STD_ACC:checked').val();
-            console.log(value);
-            isCheck = true;
-            $scope.IS_WITH_PROBE_ACC = "Yes";
-            document.getElementById("StdAccTB").style.display = "block";
-            document.getElementById("STDACCESSORIES").checked = true;
-            if ($scope.ProbepartList.length < 1) {
-                isCheck = false;
+            if (!$scope.ProbepartList || $scope.ProbepartList.length < 1) {
                 $scope.IS_WITH_PROBE_ACC = "No";
                 document.getElementById("StdAccTB").style.display = "none";
-                document.getElementById("STDACCESSORIES").checked = false;
-                $("#STDACCESSORIES").change(function () {
-                    if (!this.checked) {
-                        document.getElementById("checkAllChkboxStd").checked = false;
-                        $(".StdAccParts").each(function () {
-                            this.checked = false;
-                        });
-                    }
-                });
                 alert("No Probe Accessories available for this product!");
+                return;
             }
-        }
-        else {
-            isCheck = false;
+            $scope.IS_WITH_PROBE_ACC = "Yes";
+            document.getElementById("StdAccTB").style.display = "block";
+        } else {
             $scope.IS_WITH_PROBE_ACC = "No";
             document.getElementById("StdAccTB").style.display = "none";
-            document.getElementById("STDACCESSORIES").checked = false;
-            $("#STDACCESSORIES").change(function () {
-                if (!this.checked) {
-                    document.getElementById("checkAllChkboxStd").checked = false;
-                    $(".StdAccParts").each(function () {
-                        this.checked = false;
-                    });
-                }
-            });
         }
-    }
+    };
+
 
     $scope.GetMenuChange = function () {
         Type = "Category";
@@ -536,14 +523,15 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
         for (var i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = false;
         }
-       
+
         $scope.ShowHideStdAcc();
         $("#AddProductAccessories").modal("hide");
     }
-   
+
     $scope.Getspare = function (Product) {
-        //alert(Product.P_ID);
-        //////////////
+
+        $scope.ACTION_STATUS = "ADD";
+        $scope.Action = "Add";
         document.getElementById("STDACCESSORIES").checked = false;
 
 
@@ -569,20 +557,23 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
     };
 
     function GetAllSparepart() {
-        //alert($scope.P_ID);
-        var getAdmin = QuotationService.GetProbepart($scope.MP_ID);
-        getAdmin.then(function (response) {
-            $scope.ProbepartList = response.data;
+        if (!$scope.MP_ID) {
+            console.error("MP_ID is not defined");
+            return;
+        }
 
-            $scope.PS_ID = $scope.ProbepartList[0].PS_ID;
-
+        QuotationService.GetProbepart($scope.MP_ID).then(function (response) {
+            if (response.data && response.data.length > 0) {
+                $scope.ProbepartList = response.data;
+                console.log("ProbepartList loaded:", $scope.ProbepartList);
+            } else {
+                $scope.ProbepartList = [];
+                console.warn("No probe parts found for MP_ID:", $scope.MP_ID);
+            }
+        }).catch(function (error) {
+            console.error("Error fetching probe parts:", error);
+            $scope.ProbepartList = [];
         });
-        //var getStd = QuotationService.GetStdAccPart($scope.MP_ID);
-        //getStd.then(function (response) {
-        //    $scope.StdAccPartList = response.data;
-        //    //$scope.SP_ID = $scope.SparepartList[0].SP_ID;
-
-        //});
     }
 
     function GetQuotation() {
@@ -885,7 +876,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
                 return false;
             }
         }
-       
+        $scope.Action = "Add";
         var chkidsarrstd = [];
         $.each($(".checkbox_std input[type='checkbox']:checked"), function () {
             var input = { Id: $(this).val().toString(), IsChecked: 1 };
@@ -964,9 +955,8 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
         else {
             cusId = $("#tempCustId").val();
         }
-        tb_Admin = {
+        var tb_Admin = {
             MP_ID: $scope.MP_ID,
-            //CUSTOMER_ID: $scope.CUSTOMER_ID,
             CUSTOMER_ID: cusId,
             PRODUCT_QUANTITY: $scope.PRODUCT_QUANTITY,
             PROCUCT_PRICE: $scope.PROCUCT_PRICE,
@@ -975,9 +965,13 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             PSQ_ID: $scope.PSQ_ID,
             PSPRICE_ID: $scope.PSPRICE_ID,
         };
-        //alert(tb_Admin.CUSTOMER_ID);
-        AddproductRecord(tb_Admin);
-    }
+
+        if ($scope.ACTION_STATUS == "ADD") {
+            AddproductRecord(tb_Admin); // Call Add method
+        } else {
+            UpdateProductRecord(tb_Admin); // Corrected call for Update
+        }
+    };
 
 
     function CheckSTDACC() {
@@ -1002,9 +996,19 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
     }
 
     function AddproductRecord(tb_Admin) {
+        debugger
         var datalist = QuotationService.AddProductDetails(tb_Admin);
         datalist.then(function (d) {
             if (d.data.success === true) {
+                if ($scope.Action == "Add") {
+
+                    alert("Product added successfully.");
+                }
+                else if ($scope.Action == "Update") {
+                    alert("Product updateded successfully.");
+                    $("#AddProductAccessories").modal("hide");
+                    $("#loader").css("display", 'none');
+                }
                 clearTax();
                 //Clear();
                 GetProductQuotationDetails();
@@ -1029,6 +1033,27 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
                 $("#loader").css("display", 'none');
             });
     }
+
+
+    function UpdateProductRecord(tb_Admin) {
+        var datalist = QuotationService.UpdateProductDetails1(tb_Admin);
+        datalist.then(function (d) {
+            if (d.data.success === true) {
+                alert("Product updated successfully.");
+                $("#AddProductAccessories").modal("hide");
+
+                // Refresh product details
+                GetProductQuotationDetails();
+                GetallProductQuotDetails();
+            } else {
+                alert("Product update failed. Please try again.");
+            }
+        }, function () {
+            alert("An error occurred while updating the product.");
+        });
+    }
+
+
 
     $scope.getFordelete = function (Quotation) {
 
@@ -1147,9 +1172,9 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
         $('#PrintQuotation').removeAttr("disabled");
         $('#SaveQuotation').removeAttr("disabled");
     });
-   
+
     window.processHTML = function (htmlContent, id) {
-      
+
         var content = htmlContent.replace(/(?:^|<\/pre>)[^]*?(?:<pre>|$)/g, function (m) {
             return m.replace(/[\n\t]+/g, "");
         });
@@ -1234,7 +1259,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
                 $("#prodDescHeader").css("height", 0);
             }
 
-            
+
             window.processHTML($scope.ProductQuotList[0].DESCRIPTION, "Description");
             window.processHTML($scope.ProductQuotList[0].CONFIGURATION, "Configuration");
 
@@ -1257,7 +1282,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             if (typeof $scope.WARRANTY_PERIOD === "undefined" || $scope.WARRANTY_PERIOD === '') {
                 $scope.WARRANTY_PERIOD = "Months";
             }
-          
+
             $scope.amtInwords = inWords($scope.FinalAmount);
             var getData = QuotationService.GetCompanyBankDetails($scope.QuotationList[0].BANK_ID);
             getData.then(function (response) {
@@ -1297,7 +1322,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             alert("Please Select Including All Taxes Option!");
             return false;
         }
-        
+
         if ($scope.FinalAmount <= 0) {
             $("#PrintQuotation").attr('disabled', 'disabled');
             $("#SaveQuotation").attr('disabled', 'disabled');
@@ -1335,10 +1360,10 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             AMOUNT_INC_TAX: $scope.IncludingTaxes,
             IS_SPL_WARRANTY: $scope.SPL_WARRANTY,
             NOTE: $scope.REMARKS
-          
+
         }
 
-        var datalist = QuotationService.UpdateQuotationDetails(tb_Admin);
+        var datalist = QuotationService.UpdateQuotationDetails1(tb_Admin);
 
         datalist.then(function (d) {
             if (d.data.success === true) {
@@ -1361,7 +1386,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             }
         );
     }
-   
+
     $scope.print = function (id) {
         if (typeof $scope.REMARKS === "undefined" || $scope.REMARKS === '' || $scope.REMARKS === null) {
             $scope.REMARKS = "";
@@ -1379,10 +1404,10 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             AMOUNT_INC_TAX: $scope.IncludingTaxes,
             IS_SPL_WARRANTY: $scope.SPL_WARRANTY,
             NOTE: $scope.REMARKS
-           
+
         }
 
-        var datalist = QuotationService.UpdateQuotationDetails(tb_Admin);
+        var datalist = QuotationService.UpdateQuotationDetails1(tb_Admin);
         datalist.then(function (d) {
             if (d.data.success === true) {
                 alert("Quotation Details updated successfully.");
@@ -1400,7 +1425,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
                 //WindowObject.document.write('<style type="text/css" > table tr td {font-size:12px;}table > thead > tr >th , table> tbody > tr > td {font-size:10px}  #dontprint{display:none} .dontshow{display:display} </style>');
                 WindowObject.document.write(elementPage);
                 WindowObject.document.close();
-               
+
                 setTimeout(function () {
                     // Trigger the print
                     WindowObject.focus();
@@ -1429,6 +1454,22 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             }
         );
     }
+    $scope.GetSpareForUpdate = function (Product) {
+        $scope.ACTION_STATUS = "UPDATE";
+        $scope.Action = "Update";
+        $scope.P_ID = Product.P_ID;
+        $scope.QUOTATION_ID = Product.QUOTATION_ID;
+
+        // Fetch and assign data to scope variables
+        var getProductDetails = QuotationService.GetProductDetails($scope.P_ID); // Replace with API fetching specific product
+        getProductDetails.then(function (response) {
+            const updatedProduct = response.data; // Assume server sends the latest product details
+            $scope.PRODUCT_QUANTITY = updatedProduct.QUANTITY;
+            $scope.PROCUCT_PRICE = updatedProduct.PRODUCTPRICE;
+            $scope.IS_WITH_PROBE_ACC = updatedProduct.IS_WITH_PROBE_ACC;
+            $scope.Std_Acc = updatedProduct.CheckSTDACC;
+        });
+    };
 
     function GetAllCategory() {
         var getAdmin = QuotationService.GetCategory();

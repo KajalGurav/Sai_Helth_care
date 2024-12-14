@@ -1,0 +1,218 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<section class="content" ng-controller="STATECtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-8">
+                                <h3 class="card-title"><b>State</b></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="padding: 20px; margin:-12px">
+                        <div class="col-3">
+                            <button type="button" class="btn btn-sm" style="background-color: green; color: white " data-toggle="modal" data-target="#Admin_AddState" ng-click="AdminClick()">Add State</button>
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search State" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3"></div> <div class="col-3"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.8rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color:white">
+                                    <th> #</th>
+                                    <th><b>State Name</b></th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Reg Date</b></th>
+                                    <th><b>Action</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="STATE in STATEMasterList" style="color:black;">
+                                    <td>{{($index+1)}}</td>
+                                    <td>{{STATE.STATE_NAME}}</td>
+                                    <td id="{{STATE.STATE_ID}}_td"><a href="" data-toggle="modal" data-target="#Admin_View" ng-click="getAdmin(STATE)"><b style="color:red">{{STATE.STATUS}}</b></a></td>
+                                    <td>{{STATE.REG_DATE}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-success" ng-click="Update(STATE)" data-toggle="modal" data-target="#Admin_update">Edit</button>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="5" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(1)">First</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+                            </li>
+                            <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                                <a ng-click="setPage(page)">{{page}}</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.totalPages)">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal fade" id="Admin_AddState">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color:white">
+                                    <h5 class="modal-title"><b>Add State</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card-body">
+                                        <form role="form" name="K1" ng-submit="K1(K1.$valid)" data-toggle="validator">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control" ng-model="STATE_ID" style="display:none">
+                                                    <div class="form-group">
+                                                        <label style="color:black">State Name:</label> <label style="color:red">*</label>
+                                                        <input type="text" class="form-control" ng-model="STATE_NAME" placeholder="Enter State name" required>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm" style="color:white;background-color:green" ng-disabled="K1.$invalid" ng-click="AddAdminMaster_btn()">Add State</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal fade" id="Admin_update">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color:white">
+                                <h5 class="modal-title"><b>Update State</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form role="form" name="K1" ng-submit="K1(K1.$valid)" data-toggle="validator">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" ng-model="STATE_ID" style="display:none">
+                                                <div class="form-group">
+                                                    <label style="color:black">State Name:</label> <label style="color:red">*</label>
+                                                    <input type="text" class="form-control" ng-model="STATE_NAME" placeholder="Enter admin name" required>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm" style="color:white;background-color:green" ng-disabled="K1.$invalid" ng-click="AddUpdatestate()" value="Update">Update State</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="Admin_View">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black; padding: 10px;">
+                            <h5 class="modal-title"><b>State Details</b></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="modal-body">
+                                    <div class="row">
+
+                                        <div class="col-xs-12 col-sm-12">
+                                            <table id="DataTable" class="table table-bordered bordered table-striped table-condensed" style="color:black">
+                                                <tr>
+                                                    <th>State  Name</th>
+                                                    <td>{{_Party.STATE_NAME}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <td><span style="color:red"><b>{{_Party.STATUS}}</b></span></td>
+                                                </tr>
+
+                                            </table>
+
+                                            <div class="hr hr-8 dotted"></div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <center><h5><label><b style="color:black">Change Status</b></label></h5></center>
+                                <form name="annerForm">
+                                    <div class="form-group col-md-12">
+                                        <center><label class="control-label" style="color:black">Are you sure change admin status ?</label></center>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm" ng-click="ChangeStatus()" style="color:white;background-color:green">Change Status</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section Scripts{
+
+    <script src="~/AngularJs/AddressStateMaster.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+}
+

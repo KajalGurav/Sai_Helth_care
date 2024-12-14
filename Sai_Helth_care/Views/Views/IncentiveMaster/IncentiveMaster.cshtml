@@ -1,0 +1,202 @@
+﻿﻿﻿
+@{
+    ViewBag.Title = "IncentiveMaster";
+}
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<style>
+    .error {
+        color: red;
+    }
+</style>
+
+<section ng-controller="adminCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Incentive Scheme Master</b></h3>
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()" data-target="#Emp_add">Add Record</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-3">
+                        <input type="text" class="form-control" id="CUSTOMER_NAME" placeholder="Search Service" ng-model="INC_SERVICE_TYPE_ID" ng-keyup="filterServices()">
+
+                    </div>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" id="exportButton1">Export</button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div> <div class="col-3"></div>
+                        @*<div class="col-3">
+                                <input type="text" class="form-control" placeholder="Search Employee" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                            </div>*@
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr. No.</th>
+                                    <th>Service Type Name</th>
+                                    <th>Incentive Amount</th>
+                                    <th>Unit</th>
+                                    <th>Reg Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="emp in filteredIncentiveMasterList = (IncentiveMasterList | filter:CUSTOMER_NAME)">
+                                    <td>{{page * 30 + $index + 1}}</td>
+                                    <td>{{emp.INC_SERVICE_TYPE_NAME}}</td>
+                                    <td>{{emp.INCENTIVE_AMOUNT}}</td>
+                                    <td>{{emp.UNIT}}</td>
+                                    <td>{{emp.REG_DATE | date:'yyyy-MM-dd'}}</td>
+                                    <td>
+                                        <a href="" data-toggle="modal" data-target="#Emp_add" title="Edit" ng-click="getForUpdate(emp)" class="btn btn-xs btn-success">Edit</a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!filteredIncentiveMasterList.length">
+                                    <td colspan="6" style="color:black; text-align:center;">
+                                        <h5><b>No record found!</b></h5>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <a ng-click="setPage(1)">First</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === 1}">
+                            <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                            <span ng-if="pager.currentPage==1">Previous</span>
+                        </li>
+                        <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                            <a ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a ng-click="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal fade" id="Emp_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+                                <h4 class="modal-title"><b>{{Action}} Incentive Master </b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Type of Service</label><label style="color:red;">*</label>
+                                                <select ng-model="INC_SERVICE_TYPE_ID" id="INC_SERVICE_TYPE_ID" name="INC_SERVICE_TYPE_ID" class="form-control"
+                                                        ng-options="ist.INC_SERVICE_TYPE_ID as ist.INC_SERVICE_TYPE_NAME for ist in IncentiveServiceTypeList"
+                                                        ng-selected="ist.INC_SERVICE_TYPE_ID == INC_SERVICE_TYPE_ID" required>
+                                                    <option value="">Select Type of Service</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.INC_SERVICE_TYPE_ID.$invalid && ( AddPayment.INC_SERVICE_TYPE_ID.$touched || AddPayment.INC_SERVICE_TYPE_ID.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.INC_SERVICE_TYPE_ID.$error.required">
+                                                        Type of Service is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Incentive</label><label style="color:red;">*</label>
+                                                <input type="number" name="INCENTIVE_AMOUNT" class="form-control" ng-model="INCENTIVE_AMOUNT" min="0" max="999999" maxlength="6" onkeypress="if (this.value.length == 6) { return false; }" onkeyup=" if (this.value < 0) { this.value = 0; return false; } if (this.value > max) { this.value = max; return false; }" required placeholder="Enter Incentive Value">
+                                                <span ng-show="(AddPayment.INCENTIVE_AMOUNT.$invalid && ( AddPayment.INCENTIVE_AMOUNT.$touched || AddPayment.INCENTIVE_AMOUNT.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.INCENTIVE_AMOUNT.$error.required">
+                                                        Incentive is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Unit</label><label style="color:red;">*</label>
+                                                <select name="UNIT" class="form-control" selected="{{UNIT}}" ng-model="UNIT" required>
+                                                    <option value="">Select Unit</option>
+                                                    <option value="Rs">Rs</option>
+                                                    <option value="%">%</option>
+                                                </select>
+                                                <span ng-show="(AddPayment.UNIT.$invalid && ( AddPayment.UNIT.$touched || AddPayment.UNIT.$dirty))">
+                                                    <span class="error" ng-show="AddPayment.UNIT.$error.required">
+                                                        Unit is required
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddUpdateAdmin()" value="{{Admin_Action}}" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts
+{
+    <script src="~/AngularJs/IncentiveMaster.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+}

@@ -1,0 +1,304 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<section ng-controller="UrdproductAddCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Add URD Product</b></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="col-lg-12 " style="margin-bottom:10px">
+                        <form name="URDAdd" ng-submit="URDAdd(URDAdd.$valid)" data-toggle="validator" role="form">
+                            <div class="row" style="margin-bottom:15px;">
+
+                                <div class="col-lg-3">
+                                    <label class="control-label">Letter Ref.No :</label>
+                                    <input class="form-control" type="text" ng-model="LETER_REF_NO" readonly placeholder="Enter Letter Ref.No" />
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <label class="control-label">Letter Date:</label><label style="color:red;">*</label>
+                                    <input class="form-control" type="text" id="LETTER_DATE" ng-model="LETTER_DATE" placeholder="Enter Letter Date" />
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Enter Customer Type:</label><label style="color:red;">*</label>
+                                    <select class="form-control" ng-model="CUSTOMER_TYPE_ID" id="CUSTOMER_TYPE_ID" ng-change="TypeCustomerList()" required>
+                                        <option value="">Select Customer Type</option>
+                                        <option ng-repeat="Customer in CustomerTypeList" value="{{Customer.ID}}">{{Customer.CUSTOMER_TYPE}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Enter Customer Name:</label><label style="color:red;">*</label>
+                                    <select class="form-control" ng-model="CUSTOMER_ID" id="CUSTOMER_ID" ng-change="GetFirmChange()" required>
+                                        <option value="">Select Customer Name</option>
+                                        <option ng-repeat="Customer in CustomerList" value="{{Customer.Customer_ID}}">{{Customer.CUSTOMER_NAME}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-lg-3">
+                                    <label class="control-label">Select Customer Firm Name :</label><label style="color:red;">*</label>
+                                    <select name="FIRM_ID" id="FIRM_ID" class="form-control" ng-model="FIRM_ID" required>
+                                        <option value="">Select Firm Name</option>
+                                        <option ng-repeat="Customer in CustomerFirmList" value="{{Customer.F_ID}}">{{Customer.FIRM_NAME}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <label class="control-label">URD Status:</label><label style="color:red;">*</label>
+                                    <select class="form-control" ng-model="URD_STATUS" id="URD_STATUS" name="URD_STATUS" ng-change="URDStatusChange()" required>
+                                        <option value="">Select URD Status</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Issue">Issue</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-lg-3">
+                                    <label class="control-label">Select Product Category:</label><label style="color:red;">*</label>
+                                    <select ng-model="CAT_ID" id="CAT_ID" class="form-control" ng-change="GetMenuChange()" required>
+                                        <option value="">Select Product Category</option>
+                                        <option ng-repeat="Category in CategoryList" value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-lg-3">
+                                    <label class="control-label">Select Manufacturer :</label><label style="color:red;">*</label>
+                                    <select ng-model="M_ID" id="M_ID" class="form-control" ng-change="GetProductChange()" required>
+                                        <option value="">Select Manufacturer</option>
+                                        <option ng-repeat="Manufac in ManufacturerList" value="{{Manufac.M_ID}}">{{Manufac.M_NAME}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-lg-3">
+                                    <label class="control-label">Select Product/Model :</label><label style="color:red;">*</label>
+                                    <select ng-model="P_ID" id="P_ID" class="form-control" required ng-change="OnProductChange()">
+                                        <option value="">Select Product</option>
+                                        <option ng-repeat="Product in ProductList" value="{{Product.P_ID}}">{{Product.PRODUCT_NAME}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">URD Product For:</label>
+                                            <select name="INVOICE_For" class="form-control" ng-model="INVOICE_For">
+                                                <option value="Accessories">Accessories</option>
+                                                <option value="SpareParts">Spare Parts</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3" ng-show="INVOICE_For === 'Accessories'">
+                                            <label class="control-label">Accessories:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                            <select ng-model="STD_ID" id="STD_ID" name="STD_ID" class="form-control"
+                                                    ng-options="accs.STD_ID as accs.STD_ACC_NAME for accs in AccessoriesList"
+                                                    ng-selected="accs.STD_ID == STD_ID" @*ng-required="IS_INVOICEForSparePart === 1"*@>
+                                                <option value="">Select Accessories</option>
+                                                @*<option ng-repeat="state in AllCustomerList" value="{{accs.STD_ID}}">{{accs.STD_ACC_NAME}}</option>*@
+                                            </select>
+                                            <span ng-show="IsAccessoriesSelected == 'No'" style="color:red">Please select Accessories</span>
+                                        </div>
+                                        <div class="form-group col-md-3" ng-show="INVOICE_For === 'SpareParts'">
+                                            <label class="control-label">Spare Parts:</label><label ng-show="IS_INVOICEForSparePart === 1" style="color:red;">*</label>
+                                            <select ng-model="SP_ID" id="SP_ID" name="SP_ID" class="form-control"
+                                                    ng-options="sparpart.SP_ID as sparpart.SPARE_PART for sparpart in SparePartList"
+                                                    ng-selected="sparpart.SP_ID == SP_ID" @*ng-required="IS_INVOICEForSparePart === 1"*@>
+                                                <option value="">Select Spare Parts</option>
+                                                @*<option ng-repeat="state in AllCustomerList" value="{{sparpart.SP_ID}}">{{sparpart.SPARE_PART}}</option>*@
+                                            </select>
+                                            <span ng-show="IsSparePartSelected == 'No'" style="color:red">Please select spare parts</span>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <label class="control-label">Quantity:</label><label style="color:red;">*</label>
+                                            <input class="form-control" type="number" id="QUANTITY" ng-model="QUANTITY" placeholder="Enter Quantity" />
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label" style="color:white">.</label>
+                                            <button type="button" class="btn btn-sm pull-left form-control"
+                                                    style="background-color:peru; color: white"
+                                                    ng-click="AddPartsButtonClicked()">
+                                                Add Parts
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                            <thead>
+                                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                    <th style="width:20px;">No.</th>
+                                                    <th>Product Name</th>
+                                                    <th>Spare Parts/Accessories</th>
+                                                    <th style="width: 100px; text-align: center;">Quantity</th>
+                                                    <th style="width: 50px; text-align: center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="dcsa in IM_SparePartsAndAccessories">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>{{dcsa.PRODUCT_NAME}}</td>
+                                                    <td>{{dcsa.STD_ACC_NAME}}</td>
+                                                    <td style="text-align: center">{{dcsa.QUANTITY}}</td>
+                                                    <td style="text-align: center; width:10%">
+                                                        <a class="btn btn-xs btn-danger" ng-click="Delete_IM_SparePartsAndAccessories(dcsa)">Remove</a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--<div class="row" style="margin:0px; padding:0px;">
+                                        <div class="form-group col-md-10" style="color:red; ">--> @*Serial No selection for Spare Parts / Accessories is mandatory**@ <!--</div>
+                                        <div class="form-group col-md-2">
+                                            <button type="button" ng-click="CalculateAmountSparePart()" class="btn btn-sm pull-left form-control" style="background-color:peru; color: white">Calculate</button>
+                                        </div>
+                                    </div>-->
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <label class="control-label">Serial No:</label><label style="color:red;">*</label>
+                                    <input class="form-control" ng-model="SERIAL_NO" type="text" placeholder="Enter Serial No" required />
+                                </div>
+                                <div class="col-lg-3">
+                                    <label class="control-label">MRC No:</label>
+                                    <input class="form-control" ng-model="MRC_NO" type="text" placeholder="Enter MRC No" />
+                                </div>
+
+
+                                <div class="col-lg-3" style="margin-top:0px">
+                                    <label class="control-label">P.N.D.T Certificate No :</label>
+                                    <input class="form-control" value="{{CustomerPndtList[0].PNDT_NO}}" ng-model="PNDT_NO" @*ng-model="PNDT_CIRTIFICATE_NO"*@ type="text" readonly placeholder="Enter P.N.D.T Certificate No" />
+                                </div>
+
+                                <div class="col-lg-3" style="margin-top:0px">
+                                    <label class="control-label">Validity Date:</label>
+                                    <input class="form-control" value="{{CustomerPndtList[0].PNDT_VALIDITY}}" id="PNDT_VALIDITY" ng-model="PNDT_VALIDITY" type="text" readonly placeholder="Enter Validity Date" />
+                                </div>
+                                @*<div class="col-lg-6">
+            <label class="control-label">P.N.D.T. Cell:</label><label style="color:red;">*</label>
+            <input class="form-control" ng-model="PNDT_CELL" type="text" placeholder="Enter P.N.D.T. Cell" required />
+        </div>*@
+
+                                <div ng-show="URD_STATUS === 'Issue'" class="col-lg-5" style="margin-top:0px">
+                                    <label class="control-label">Gov. Permitted U.R.D ref. No:</label>
+                                    <input class="form-control" ng-model="GOV_PERMITED_URD_REF_NO" type="text" placeholder="Enter Gov. Permited U.R.D ref. No" ng-required="URD_STATUS === 'Issue'" />
+                                </div>
+
+                                <div ng-show="URD_STATUS === 'Issue'" class="col-lg-4" style="margin-top:0px">
+                                    <label class="control-label">Select Engineer Name:</label><label style="color:red;">*</label>
+                                    <select class="form-control" ng-model="EMP_ENG_ID" id="EMP_ENG_ID" ng-required="URD_STATUS === 'Issue'">
+                                        <option value="">Select Engineer Name</option>
+                                        <option ng-repeat="Employee in EmployeeEngList" ng-selected="Employee.EMP_ID==EMP_ENG_ID" value="{{Employee.EMP_ID}}">{{Employee.EMP_NAME}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-6" style="margin-top: 12px;">
+                                    <label  class="control-label">Company P.N.D.T Certificate No :</label>
+                                    <input class="form-control" ng-model="COMPANY_PNDT_NO" type="text" readonly placeholder="Enter Company P.N.D.T Certificate No" />
+                                </div>
+
+
+                                <div ng-show="URD_STATUS === 'Issue'" class="col-md-6" style="margin-top:0px">
+                                    <label class="control-label">Letter Receive Date:</label><label style="color:red;">*</label>
+                                    <input type="text" id="LETTER_RECIVED_DATE" name="LETTER_RECIVED_DATE" ng-model="LETTER_RECIVED_DATE" class="form-control" placeholder="Enter Receive Date" />
+                                </div>
+
+                                <div ng-show="URD_STATUS === 'Issue'" class="col-md-6" style="margin-top:0px">
+                                    <label class="control-label">Accessorie Details :</label><label style="color:red;">*</label>
+                                    <textarea class="form-control" ng-model="ACCESSORIES_DETAILS" ng-required="URD_STATUS === 'Issue'" placeholder="Enter Accessorie Details"></textarea>
+                                </div>
+
+                                <div ng-show="URD_STATUS === 'Issue'" class="col-md-6" style="margin-top:0px">
+                                    <label class="control-label">Upload Govt. Permission Letter :</label><label style="color:red;">*</label>
+                                    <input class="form-control" ng-model="UPLOD_GOV_PERMISSION_LATER" type="file" accept="image/jpg, image/jpeg, image/png, application/pdf" id="Profile_photo" />
+                                </div>
+                                <div class="col-md-6" style="margin-top:12px">
+                                    <label class="control-label">Supplier Address :</label><label style="color:red;">*</label>
+                                    <textarea class="form-control" ng-model="FIRM_ADDRESS" readonly placeholder="Supplier Address"></textarea>
+                                </div>
+                                <div class="col-lg-12"style="margin-top:12px">
+                                    <div>
+
+                                        <label class="control-label">P.N.D.T. Cell:</label><label style="color:red;">*</label>
+                                        <textarea class="form-control" ng-model="PNDT_CELL" id="PNDT_CELL" name="PNDT_CELL" placeholder="Enter P.N.D.T. Cell"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                <div class="card-footer" style="text-align:center">
+                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="URDAdd.$invalid" ng-click="AddAdmin()" value="Submit" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts
+{
+    <script src="~/AngularJs/AddUrdProduct.js"></script>
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script>
+        $(function () {
+            $("#LETTER_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#LETTER_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#LETTER_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#LETTER_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#LETTER_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+        $(function () {
+            $("#LETTER_RECIVED_DATE").datepicker({ changeMonth: true, changeYear: true, maxDate: 0 });
+            $("#LETTER_RECIVED_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#LETTER_RECIVED_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#LETTER_RECIVED_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#LETTER_RECIVED_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+
+        $(function () {
+
+
+            $("#STARTING_DATE").datepicker({ maxDate: 0 });
+        });
+
+        $(function () {
+
+            $("#ENDING_DATE").datepicker({ maxDate: 0 });
+        });
+    </script>
+
+
+}
+

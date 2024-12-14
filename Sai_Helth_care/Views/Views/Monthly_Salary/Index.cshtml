@@ -1,0 +1,739 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<style>
+    @@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+
+    .wrapper1 {
+        max-width: 800px;
+        margin: auto;
+        display: block;
+        padding: 30px;
+        background-color: #fff;
+    }
+
+    .body1 {
+        margin: 0 auto;
+        padding: auto;
+        font-family: "Open Sans", sans-serif;
+        background: white;
+        font-size: 17px;
+        line-height: 40px;
+    }
+
+    .img-logo {
+        max-width: 100%;
+        width: 150px;
+        margin: 10px;
+    }
+
+    input:focus-visible {
+        outline-offset: 0px;
+    }
+
+    :focus-visible {
+        outline: none;
+    }
+
+    :focus {
+        box-shadow: none;
+    }
+
+    .table-responsive-horizontal {
+        overflow-x: auto;
+    }
+</style>
+
+
+<section ng-controller="MonthlySalaryCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white "><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-7" style="margin-left:-50px">
+                                <h3 class="card-title"><b>Monthly Salary Details</b></h3>
+                            </div>
+
+                            <div class="col-md-1">
+                                <button type="button" class="btn  btn-sm pull-left" style="color: white; background-color: green; margin-left: 20px;" ng-click="exportToExcel()">Export</button>
+                            </div>
+                            <div class="col-lg-1" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white;margin-left:40px;" data-toggle="modal" data-target="#MonthlySalary" ng-click="SelectBank()">Print</button>
+
+                            </div>
+                            <div class="col-lg-2" style="text-align:center">
+                                <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()">Add Salary</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                        </div>
+                        <div class="col-3"></div>
+                        <div class="col-3">
+                            <select ng-model="MONTH_NO" class="form-control" id="MONTH_NO" name="MONTH_NO" ng-change="GetData()">
+                                <option value="">Select Month</option>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="Octomber">Octomber</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search Salary Details" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                    <th>Sr.No</th>
+                                    <th></th>
+                                    <th>Full Name</th>
+                                    <th>Month</th>
+                                    <th>Date of Salary</th>
+                                    <th>Present Days</th>
+                                    <th>Gross Salary </th>
+                                    <th>Net Salary </th>
+                                    <th>Total Salary </th>
+                                    <th>Salary On Hold</th>
+                                    <th style="height:15%;width:10%;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="Salary  in SalaryList">
+                                    <td>
+                                        {{page*30+$index+1}}
+                                    </td>
+                                    <td scope="row" class="checkbox_th">
+                                        <div>
+                                            <input value="{{Salary.SALARY_ID}}" ng-model="SALARY_ID" type="checkbox" />
+                                        </div>
+                                    </td>
+                                    <td>{{Salary.EMP_NAME}}</td>
+                                    <td>{{Salary.SALARY_FOR_MONTH}}</td>
+                                    <td>{{Salary.SALARY_DATE}}</td>
+                                    <td>{{Salary.PRESENT_DAYS}}</td>
+                                    <td>{{Salary.GROSS_SALARY}}</td>
+                                    <td>{{Salary.NET_SALARY}}</td>
+                                    <td>{{Salary.TOTAL_SALARY}}</td>
+                                    <td ng-show="Salary.IS_SALARY_HOLD== true">Yes</td>
+                                    <td ng-show="Salary.IS_SALARY_HOLD!= true">No</td>
+                                    <td>
+                                        <a href="~/#/Index" data-toggle="modal" ng-click="getForUpdate(Salary)" title="Add Language" class="btn btn-xs btn-success">Edit </a>
+                                        @*<a data-toggle="modal" data-target="#Salary_view" class="btn btn-xs" style="background-color:cornflowerblue; color: white;">Print</a>*@
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(1)">First</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <span ng-if="pager.currentPage!=1"><a ng-click="setPage(pager.currentPage - 1)">Previous</a></span>
+                                <span ng-if="pager.currentPage==1">Previous</span>
+                            </li>
+                            <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                                <a ng-click="setPage(page)">{{page}}</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.totalPages)">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="Salary_add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                <h4 class="modal-title"><b>Employee Monthly Salary</b></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-body">
+
+
+                                    <form name="AddPayment" ng-submit="AddPayment(AddPayment.$valid)" data-toggle="validator" role="form">
+                                        <div class="row">
+                                            <div class="col-lg-12" style="text-align:center;margin-bottom:15px;"> <b style="color:green;font-size:18px;">Salary Details</b></div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Employee Name:</label><label style="color:red;">*</label>
+                                                <select id="EMP_ID" class="form-control" name="EMP_ID" ng-model="EMP_ID"
+                                                        ng-options="emp.EMP_ID as emp.EMP_NAME for emp in EmpList"
+                                                        ng-selected="emp.EMP_ID == EMP_ID" ng-change="GetBasicSalary()">
+                                                    <option value="">Select Employee</option>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Basic Salary:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Contact No" ng-model="BASIC_SALARY" readonly class="form-control" minlength="1" maxlength="6" placeholder=" Basic Salary" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Month:</label><label style="color:red;">*</label>
+                                                <select ng-model="SALARY_FOR_MONTH" class="form-control" id="SALARY_FOR_MONTH" name="SALARY_FOR_MONTH" ng-change="GetEmpIncentive()">
+                                                    <option value="">Select Month</option>
+                                                    <option value="January">January</option>
+                                                    <option value="February">February</option>
+                                                    <option value="March">March</option>
+                                                    <option value="April">April</option>
+                                                    <option value="May">May</option>
+                                                    <option value="June">June</option>
+                                                    <option value="July">July</option>
+                                                    <option value="August">August</option>
+                                                    <option value="September">September</option>
+                                                    <option value="Octomber">Octomber</option>
+                                                    <option value="November">November</option>
+                                                    <option value="December">December</option>
+                                                </select>
+                                            </div>
+
+                                            <div div class="col-lg-6">
+                                                <label class="control-label">Salary Date:</label><label style="color:red;">*</label>
+                                                <input type="text" name="SalaryDate" ng-model="SALARY_DATE" id="SALARY_DATE" class="form-control" placeholder="Select Salary Date:" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Present Day:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Present Days" class="form-control" ng-change="GetGrossSalary()" ng-model="PRESENT_DAYS" minlength="0" maxlength="6" placeholder="Present Day" required />
+                                            </div>
+
+
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Gross Salary:</label>
+                                                <input type="number" name="Contact No" class="form-control" readonly minlength="0" ng-model="GROSS_SALARY" maxlength="6" placeholder="Enter Gross Salary" />
+                                            </div>
+
+                                            <div class="col-lg-12" style="text-align:center;margin-bottom:15px;"> <b style="color:red;font-size:18px;">Deduction Details</b></div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Advance Salary:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Contact No" class="form-control" ng-change="TotalDeduction()" ng-model="ADVANCE_SALARY" minlength="0" maxlength="6" placeholder="Advance Salary" required />
+                                            </div>
+
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Select Employee Loan:</label>
+                                                <select id="EMP_LOAN_ID" class="form-control" name="EMP_LOAN_ID" ng-model="EMP_LOAN_ID"
+                                                        ng-options="loan.EMP_LOAN_ID as loan.LOAN_AMOUNT for loan in LoanList"
+                                                        ng-selected="loan.EMP_LOAN_ID == EMP_LOAN_ID" ng-change="GetLoanDetails()">
+                                                    <option value="">Select Loan</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="table-responsive" ng-show="EMP_LOAN_ID!=0">
+                                                <table class="table table-bordered" style="font-size: 0.9rem;color:black;">
+                                                    <thead>
+                                                        <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: black ">
+                                                            <th>Loan Amount</th>
+                                                            <th>Installment Amount</th>
+                                                            <th>Loan Outstanding</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>{{LOAN_AMOUNT}}</td>
+                                                            <td>{{INSTALLMENT_AMOUNT}}</td>
+                                                            <td>{{LOAN_OUTSTANDING}}</td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Loan Installment:</label>
+                                                <input type="number" name="Contact No" ng-model="INSTALLMENT_AMOUNT" class="form-control" readonly ng-change="TotalDeduction()" placeholder="Loan Installment" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Current Mobile Bill:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Current Mobile Bill" minlength="0" class="form-control" required ng-model="CURRENT_MOBILE_BILL" ng-change="TotalDeduction()" placeholder="Current Mobile Bill :" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label"> Extra Mobile Bill:</label><label style="color:red;">*</label>
+                                                <input type="number" name="Extra Mobile Bill" class="form-control" minlength="0" required ng-model="EXTRA_MOBILE_BILL" ng-change="TotalDeduction()" placeholder="Extra Mobile Bill" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Total Deduction :</label><label style="color:red;">*</label>
+                                                <input type="number" name="Total Deduction " readonly ng-model="TOTAL_DEDUCTION" required class="form-control" minlength="0" maxlength="6" placeholder="Total Deduction " />
+
+                                            </div>
+                                            <div class="col-lg-12" style="text-align:center;margin-bottom:15px;"> <b style="color:green;font-size:18px;">Incentive Details</b></div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Incentive Amount :</label>
+                                                <input type="number" name="Incentive Amount" readonly class="form-control" ng-model="INCENTIVE_AMOUNT" placeholder="Incentive Amount" />
+                                            </div>
+                                            <div class="col-lg-12" style="text-align:center;margin-bottom:15px;"> <b style="color:green;font-size:18px;">Bonus Details</b></div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Bonus Amount:</label>
+                                                <input type="number" name="Bonus Amount" class="form-control" required minlength="1" maxlength="6" ng-model="SALARY_BONUS" placeholder="Bonus Amount" required />
+                                            </div>
+
+                                            @*<div class="col-lg-12" style="text-align:center;margin-bottom:15px;"> <b style="color:green;font-size:18px;">Company Bank</b></div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="control-label">Select Company Bank:</label><label style="color:red;">*</label>
+                                                    <select id="EMP_LOAN_ID" class="form-control" name="EMP_LOAN_ID" ng-model="B_ID"
+                                                            ng-options="loan.B_ID as loan.BANK_NAME for loan in BankList"
+                                                            ng-selected="loan.B_ID == B_ID" required>
+                                                        <option value="">Select Loan</option>
+                                                    </select>
+                                                </div>*@
+
+                                            <div class="col-lg-12" style="text-align:center;margin-bottom:15px;"> <b style="color:green;font-size:18px;">Net Salary</b></div>
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Net Salary:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Username" ng-model="NET_SALARY" class="form-control" required placeholder="Net Salary" />
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Salary + Bonus + Incentive:</label><label style="color:red;">*</label>
+                                                <input type="text" name="Username" ng-model="TOTAL_SALARY" class="form-control" required minlength="1" maxlength="6" placeholder="Salary + Bonus" />
+                                            </div>
+                                            <hr style="color:black" />
+
+                                            <div class="form-group col-md-6">
+                                                <label class="control-label">Hold Salary :</label><label style="color:red;">*</label><br />
+                                                <label for="Yes">
+                                                    <input type="radio" ng-model="IS_SALARY_HOLD" required id="Yes" name="Yes" value="true">
+                                                    Yes
+                                                </label> &nbsp; &nbsp;
+
+                                                <label for="No">
+                                                    <input type="radio" ng-model="IS_SALARY_HOLD" required id="No" name="No" value="false">
+                                                    No
+                                                </label>
+                                            </div>
+                                            <div class="form-group col-md-6" style="text-align:center; margin-top:30px;">
+
+                                                <button type="button" class="btn btn-sm pull-left form-control" ng-click="GetSalaryCalculation()" style="background-color: palevioletred; color: white">Calculate Salary</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group col-md-12">
+                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPayment.$invalid" ng-click="AddAdmin()" value="Add Salary" />
+                                    <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="MonthlySalary">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+
+                            <div ng-show="IsBankSelected=='Yes'">
+                                <div class="wrapper1" id="wrapper1">
+                                    <header>
+                                        <div style="display: flex;width: fit-content;margin: 20px auto;align-items: center;">
+                                            <div style="margin-right: 15px;">
+                                                <img style="width: 100%;" src="{{LOGO}}" alt="SAI MEDICAL LOGO">
+                                                <img style="max-width: 100%;" class="img-fluid" src="logo.png" alt="">
+                                            </div>
+                                            <div>
+                                            </div>
+                                        </div>
+                                    </header>
+
+                                    <div class="body1">
+                                        <form style="margin-left:auto; text-align: end; margin-bottom: 15px; display: block;">
+                                            <b><span style="font-size: 16px;">Date: {{ currentDate | date:'dd/MM/yyyy' }} </span></b>
+                                        </form>
+
+                                        <b>
+                                            <small style="font-size: 16px;">
+                                                <p style="text-align:start; margin: 0; line-height: 16px;">To,</p>
+                                            </small>
+                                        </b>
+
+                                        <b>
+                                            <span style="font-size: 16px;">
+                                                <p style="text-align:start; margin: 0; line-height: 26px;">
+                                                    The Branch
+                                                    Manager,
+                                                </p>
+                                            </span>
+                                        </b>
+
+                                        <b>
+                                            <span style="font-size: 16px;">
+                                                <p style="text-align:start; margin: 0; line-height: 26px;">{{BANK_NAME}},
+                                            </span>
+                                        </b>
+
+                                        <b>
+                                            <span style="font-size: 16px;">
+                                                <p style="text-align:start; margin: 0; line-height: 26px;">
+                                                    {{BRANCH_NAME}},
+                                            </span>
+                                        </b>
+
+                                        @*<b>
+                                                <span style="font-size: 16px;">
+                                                    <p style="text-align:start; margin: 0; line-height: 26px;">Nashik.
+                                                </span>
+                                            </b>*@
+
+                                        <p style="text-align: center; margin: 0;">
+                                            <b>
+                                                <span style="font-size: 16px;">Subject:</span>
+                                            </b> Salary Transfer
+                                            Letter.
+                                        </p>
+
+                                        <p style="margin: 0;"> Dear Sir,</p>
+
+                                        <p style="line-height: 26px;">
+                                            Please do good enough to debit <b>
+                                                <small style="font-size: 16px;"> Rs,{{TOTAL_SALARY}}/-</small>
+                                            </b> our<b>
+                                                <span style="font-size: 16px;"> A/C No. {{ACC_NO}} </span>
+                                            </b>
+                                            and credit the following monies to respective Account as details below.
+                                        </p>
+                                        <div class="table-responsive-horizontal">
+                                            <table style="width: 100%;" cellspacing="0" class="table-responsive">
+                                                <tbody style="width: 100%;">
+
+                                                    <tr>
+                                                        <td style="border-left-style: solid;border-left-width: 1px;border-bottom-style: solid; border-bottom-width: 1px;border-top-style: solid;border-top-width: 1px;vertical-align: baseline;padding-left: 15.9px;">
+                                                            <p class="s2" style="font-size: 18px;font-weight: 600;margin: 0; ">Sr. No.</p>
+                                                        </td>
+                                                        <td style="border-top-style: solid;border-top-width: 1px;border-left-style: solid;border-left-width: 1px;border-bottom-style: solid;border-bottom-width: 1px;border-right-style: solid;border-right-width: 1px;vertical-align: baseline; padding-left: 15.9px;">
+                                                            <p class="s2" style="font-size: 18px;font-weight: 600;margin: 0; ">Employee Name</p>
+                                                        </td>
+                                                        <td style="border-top-style: solid;border-top-width: 1px;border-bottom-style: solid;border-bottom-width: 1px;vertical-align: baseline;padding-left: 15.9px;">
+                                                            <p class="s2" style="font-size: 18px;font-weight: 600;margin: 0;">
+                                                                A/c No.
+                                                            </p>
+                                                        </td>
+                                                        <td style="border-top-style: solid; border-top-width: 1px;border-left-style: solid;border-left-width: 1px;border-bottom-style: solid;border-bottom-width: 1px;font-weight: 600;vertical-align: baseline;padding-left: 15.9px;">
+                                                            <p class="s2" style="font-size: 18px;margin: 0; ">IFSC Code</p>
+                                                        </td>
+                                                        <td style="border-top-style: solid;border-top-width: 1px;border-left-style: solid;border-left-width: 1px; border-bottom-style: solid;border-bottom-width: 1px;border-right-style: solid;border-right-width: 1px;vertical-align: baseline;padding-left: 15.9px;">
+                                                            <p class="s2" style="font-weight: 600;font-size: 18px;margin: 0; ">
+                                                                Salary
+                                                            </p>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr ng-repeat="Salary  in PrintList">
+                                                        <td style="
+border-left-style: solid;
+border-left-width: 1px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; ">{{$index+1}}</p>
+                                                        </td>
+                                                        <td style="
+border-left-style: solid;
+border-left-width: 1px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-right-style: solid;
+border-right-width: 1px;
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; ">{{Salary.EMP_NAME}}</p>
+                                                        </td>
+                                                        <td style="
+
+border-bottom-style: solid;
+border-bottom-width: 1px;
+
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; ">{{Salary.ACCOUNT_NO}}</p>
+                                                        </td>
+                                                        <td style="
+border-left-style: solid;
+border-left-width: 1px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-right-style: solid;
+border-right-width: 1px;
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; ">{{Salary.IFSC_CODE}}</p>
+                                                        </td>
+
+                                                        <td style="
+
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-right-style: solid;
+border-right-width: 1px;
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="font-weight: 600;
+  font-size: 18px;
+  margin: 0; ">{{Salary.NET_SALARY}}</p>
+                                                        </td>
+
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td style="
+border-left-style: solid;
+border-left-width: 1px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; "></p>
+                                                        </td>
+                                                        <td style="
+border-left-style: solid;
+border-left-width: 1px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-right-style: solid;
+border-right-width: 1px;
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; "></p>
+                                                        </td>
+                                                        <td style="
+
+border-bottom-style: solid;
+border-bottom-width: 1px;
+
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; "></p>
+                                                        </td>
+                                                        <td style="
+border-left-style: solid;
+border-left-width: 1px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-right-style: solid;
+border-right-width: 1px;
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0; ">Total</p>
+                                                        </td>
+
+                                                        <td style="
+
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-right-style: solid;
+border-right-width: 1px;
+vertical-align: baseline;
+padding-left: 15.9px;">
+
+                                                            <p class="s2" style="font-weight: 600;
+  font-size: 18px;
+  margin: 0; ">{{TOTAL_SALARY}}/-</p>
+                                                        </td>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <br />
+                                        <br />
+                                        <br />
+
+                                        <p style="margin: 0;">Thanking you,</p>
+                                        <p style="margin: 0; line-height: 6px;">Yours Faithfully,</p>
+
+                                        <div>
+                                            <p style="line-height:20px;margin-top: 80px;margin-bottom: 0; font-size: 16px;">
+                                                <b>
+                                                    Sai Healthcare Services
+                                                </b>
+                                            </p>
+
+                                            <p style="font-size: 13px; text-align: center; margin-top: 50px; color: #175292; font-weight: bold;">
+                                                Address: Plot No. 50 Shinde Industrial Area, Naygaon Road, Shinde,
+                                                Nashik – 422 102.
+                                            </p>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group col-md-12">
+                                        <div class="noprint">
+                                            <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" value="Print" ng-click="print('wrapper1')" />
+                                            @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddProduct(Sparepart)" value="Add Product" />*@
+                                            <input type="button" value="Cancel" @*ng-click="Cancel()"*@ class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div ng-show="IsBankSelected=='No'">
+                                <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white; padding: 10px; ">
+
+                                    <h4 class="modal-title"><b>Select Bank</b></h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card-body">
+
+
+                                        <form data-toggle="validator" role="form">
+                                            <div class="row">
+                                                <div class="form-group col-md-12">
+                                                    <label class="control-label">Select Bank:</label><label style="color:red;">*</label>
+                                                    <select id="EMP_LOAN_ID" class="form-control" name="EMP_LOAN_ID" ng-model="B_ID"
+                                                            ng-options="loan.B_ID as loan.BANK_NAME for loan in BankList"
+                                                            ng-selected="loan.B_ID == B_ID" required>
+                                                        <option value="">Select Bank</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group col-md-12">
+                                        <button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white;margin-left:40px;" @*data-toggle="modal" data-target="#MonthlySalary"*@ ng-click="Print()">Add Bank</button>
+
+                                        @*<input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" data-target="#MonthlySalary" data-toggle="modal" ng-click="Print()" value="Add Bank" />*@
+                                        <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section scripts
+{
+    <script src="~/AngularJs/MonthlySalary.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#SALARY_DATE").datepicker({ changeMonth: true, changeYear: true });
+            $("#SALARY_DATE").datepicker("option", "dateFormat", "dd/mm/yy");
+            $("#SALARY_DATE").datepicker("option", "monthNamesShort", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+            $("#SALARY_DATE").datepicker("option", "showMonthAfterYear", false);
+            $("#SALARY_DATE").datepicker("option", "yearRange", "2000:2060");
+        });
+    </script>
+}

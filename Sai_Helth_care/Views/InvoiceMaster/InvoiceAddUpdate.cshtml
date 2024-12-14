@@ -35,6 +35,8 @@
         }
 </style>
 
+
+
 <section ng-controller="AddUpdateInvoiceCtrl">
     <div class="row">
         <div class="col-12">
@@ -87,20 +89,20 @@
                                         </span>
                                     </span>
                                 </div>
+                                @*<div class="form-group col-md-6">
+                                        <label class="control-label">Customer Firm Name:</label><label style="color:red;">*</label>
+                                        <input type="text" ng-model="FirmName" id="FirmName" name="FirmName" class="form-control" readonly />
+                                    </div>*@
                                 <div class="form-group col-md-6">
-                                    <label class="control-label">Select Customer Firm Name:</label><label style="color:red;">*</label>
-                                    <select ng-model="F_ID" id="F_ID" name="F_ID" class="form-control"
-                                            ng-options="firm.F_ID as firm.FIRM_NAME for firm in CustomerFirmList"
-                                            ng-selected="firm.F_ID == F_ID" ng-change="GetReferenceNo()" required>
+                                    <label class="control-label">Customer Firm Name:</label><label style="color:red;">*</label>
+
+                                    <select ng-model="F_ID" id="F_ID" name="F_ID" class="form-control" ng-options="firm.F_ID as firm.FIRM_NAME for firm in CustomerFirmList" ng-selected="firm.F_ID == F_ID" ng-change="GetReferenceNo()" ng-disabled="IS_DISABLE" required>
                                         <option value="">Select Customer Firm</option>
                                     </select>
-                                    <span ng-show="(AddUpdateInvoice.F_ID.$invalid
-                                                      && (AddUpdateInvoice.F_ID.$dirty))">
-                                        <span class="error" ng-show="AddUpdateInvoice.F_ID.$error.required">
-                                            Customer Firm is required
-                                        </span>
-                                    </span>
+
+
                                 </div>
+
 
                                 <div class="form-group col-md-6" ng-show="PurchaseOrderList.length > 0">
                                     <label class="control-label">PO Number:</label>@*<label style="color:red;">*</label>*@
@@ -352,8 +354,7 @@
 
                                 <div class="form-group col-md-2">
                                     <label class="control-label">Total Amount:</label>
-                                    <input type="text" name="AMOUNT" ng-model="TOTAL_AMOUNT" class="form-control" readonly
-                                           placeholder="Total Amount" value="0" @*required*@ />
+                                    <input type="text" name="AMOUNT" ng-model="TOTAL_AMOUNT" class="form-control" readonly placeholder="Total Amount" value="0" />
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label class="control-label">Inc. All Taxes:</label>
@@ -362,10 +363,8 @@
                                             ng-options="IAT.IAT_ID as IAT.IAT_NAME for IAT in IncludingAllTaxesList"
                                             ng-selected="IAT.IAT_ID == IAT_ID" ng-change="IsIncludingTax()" required>
                                         <option value="">Select Inc. All Taxes</option>
-
                                     </select>
-                                    <span ng-show="(AddUpdateInvoice.IAT_ID.$invalid
-                                                      && (AddUpdateInvoice.IAT_ID.$dirty))">
+                                    <span ng-show="(AddUpdateInvoice.IAT_ID.$invalid && (AddUpdateInvoice.IAT_ID.$dirty))">
                                         <span class="error" ng-show="AddUpdateInvoice.IAT_ID.$error.required">
                                             Inc. All Taxes is required
                                         </span>
@@ -384,11 +383,18 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label class="control-label">Tax Amount:</label>
-                                    <input type="text" name="TAX_AMOUNT" class="form-control" ng-model="TAX_AMOUNT" readonly placeholder="Tax Amount" @*required*@ />
+                                    <input type="text" name="TAX_AMOUNT" class="form-control"
+                                           ng-value="(TAX_AMOUNT | number:2)"
+                                           readonly placeholder="Tax Amount" />
                                 </div>
+
+
+
+
+
                                 <div class="form-group col-md-3">
                                     <label class="control-label">Amount Inc. Tax:</label>
-                                    <input type="text" name="AMOUNT_INC_TAX" class="form-control" ng-model="AMOUNT_INC_TAX" readonly placeholder="Amount Inc. Tax" @*required*@ />
+                                    <input type="text" name="AMOUNT_INC_TAX" class="form-control" ng-model="AMOUNT_INC_TAX" readonly placeholder="Amount Inc. Tax" />
                                 </div>
 
                                 <div class="form-group col-md-6">
@@ -427,7 +433,7 @@
                                     <label class="control-label">Dispatched Through:</label>
                                     <input type="text" class="form-control" name="DISPATCHED_THROUGH" ng-model="DISPATCHED_THROUGH" placeholder="Dispatched Through" />
                                 </div>
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-3 pt-6">
                                     <label class="control-label">Destination:</label>
                                     <input type="text" class="form-control" name="DESTINATION" ng-model="DESTINATION" placeholder="Destination" />
                                 </div>
@@ -986,6 +992,7 @@
                                                 }
                                             </style>
 
+
                                             <div class="page-header" style="text-align: center">
                                                 <div class="header-section">
                                                     <div class="table-responsive">
@@ -994,7 +1001,7 @@
                                                                 <tr>
                                                                     <td valign="top">
                                                                         <div class="header-section" style="object-fit:contain;">
-                                                                            <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+                                                                            <img src="~/Images/Quotation/HeaderImages/SaiHealthCareMedtronicHeader.png" style="width:100%; max-height:200px;">
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -1007,9 +1014,9 @@
                                             <table style="width:100%;">
                                                 <thead>
                                                     <tr>
-                                                        <td>
-                                                            <div class="page-header-space"></div>
-                                                        </td>
+                                                        @*<td>
+                                                                <div class="page-header-space"></div>
+                                                            </td>*@
                                                     </tr>
                                                 </thead>
 
@@ -1134,7 +1141,7 @@
                                                                                                 padding-left: 2%;
                                                                                                 padding-right: 2%;">
                                                                                             <STRong>
-                                                                                                <span ng-show="CUSTOMER_TYPE=='Regular'">Refurbished</span> {{p.M_NAME}} {{p.PRODUCT_NAME}} {{p.CAT_NAME}}
+                                                                                                <span ng-show="CUSTOMER_TYPE=='Regular'">Refurbished</span> {{p.M_NAME}} {{p.PRODUCT_NAME}}
                                                                                                 <span ng-if="InvoiceList.IS_INVOICE_FOR_SPAREPARTS===0  && p.AccessoriesList.length>0 && p.IS_WITH_PROBE === 0">
                                                                                                     With Std. Accessories
                                                                                                 </span>
@@ -1287,7 +1294,7 @@
                                                                           text-align: left;" colspan="2">CGST@('@'){{InvoiceList.GST/2}}% </th>
                                                                         <th style="border:1px solid black;
                                                                           border-collapse: collapse;
-                                                                          text-align: right;">{{InvoiceList.TAX_AMOUNT/2}}/-</th>
+                                                                          text-align: right;">{{InvoiceList.TAX_AMOUNT}}/-</th>
                                                                     </tr>
                                                                     <tr>
                                                                         <th style="border:1px solid black;
@@ -1376,7 +1383,8 @@
                                                                                             <sup>For</sup> @*Sai Medical Services*@{{COMPANYNAME}}
                                                                                         </strong>
                                                                                     </h3>
-                                                                                    <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+                                                                                    @*<img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />*@
+                                                                                    <img src="~/Images/signture-stamp-img.jpg" style="width:300px; max-width:100%;" />
                                                                                     <h4 style="margin-bottom: 0; font-size: 16px; "><b>Seal & Signature</b></h4>
                                                                                 </div>
                                                                             </center>
@@ -1449,10 +1457,20 @@
                                                         body {
                                                             margin: 0;
                                                         }
+
+                                                        .set_invoice_one_page {
+                                                            margin-top: 0px !important;
+                                                        }
+
+                                                        .declaration_space_adjust {
+                                                            margin-top: 0px !important;
+                                                            margin-bottom: 10px !important;
+                                                        }
                                                     }
                                                 </style>
 
-                                                <div class="page-header" style="text-align: center">
+                                                <div class="page-header" style="text-align: center;">
+
                                                     <div class="header-section">
                                                         <div class="table-responsive">
                                                             <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
@@ -1469,25 +1487,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div style="font-size: 25px; width:100%; text-align:center; padding-top: 10rem;"><span>Tax Invoice</span></div>
 
                                                 <table>
-                                                    <thead>
-                                                        <tr>
-                                                            <td>
-                                                                <div class="page-header-space"></div>
-                                                            </td>
-                                                        </tr>
-                                                    </thead>
-
                                                     <tbody>
                                                         <tr>
                                                             <td>
-                                                                <div style="margin: 40px 0; text-align:center;margin-top:20px;">
-                                                                    <b style="border-bottom: 2px solid #000;"> TAX INVOICE </b>
+                                                                <div class="set_invoice_one_page" style="text-align:center; margin-top:10px;">
+
                                                                 </div>
-                                                                <div style="display: flex;
+
+                                                                <div class="set_invoice_one_page" style="display: flex;
 justify-content: center;
-margin-top: 5%;">
+margin-top: 2%;">
 
                                                                     <table style="width:100%; border:1px solid black;
 border-collapse: collapse;
@@ -1499,36 +1511,36 @@ padding-right: 2%;">
             border-collapse: collapse;padding-left:5px;
 
             line-height: 1.4;" rowspan="3" colspan="2">
-                                                                                <p style="margin-top: 0; margin-bottom: 0;"><strong>{{COMPANYNAME}}</strong></p>
-                                                                                <p style="margin-top: 0; margin-bottom: 0;font-size:15px;">
-                                                                                    {{COMPANYREGADDRESS}} – {{ZIPCODE}}.
+                                                                                <p class="set_invoice_one_page" style="margin-top: 10px; margin-bottom: 0px;"><strong>{{COMPANYNAME}}</strong></p>
+                                                                                <p class="set_invoice_one_page" style="margin-top: 10px; margin-bottom: 0px;font-size:15px;">
+                                                                                    {{COMPANYREGADDRESS}} {{ZIPCODE}}.
                                                                                 </p>
-                                                                                <p style="margin-top: 0; margin-bottom: 0;"><strong>PAN Card : </strong>{{PAN_NO}}</p>
-                                                                                <p style="margin-top: 0; margin-bottom: 0;display:none" id="GST_NO"><strong>GSTIN No : </strong>{{GST_NO}}</p>
-                                                                                <p style="margin-top: 0; margin-bottom: 0;"><strong>PO No : </strong>{{InvoiceList.PO_NUMBER}}</p>
-                                                                                <p style="margin-top: 0; margin-bottom: 0;"><strong>PO Date : </strong>{{InvoiceList.PO_DATE}}</p>
+                                                                                <p class="set_invoice_one_page" style="margin-top: 20px; margin-bottom: 0;"><strong>PAN Card : </strong>{{PAN_NO}}</p>
+                                                                                <p class="set_invoice_one_page" style="margin-top: 10px; margin-bottom: 0;display:none" id="GST_NO"><strong>GSTIN No : </strong>{{GST_NO}}</p>
+                                                                                <p class="set_invoice_one_page" style="margin-top: 20px; margin-bottom: 0;"><strong>PO No : </strong>{{InvoiceList.PO_NUMBER}}</p>
+                                                                                <p class="set_invoice_one_page" style="margin-top: 20px; margin-bottom: 0;"><strong>PO Date : </strong>{{InvoiceList.PO_DATE}}</p>
                                                                             </td>
                                                                             <td colspan="2" style="border:1px solid black;padding-left:5px;
             border-collapse: collapse;
             ">
-                                                                                <P style="margin-bottom: 0; margin-top: 0;">Invoice No. <br><STRong style="font-size:12px;">{{InvoiceList.INVOICE_NUMBER}}</STRong></P>
+                                                                                <P class="set_invoice_one_page" style="margin-bottom: 0; margin-top: 20px;">Invoice No. <br><STRong style="font-size:12px;">{{InvoiceList.INVOICE_NUMBER}}</STRong></P>
                                                                             </td>
                                                                             <td colspan="2" style="border:1px solid black;
             border-collapse: collapse;
             ">
-                                                                                <P style="margin-bottom: 0; margin-top: 0; padding-left: 5px;">Dated <br><STRong style="font-size:12px;">{{InvoiceList.INVOICE_DATE}}</STRong></P>
+                                                                                <P class="set_invoice_one_page" style="margin-bottom: 0; margin-top: 10px; padding-left: 5px;">Dated <br><STRong style="font-size:12px;">{{InvoiceList.INVOICE_DATE}}</STRong></P>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td colspan="2" style="border:1px solid black;
             border-collapse: collapse;
             ">
-                                                                                <P style="margin-bottom: 0; margin-top: 0; padding-left: 5px;">Delivery Note <br><STRong style="font-size:12px;">{{InvoiceList.DC_NUMBER}}</STRong></P>
+                                                                                <P class="set_invoice_one_page" style="margin-bottom: 0; margin-top: 10px; padding-left: 5px;">Delivery Note <br><STRong style="font-size:12px;">{{InvoiceList.DC_NUMBER}}</STRong></P>
                                                                             </td>
                                                                             <td colspan="2" style="border:1px solid black;
             border-collapse: collapse;
             ">
-                                                                                <P style="margin-bottom: 0; margin-top: 0; padding-left: 5px;">Mode/Terms Payment <br><STRong><span id="TNC1" style="font-size:12px;"></span></STRong></P>
+                                                                                <P class="set_invoice_one_page" style="margin-bottom: 0; margin-top: 10px; padding-left: 5px;">Mode/Terms Payment <br><STRong><span id="TNC1" style="font-size:12px;"></span></STRong></P>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -1536,13 +1548,13 @@ padding-right: 2%;">
             border-collapse: collapse;
             ">
 
-                                                                                <p style="margin-bottom: 0; margin-top: 0; padding-left: 5px;">Dispatched Through <br><strong>{{InvoiceList.DISPATCHED_THROUGH}}</strong></p>
+                                                                                <p class="set_invoice_one_page" style="margin-bottom: 0; margin-top: 2px; padding-left: 5px;">Dispatched Through <br><strong>{{InvoiceList.DISPATCHED_THROUGH}}</strong></p>
                                                                             </td>
                                                                             <td colspan="3" style="border:1px solid black;
             border-collapse: collapse;
             ">
 
-                                                                                <p style="margin-bottom: 0; margin-top: 0; padding-left: 5px;">Destination <br><strong> {{InvoiceList.DESTINATION}}</strong></p>
+                                                                                <p class="set_invoice_one_page" style="margin-bottom: 0; margin-top: 2px; padding-left: 5px;">Destination <br><strong> {{InvoiceList.DESTINATION}}</strong></p>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -1574,7 +1586,7 @@ padding-right: 2%;">
                                                                                                 <p style="margin: 0;"><strong>Sr. No</strong></p>
                                                                                             </td>
                                                                                             <td style="border: 1px solid black; border-collapse: collapse; padding-left: 2%; padding-right: 2%; text-align: center; width: 36%;">
-                                                                                                <p style="margin: 0;"><strong>Description of Goods</strong></p>
+                                                                                                <p style="margin: 10px;"><strong>Description of Goods</strong></p>
                                                                                             </td>
                                                                                             <td style="border: 1px solid black; border-collapse: collapse; text-align: center; width: 12%;">
                                                                                                 <p style="margin: 0;"><strong>HSN Code</strong></p>
@@ -1599,12 +1611,12 @@ padding-right: 2%;">
                                                                                             <td style="border: 1px solid black; border-collapse: collapse; padding-left: 5px; padding-right: 5px;">
 
                                                                                                 <p>
-                                                                                                    <span>Refurbished</span> {{p.M_NAME}} {{p.PRODUCT_NAME}} {{p.CAT_NAME}}
+                                                                                                    {{p.M_NAME}} {{p.PRODUCT_NAME}} {{p.CAT_NAME}}
                                                                                                     <span ng-if="InvoiceList.IS_INVOICE_FOR_SPAREPARTS===0 && p.AccessoriesList.length>0 && p.IS_WITH_PROBE === 0">
                                                                                                         With Std. Accessories
                                                                                                     </span>
                                                                                                     <span ng-if="InvoiceList.IS_INVOICE_FOR_SPAREPARTS===0 && p.AccessoriesList.length>0 && p.IS_WITH_PROBE === 1">
-                                                                                                        With {{p.AccessoriesList.length}} Probes
+                                                                                                        {{p.PRODUCT_NAM}} With {{p.AccessoriesList.length}} Probes
                                                                                                     </span>
                                                                                                 </p>
                                                                                             </td>
@@ -1723,7 +1735,9 @@ padding-right: 2%;">
             text-align: left;
             ">
 
-                                                                                                <p style="margin: 0;padding-left:5px;">Output GST Tax@('@'){{InvoiceList.GST}}%</p>
+                                                                                                <p style="margin: 0; padding-left: 5px;">Output GST Tax:@('@'){{InvoiceList.GST}}% {{ComputedGST}}</p>
+
+
                                                                                             </td>
                                                                                             <td style="border:1px solid black;
             border-collapse: collapse;
@@ -1913,11 +1927,12 @@ padding-right: 2%;">
                                                                                                         <tr>
                                                                                                             <td colspan="6" valign="top" style="border: 1px solid black; text-align: left; border-collapse: collapse;">
                                                                                                                 <p style="margin: 0; padding-left: 5px; "><b>Payment Terms Details: </b>{{InvoiceList.PAYMENT_TERMS_DETAILS}} </p>
+                                                                                                                <span id="TNC"></span>
                                                                                                             </td>
+
                                                                                                         </tr>
                                                                                                         <tr ng-show="InvoiceList.COMMENTS!=''">
                                                                                                             <td colspan="6" valign="top" style="border: 1px solid black; text-align: left; border-collapse: collapse;">
-                                                                                                                <p style="margin: 0; padding-left: 5px; "><b>Comment: </b>{{InvoiceList.COMMENTS}} </p>
                                                                                                             </td>
                                                                                                         </tr>
                                                                                                         <tr>
@@ -1925,8 +1940,9 @@ padding-right: 2%;">
         border-collapse: collapse;
         font-size:15px;
         ">
-                                                                                                                <div style="padding-left: 5px;">
-                                                                                                                    <p style="margin: 0;">Declaration</p>
+                                                                                                                <div style="padding-left: 5px; ">
+                                                                                                                    <p class="declaration_space_adjust" style="margin-top: 8rem; margin-bottom: 20rem;">Declaration</p>
+
                                                                                                                     <b>We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</b>
                                                                                                                 </div>
 
@@ -1937,12 +1953,12 @@ padding-right: 2%;">
         padding-right: 1%; border-left:1px solid black;">
                                                                                                                 <center>
                                                                                                                     <div>
-                                                                                                                        <h3 style="margin-top: 0; margin-bottom: 0px;">
+                                                                                                                        <h3 class="declaration_space_adjust" style="margin-top: 150px; margin-bottom: 0px;">
                                                                                                                             <strong style="font-size: 16px;"><sup>For</sup></strong> <strong style="font-size:20px;">
                                                                                                                                 @*Sai Medical Services*@{{COMPANYNAME}}
                                                                                                                             </strong>
                                                                                                                         </h3><br>
-                                                                                                                        <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width: 450px; height: 120px; max-width: 100%; " />
+                                                                                                                        <img src="~/Images/signture-stamp-img.jpg" style="width: 450px; height: 120px; max-width: 100%; " />
                                                                                                                     </div>
                                                                                                                 </center>
 
@@ -1956,6 +1972,9 @@ padding-right: 2%;">
 
                                                                                     </table>
                                                                                 </div>
+
+
+
 
                                                                             </td>
                                                                         </tr>
@@ -1997,7 +2016,7 @@ padding-right: 2%;">
                                                 }
 
                                                 .page-header, .page-header-space {
-                                                    height: 210px;
+                                                    height: 110px;
                                                 }
 
                                                 .page {
@@ -2015,6 +2034,7 @@ padding-right: 2%;">
                                                         top: 0mm;
                                                         width: 100%;
                                                         height: 220px;
+                                                        padding-top: 5px;
                                                     }
 
                                                     thead {
@@ -2023,6 +2043,11 @@ padding-right: 2%;">
 
                                                     body {
                                                         margin: 0;
+                                                    }
+
+                                                    .po_title {
+                                                        margin-top: 1px !important;
+                                                        display: block;
                                                     }
                                                 }
                                             </style>
@@ -2036,6 +2061,7 @@ padding-right: 2%;">
                                                                     <td valign="top">
                                                                         <div class="header-section" style="object-fit:contain;">
                                                                             <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; max-height:200px;">
+
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -2048,34 +2074,37 @@ padding-right: 2%;">
                                             <table>
                                                 <thead>
                                                     <tr>
-                                                        <td>
-                                                            <div class="page-header-space"></div>
-                                                        </td>
+                                                        @*<td>
+                                                                <div class="page-header-space"></div>
+                                                            </td>*@
                                                     </tr>
                                                 </thead>
 
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <div style="font-size: 25px; width:100%; text-align:center; "><b>Delivery Challan</b></div>
+                                                            <div class="po_title" style="font-size: 25px; width:100%; text-align:center; padding-top: 10rem;">
+                                                                <span>Delivery Challan</span>
+                                                            </div>
+
+
+
                                                             <div style="display: flex;
 justify-content: center;
 ">
 
-                                                                <table style="width:100%; border:1px solid black;
-    border-collapse: collapse;
-    padding-left: 2%;
-    padding-right: 2%;">
+                                                                <table style="width:100%; border:1px solid black; border-collapse: collapse; padding-left: 2%; padding-right: 2%; margin-top: 20px;">
 
                                                                     <tr>
                                                                         <td style="border:1px solid black;
             border-collapse: collapse;
             padding-left: 10px;
             padding-right: 2%;
-            width: 40%;
+            width: 50%;
             font-size: 16px;
             " rowspan="3" colspan="2">
-                                                                            <p style="margin: 0;"><strong>Name and address of Customer:</strong></p>
+                                                                            <p style="margin: 0; padding-top: ;"><strong>Name and address of Customer:</strong></p>
+
                                                                             <p style="margin: 0;">
                                                                                 <strong id="CustomerName3" style="display:none;">{{ChallanList.CUSTOMER_NAME}}<br /></strong>
                                                                                 <strong>{{ChallanList.FIRM_NAME}}</strong>
@@ -2089,7 +2118,7 @@ justify-content: center;
             padding-left: 2%;
             padding-right: 2%;
             font-size: 16px;">
-                                                                            <P style="margin: 10px 0;"><STRong>DC No.: {{ChallanList.DC_NUMBER}}</STRong></P>
+                                                                            <P style="margin: 4px 0;"><STRong>DC No.: {{ChallanList.DC_NUMBER}}</STRong></P>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -2107,7 +2136,7 @@ justify-content: center;
             padding-left: 2%;
             padding-right: 2%;
             font-size: 16px;">
-                                                                            <P style="margin: 30px 0 5px 0;"><STRong>GSTIN Number: {{GST_NO}}</STRong></P>
+                                                                            <P style="margin: 4px 0;"><STRong>GSTIN Number: {{GST_NO}}</STRong></P>
                                                                         </td>
                                                                     </tr>
 
@@ -2143,7 +2172,7 @@ justify-content: center;
         text-align: center;
         font-size: 16px;
         ">
-                                                                                            <p style="margin: 12px 0;"><strong>Description</strong></p>
+                                                                                            <p style="margin: 12px 0;"><strong>Description </strong></p>
                                                                                         </td>
                                                                                         <td style="border:1px solid black;
         border-collapse: collapse;
@@ -2187,7 +2216,7 @@ justify-content: center;
                         padding-left: 2%;
                         padding-right: 2%;
                         font-size: 16px;">
-                                                                                            <span ng-show="CUSTOMER_TYPE=='Regular'">Refurbished</span> {{p.M_NAME}} {{p.PRODUCT_NAME}}
+                                                                                            <span>{{p.M_NAME}} {{p.PRODUCT_NAME}} {{p.CAT_NAME}}</span>
                                                                                             <span ng-show="p.AccessoriesList.length>0">
                                                                                                 With Std. Accessories
                                                                                             </span>
@@ -2229,7 +2258,7 @@ justify-content: center;
                         padding-left: 2%;
                         padding-right: 2%;
                         font-size: 16px;">
-                                                                                            <span ng-if="$index+1===1">Std Accessories:</span><br>
+                                                                                            <br>
                                                                                             {{acc.STD_ACC_NAME}}
                                                                                         </td>
                                                                                         <td style="border:1px solid black;
@@ -2331,7 +2360,8 @@ justify-content: center;
                                                                                 <p style="margin-top: 0; margin-bottom: 20px; font-size: 20px; font-weight: bold;">
                                                                                     <strong style="font-size: 16px;"><sup>For</sup></strong> @*Sai Medical Services*@{{COMPANYNAME}}
                                                                                 </p>
-                                                                                <img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />
+                                                                                @*<img src="{{CmpDetailsList[0].COMPANY_SEAL}}" style="width:300px; max-width:100%;" />*@
+                                                                                <img src="~/Images/signture-stamp-img.jpg" style="width:300px; max-width:100%;" />
                                                                                 <p style="margin-bottom: 0;  font-size: 16px; "><b>Seal & Signature</b></p>
                                                                             </center>
                                                                         </td>
@@ -2412,8 +2442,8 @@ justify-content: center;
                                                             <td style="border:2px solid #4170a9; font-size: 14px; padding: 5px; font-weight:600;">{{prodList[0].SERIAL_NO}}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="border:2px solid #4170a9; font-size: 14px; padding: 5px;">Invoice No: </td>
-                                                            <td style="border:2px solid #4170a9; font-size: 14px; padding: 5px; font-weight:600;">{{InvoiceList.INVOICE_NUMBER}}</td>
+                                                            <td style="border:2px solid #4170a9; font-size: 14px; padding: 10px;">Invoice No: </td>
+                                                            <td style="border:2px solid #4170a9; font-size: 14px; padding: 10px; font-weight:600;">{{InvoiceList.INVOICE_NUMBER}}</td>
                                                         </tr>
                                                     </thead>
                                                 </table>

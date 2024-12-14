@@ -1,0 +1,174 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+</style>
+
+<style>
+    .table td, .table th {
+        padding: 0.50rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+        font-size: 12px;
+    }
+
+    #example-table thead {
+        background-color: #BE7833;
+        position: sticky;
+        z-index: 1024;
+        color: white;
+        top: 0;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+
+<section class="content" ng-controller="DesignationCtrl">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <a ng-click="GoToPreviousNextPage('Previous')" class="btn btn-xs" style="background-color: green; color: white"><span class="fa fa-arrow-left"></span></a>
+                            </div>
+                            <div class="col-lg-9">
+                                <h3 class="card-title"><b>Designation Master</b></h3>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-sm" style="background-color: green; color: white " data-toggle="modal" ng-click="AdminClick()">Add Designation</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="padding: 20px; margin:-12px">
+                        
+                        <div class="col-9"></div> <div class="col-9"></div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Search" ng-model="FARMER_SEARCH" ng-keyup="SearchAdmin()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3"></div> <div class="col-3"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="example-table" style="font-size: 0.8rem;color:black;">
+                            <thead>
+                                <tr style="background-image: linear-gradient(to right,#13b757f2,#eba60a); color: white ">
+                                    <th> #</th>
+                                    <th><b>Department Name</b></th>
+                                    <th><b>Designation Name</b></th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Reg Date</b></th>
+                                    <th><b>Action</b></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="User in DesignationList" style="color:black">
+                                    <td>{{(page*30+$index+1)}}</td>
+                                    <td>{{User.DEP_NAME}}</td>
+                                    <td>{{User.DESI_NAME}}</td>
+                                    @*<td id="{{User.DESI_ID}}_td"><a href="" ng-click="ChangeStatus(User)"><b style="color:red">{{User.STATUS}}</b></a></td>*@
+                                    <td><a href="" ng-confirm-click="Do you want to change status ?" confirmed-click="ChangeStatus(User)"><b ng-style="User.STATUS=='Active'?{'color':'green'}:{'color':'red'}">{{User.STATUS}}</b></a></td>
+                                    <td>{{User.REG_DATE}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-success" ng-click="getForUpdate(User)" data-toggle="modal" data-target="#Admin_update">Edit</button>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!pager.pages.length">
+                                    <td colspan="6" style="color:black; text-align:center;"><h5><b>No record found!</b></h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul ng-if="pager.pages.length" class="pagination" style="margin-left:30px;">
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(1)">First</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === 1}">
+                                <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+                            </li>
+                            <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                                <a ng-click="setPage(page)">{{page}}</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+                            </li>
+                            <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a ng-click="setPage(pager.totalPages)">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div id="Admin_Addupdate" class="modal fade" data-backdrop="static" data-keyboard="false" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-image: linear-gradient(to right,#13b757f2,#eba60a);">
+                                    <span class="modal-title"><b>{{Admin_Action}}</b></span>
+                                    <button type="button" class="close" data-dismiss="modal" style="margin-right:5px;">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form name="C2" ng-submit="C2(C2.$valid)" novalidate" data-toggle="validator" role="form">
+
+                                                <div class="row">
+                                                    <div class="col-lg-12 form-group">
+                                                        <label>Department Name :</label><label style="color:red;">*</label>
+                                                        <select ng-model="DEP_ID" id="DEP_ID" class="form-control" >
+                                                             <option value="">Select Department Name </option>
+                                                            <option ng-repeat="Depart in DepartmentList" ng-value="{{Depart.DEP_ID}} ">{{Depart.DEP_NAME}}</option>
+                                                            
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-lg-12 form-group">
+                                                        <label>Designation Name :</label><label style="color:red;">*</label>
+                                                         <input type="text" name="DESI_NAME" ng-model="DESI_NAME" class="form-control" />
+                                                    </div>
+
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm" style="background-color:green;font-size:14px;color:white" ng-disabled="C2.$invalid" ng-click="AddAdmin()">{{Admin_Action}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section Scripts{
+
+    <script src="~/AngularJs/Designation.js"></script>
+    <link href="~/css/Paging.css" rel="stylesheet" />
+
+}

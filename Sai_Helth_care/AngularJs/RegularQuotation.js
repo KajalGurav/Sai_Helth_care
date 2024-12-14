@@ -145,14 +145,18 @@ app.controller("RegularQuotationCtrl", function ($scope, QuotationService) {
         if ($scope.STATE_SEARCH === undefined || $scope.STATE_SEARCH === "" || $scope.STATE_SEARCH === "0") {
             $scope.STATE_SEARCH = null;
         }
-
+       
         var SearchingConditions = {
             PageNo: $scope.PageNo,
             pageSize: $scope.pageSize,
             FARMER_NAME: $scope.FARMER_SEARCH,
             STATE_ID: $scope.STATE_SEARCH,
             STARTING_DATE: $scope.STARTING_DATE,
-            ENDING_DATE: $scope.ENDING_DATE
+            ENDING_DATE: $scope.ENDING_DATE,
+            PO_DATE: $scope.PO_DATE,
+            QUOTATION_DATE:$scope.QUOTATION_DATE
+       
+           
         };
 
         return SearchingConditions;
