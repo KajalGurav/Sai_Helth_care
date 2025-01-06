@@ -387,6 +387,10 @@
         return response;
     };
 
+    this.GetCategory = function () {
+        return $http.get("/Product/GetCategory");
+    };
+
     this.GetMedtronicAccessories = function (id) {
         var response = $http({
             method: "POST",
@@ -2696,6 +2700,7 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
     };
 
     $scope.CalAmtIncTaxReg = function () {
+
         if ($scope.IS_FEES_INC_GST === null || $scope.IS_FEES_INC_GST === "" || $scope.IS_FEES_INC_GST === undefined) {
             /* alert("Please select Is Fees Including GST field");*/
             return;
@@ -2730,6 +2735,10 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
     }
 
     $scope.CalAmtIncTax = function () {
+        if (!$scope.FEES || !$scope.IS_FEES_INC_GST) {
+            $scope.FEES_IN_GST = 0;
+            return;
+        }
         if ($scope.IS_FEES_INC_GST === null || $scope.IS_FEES_INC_GST === "" || $scope.IS_FEES_INC_GST === undefined) {
             /*alert("Please select Is Fees Including GST field");*/
             return;
@@ -2939,6 +2948,7 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
     };
 
     $scope.getForUpdateAMC = function (admin) {
+
         $scope.AMC_CMC_ID = admin.AMC_CMC_ID;
         if ($scope.CUSTOMER_TYPE_ID === 3) {
             Get_AMCAccessories();
@@ -2993,12 +3003,17 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
     };
 
     $scope.AddUpdateAccountAMC = function () {
+        if ((companyId === 1 || companyId === 13) &&
+            (!$scope.FEES_IN_GST || $scope.IS_FEES_INC_GST === undefined)) {
+            alert("Please fill all mandatory fields for Fees In GST and Is Fees Including GST!");
+            return;
+        }
 
-        $("#loader").css("display", '');
-        if ($("#CONTRACT_DATE").val() === undefined || $("#CONTRACT_DATE").val() === "" || $("#CONTRACT_DATE").val() === null) {
+        if (!$("#CONTRACT_DATE").val()) {
             alert("Please Select Contract Date!");
             return;
         }
+
         $scope.CONTRACT_DATE = $("#CONTRACT_DATE").val();
         $scope.CONTRACT_FROM = $("#CONTRACT_FROM").val();
         $scope.CONTRACT_TO = $("#CONTRACT_TO").val();
@@ -3007,7 +3022,7 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
             $scope.CONTRACT_TYPE_DETAILS = null;
         }
 
-        tb_Admin = {
+        let tb_Admin = {
             CONTRACT_DOCUMENT_NO: $scope.CONTRACT_DOCUMENT_NO,
             CONTRACT_TYPE: $scope.CONTRACT_TYPE,
             CONTRACT_PERIOD: $scope.CONTRACT_PERIOD,
@@ -3040,11 +3055,11 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
 
         if ($scope.Admin_Action_AMC === "Add AMC/CMC") {
             AddAdminRecordAMC(tb_Admin);
-        }
-        else if ($scope.Admin_Action_AMC === "Update AMC/CMC") {
+        } else if ($scope.Admin_Action_AMC === "Update AMC/CMC") {
             EditAdminRecordAMC(tb_Admin);
         }
     };
+
 
     function AddAdminRecordAMC(tb_Admin) {
         var datalist = CustomerService.AddAdminAMC(tb_Admin);
@@ -3098,6 +3113,151 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
             });
     }
 
+    //$scope.PreviewAMC = function (admin) {
+
+    //    $scope.CONTRACT_DETAILS = admin;
+
+
+    //    if ($scope.CUSTOMER_TYPE_NAME === "Medtronic") {
+    //        $scope.CONTRACT_DETAILS = admin;
+    //        $scope.AMC_CMC_ID = $scope.CONTRACT_DETAILS.AMC_CMC_ID;
+    //        Get_AMCAccessories();
+    //        $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES_IN_GST);
+
+    //        $scope.CmpDetailsList = "";
+    //        $scope.COMPANYNAME = "";
+    //        $scope.COMPANYREGADDRESS = "";
+    //        $scope.ZIPCODE = "";
+    //        var getCmpDetails = CustomerService.GetCompanyBankDetails(admin.BANK_ID);
+    //        //var getCmpDetails = CustomerService.GetCompanyBankDetails(0);
+    //        getCmpDetails.then(function (response) {
+    //            $scope.CmpDetailsList = response.data;
+    //            $scope.COMPANYNAME = $scope.CmpDetailsList[0].COMPANY_NAME;
+    //            $scope.COMPANYREGADDRESS = $scope.CmpDetailsList[0].COMPANY_REG_ADDRESS;
+    //            $scope.ZIPCODE = $scope.CmpDetailsList[0].ZIP_CODE;
+    //            //$("#tempCustId").val($scope.RegularQuotationList[0].Q_ID);
+    //        });
+    //        if (admin.CONTRACT_TYPE === "AMC") {
+    //            $("#AMCMedtronicDocument").modal("show");
+    //        }
+    //        else if (admin.CONTRACT_TYPE === "CMC") {
+    //            $("#CMCMedtronicDocument").modal("show");
+    //        }
+    //    }
+
+    //    else {
+    //        $scope.CONTRACT_DETAILS = admin;
+    //        $scope.CHEQUE = 'false';
+    //        $scope.CASH = 'false';
+    //        $scope.ONLINE_RTGS = 'false';
+    //        $scope.CHEQUE2 = 'false';
+    //        $scope.CASH2 = 'false';
+    //        $scope.ONLINE_RTGS2 = 'false';
+
+    //        if ($scope.CONTRACT_DETAILS.CONTRACT_TYPE === "AMC") {
+    //            if ($scope.CONTRACT_DETAILS.FEES_PAID_BY === 'Cheque') {
+    //                //document.getElementById("cheque").checked = true;
+    //                $scope.CHEQUE = 'true';
+    //            }
+    //            else {
+    //                //document.getElementById("cheque").checked = 'false';
+    //                $scope.CHEQUE = 'false';
+    //            }
+
+    //            if ($scope.CONTRACT_DETAILS.FEES_PAID_BY === 'Cash') {
+    //                //document.getElementById("cash").checked = 'true';
+    //                $scope.CASH = 'true';
+    //            }
+    //            else {
+    //                //document.getElementById("cash").checked = 'false';
+    //                $scope.CASH = 'false';
+    //            }
+    //            if ($scope.CONTRACT_DETAILS.FEES_PAID_BY === 'Online/RTGS') {
+    //                //document.getElementById("cash").checked = 'true';
+    //                $scope.ONLINE_RTGS = 'true';
+    //            }
+    //            else {
+    //                //document.getElementById("cash").checked = 'false';
+    //                $scope.ONLINE_RTGS = 'false';
+    //            }
+    //        }
+    //        else {
+    //            if ($scope.CONTRACT_DETAILS.FEES_PAID_BY === 'Cheque') {
+    //                //document.getElementById("cheque2").checked = 'true';
+    //                $scope.CHEQUE2 = 'true';
+    //            }
+    //            else {
+    //                //document.getElementById("cheque2").checked = 'false';
+    //                $scope.CHEQUE2 = 'false';
+    //            }
+
+    //            if ($scope.CONTRACT_DETAILS.FEES_PAID_BY === 'Cash') {
+    //                //document.getElementById("cash2").checked = 'true';
+    //                $scope.CASH2 = 'true';
+    //            }
+    //            else {
+    //                //document.getElementById("cash2").checked = 'false';
+    //                $scope.CASH2 = 'false';
+    //            }
+    //            if ($scope.CONTRACT_DETAILS.FEES_PAID_BY === 'Online/RTGS') {
+    //                //document.getElementById("cash").checked = 'true';
+    //                $scope.ONLINE_RTGS2 = 'true';
+    //            }
+    //            else {
+    //                //document.getElementById("cash").checked = 'false';
+    //                $scope.ONLINE_RTGS2 = 'false';
+    //            }
+    //        }
+
+    //        $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES_IN_GST);
+    //        $scope.CmpDetailsList = "";
+    //        $scope.COMPANYNAME = "";
+    //        $scope.COMPANYREGADDRESS = "";
+    //        $scope.ZIPCODE = "";
+    //        var getCmpDetails = CustomerService.GetCompanyBankDetails(admin.BANK_ID);
+
+    //        getCmpDetails.then(function (response) {
+    //            $scope.CmpDetailsList = response.data;
+    //            $scope.COMPANYNAME = $scope.CmpDetailsList[0].COMPANY_NAME;
+    //            $scope.COMPANYREGADDRESS = $scope.CmpDetailsList[0].COMPANY_REG_ADDRESS;
+    //            $scope.ZIPCODE = $scope.CmpDetailsList[0].ZIP_CODE;
+    //        });
+    //        if (admin.CONTRACT_TYPE === "AMC") {
+    //            $("#AMCDocument").modal("show");
+    //        }
+    //        else if (admin.CONTRACT_TYPE === "CMC") {
+    //            $("#CMCDocument").modal("show");
+    //        }
+    //    }
+    //}
+
+    $scope.updateFees = function () {
+        // Ensure that IS_FEES_INC_GST is not null, undefined, or empty
+        if ($scope.IS_FEES_INC_GST === null || $scope.IS_FEES_INC_GST === undefined || $scope.IS_FEES_INC_GST === "") {
+            return; // Exit if the field is not selected
+        }
+
+        // Handle "Yes" for including GST
+        if ($scope.IS_FEES_INC_GST === true || $scope.IS_FEES_INC_GST === "true") {
+            if ($scope.CUSTOMER_TYPE_ID === 3 || $scope.CUSTOMER_TYPE_ID === "3") {
+                $scope.FEES_IN_GST = 0; // Set Fees In GST to 0 for customer type 3
+            } else {
+                // Set Fees In GST to the value of FEES when GST is included
+                $scope.FEES_IN_GST = ($scope.FEES && $scope.FEES !== "") ? $scope.FEES : 0;
+            }
+        }
+        // Handle "No" for including GST
+        else if ($scope.IS_FEES_INC_GST === false || $scope.IS_FEES_INC_GST === "false") {
+            if ($scope.CUSTOMER_TYPE_ID === 3 || $scope.CUSTOMER_TYPE_ID === "3") {
+                $scope.FEES_IN_GST = 0; // Set Fees In GST to 0 for customer type 3
+            } else {
+                // If FEES is provided, calculate the fee with 18% GST
+                $scope.FEES_IN_GST = ($scope.FEES && $scope.FEES !== "")
+                    ? $scope.FEES + ($scope.FEES * (18 / 100))
+                    : 0;
+            }
+        }
+    };
     $scope.PreviewAMC = function (admin) {
 
         $scope.CONTRACT_DETAILS = admin;
@@ -3107,7 +3267,7 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
             $scope.CONTRACT_DETAILS = admin;
             $scope.AMC_CMC_ID = $scope.CONTRACT_DETAILS.AMC_CMC_ID;
             Get_AMCAccessories();
-            $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES_IN_GST);
+            $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES);
 
             $scope.CmpDetailsList = "";
             $scope.COMPANYNAME = "";
@@ -3194,7 +3354,7 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
                 }
             }
 
-            $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES_IN_GST);
+            $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES);
             $scope.CmpDetailsList = "";
             $scope.COMPANYNAME = "";
             $scope.COMPANYREGADDRESS = "";
@@ -3215,6 +3375,7 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
             }
         }
     }
+
 
     $scope.PrintAMC = function (id) {
 
@@ -3412,4 +3573,10 @@ app.controller('CustomerDetailsController', function ($scope, CustomerService) {
                 $("#loader").css("display", 'none');
             });
     }
+    $scope.updatePaymentMode = function (paymentMode) {
+        $scope.CASH2 = paymentMode === 'Cash';
+        $scope.CHEQUE2 = paymentMode === 'Cheque';
+        $scope.ONLINE_RTGS2 = paymentMode === 'Online/RTGS';
+    };
+
 });

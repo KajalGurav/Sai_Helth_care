@@ -52,8 +52,7 @@
     };
 });
 
-app.controller("CompanyMasterCtrl", function ($scope, AdminService)
-{
+app.controller("CompanyMasterCtrl", function ($scope, AdminService) {
 
     $("#loader").css("display", '');
 
@@ -62,10 +61,9 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
     $scope.FARMER_SEARCH = null;
     $scope.STATE_SEARCH = null;
     GetTotalcount();
-   // GetState();
+    // GetState();
 
-    function GetTotalcount()
-    {
+    function GetTotalcount() {
         var SearchingConditions = GetSearchingConditions();
         var getcount = AdminService.TotalRecordCount(SearchingConditions);
         getcount.then(function (d) {
@@ -97,8 +95,7 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
         GetAllCity();
     }
 
-    function GetAllCity()
-    {
+    function GetAllCity() {
         var getAdmin = AdminService.GetAllCity($scope.STATE_ID);
         getAdmin.then(function (response) {
             $scope.CityList = response.data;
@@ -260,8 +257,6 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
         $scope.AddPayment.$setPristine(); // Set form to pristine state
         $scope.AddPayment.$setUntouched();
     }
-    $scope.exportToExcel = function () {
-        CustomerMasterExport();
 
 
     //$scope.getAdmin = function (admin) {
@@ -283,7 +278,7 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
     $scope.getForUpdate = function (Admin) {
         Clear();
 
-        
+
 
         $scope.COMPANY_ID = Admin.COMPANY_ID;
         $scope.COMPANY_NAME = Admin.COMPANY_NAME;
@@ -315,7 +310,7 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
             $('#COMPANY_LETTERHEAD_PREVIEW').attr('src', $scope.COMPANY_LETTERHEAD);
             $('#COMPANY_SEAL_PREVIEW').attr('src', $scope.COMPANY_SEAL);
             $('#COMPANY_PNDT_CERTIFICATE_PREVIEW').attr('src', $scope.COMPANY_PNDT_CERTIFICATE);
-        },1000)
+        }, 1000)
 
         $scope.Admin_Action = "Update Company";
         //$("#Admin_Addupdate").modal("show");  
@@ -327,7 +322,7 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
         $("#loader").css("display", '');
         tb_Admin = {
 
-            COMPANY_ID: $scope.COMPANY_ID, 
+            COMPANY_ID: $scope.COMPANY_ID,
             COMPANY_NAME: $scope.COMPANY_NAME,
             AUTHORITY_NAME: $scope.AUTHORITY_NAME,
             MOBILE_NO: $scope.MOBILE_NO,
@@ -587,7 +582,7 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
                 $("#loader").css("display", 'none');
             });
     }
-     
+
     $scope.ChangeStatus = function (Admin) {
         $("#loader").css("display", '');
         var getStatus = AdminService.ChangeStatus(Admin.COMPANY_ID);
@@ -612,7 +607,7 @@ app.controller("CompanyMasterCtrl", function ($scope, AdminService)
     var COMPANY_PNDT_CERTIFICATE = $('#COMPANY_PNDT_CERTIFICATE');
 
 
-    var reader = new FileReader(); 
+    var reader = new FileReader();
     var fileName;
     var contentType;
 

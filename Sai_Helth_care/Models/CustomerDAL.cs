@@ -148,103 +148,75 @@ namespace Sai_Helth_care.Models
             try
             {
                 string OTP = Master.RandomString(6);
-                if (tB_admin.UPLOAD_PNDT_CERTIFICATE == "Yes")
+
+                if (tB_admin.UPLOAD_PNDT_CERTIFICATE == "Yes" && !string.IsNullOrEmpty(tB_admin.ImageBase64Data))
                 {
-                    string fileName = tB_admin.ImageName;
-                    string extension = tB_admin.ImageExtension;
-                    fileName = "Image" + OTP + DateTime.Now.ToString("ddmmyyyy") + extension;
-                    string fileName1 = fileName;
+                    string fileName = $"Image{OTP}{DateTime.Now:ddMMyyyy}{tB_admin.ImageExtension}";
+                    string filePath = Path.Combine(System.Web.HttpContext.Current.Server.MapPath("~/UploadedImages/"), fileName);
+                    byte[] imageByteData = Convert.FromBase64String(tB_admin.ImageBase64Data);
+                    using (MemoryStream mem = new MemoryStream(imageByteData))
+                    {
+                        System.Drawing.Image img = System.Drawing.Image.FromStream(mem);
+                        img.Save(filePath, ImageFormat.Jpeg);
+                    }
                     tB_admin.UPLOAD_PNDT_CERTIFICATE = Master.serverurl + "/UploadedImages/" + fileName;
-                    fileName = Path.Combine(System.Web.HttpContext.Current.Server.MapPath("~/UploadedImages/"), fileName);
+                }
 
-                    if (tB_admin.UPLOAD_PNDT_CERTIFICATE != string.Empty)
+                if (tB_admin.UPLOAD_PAN_CERTIFICATE == "Yes" && !string.IsNullOrEmpty(tB_admin.ImageBase64Data1))
+                {
+                    string fileName = $"Image{OTP}{DateTime.Now:ddMMyyyy}{tB_admin.ImageExtension1}";
+                    string filePath = Path.Combine(System.Web.HttpContext.Current.Server.MapPath("~/UploadedImages/"), fileName);
+                    byte[] imageByteData = Convert.FromBase64String(tB_admin.ImageBase64Data1);
+                    using (MemoryStream mem = new MemoryStream(imageByteData))
                     {
-                        byte[] imageByteData = Convert.FromBase64String(tB_admin.ImageBase64Data);
-                        MemoryStream mem = new MemoryStream(imageByteData);
                         System.Drawing.Image img = System.Drawing.Image.FromStream(mem);
-                        img.Save(HostingEnvironment.MapPath("~/UploadedImages/" + fileName1), ImageFormat.Jpeg);
+                        img.Save(filePath, ImageFormat.Jpeg);
                     }
+                    tB_admin.UPLOAD_PAN_CERTIFICATE = Master.serverurl + "/UploadedImages/" + fileName;
                 }
-                else
-                {
-                    //tB_admin.UPLOAD_PNDT_CERTIFICATE = "";
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-            try
-            {
-                string OTP = Master.RandomString(6);
-                if (tB_admin.UPLOAD_PAN_CERTIFICATE == "Yes")
-                {
-                    string fileName2 = tB_admin.ImageName1;
-                    string extension = tB_admin.ImageExtension1;
-                    fileName2 = "Image" + OTP + DateTime.Now.ToString("ddmmyyyy") + extension;
-                    string fileName3 = fileName2;
-                    tB_admin.UPLOAD_PAN_CERTIFICATE = Master.serverurl + "/UploadedImages/" + fileName2;
-                    fileName2 = Path.Combine(System.Web.HttpContext.Current.Server.MapPath("~/UploadedImages/"), fileName2);
 
-                    if (tB_admin.UPLOAD_PAN_CERTIFICATE != string.Empty)
+                
+                    using (SqlCommand cmd = new SqlCommand("UpdateCustomer", con))
                     {
-                        byte[] imageByteData = Convert.FromBase64String(tB_admin.ImageBase64Data1);
-                        MemoryStream mem = new MemoryStream(imageByteData);
-                        System.Drawing.Image img = System.Drawing.Image.FromStream(mem);
-                        img.Save(HostingEnvironment.MapPath("~/UploadedImages/" + fileName3), ImageFormat.Jpeg);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@CUSTOMER_NAME", tB_admin.CUSTOMER_NAME);
+                        cmd.Parameters.AddWithValue("@FIRM_NAME", tB_admin.FIRM_NAME);
+                        cmd.Parameters.AddWithValue("@CONTACT_NO", tB_admin.CONTACT_NO);
+                        cmd.Parameters.AddWithValue("@ALTERNATE_CONTACT_NO", tB_admin.ALTERNATE_CONTACT_NO ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@EMAIL", tB_admin.EMAIL ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ALTERNATE_EMAIL", tB_admin.ALTERNATE_EMAIL ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@BILLING_ADDRESS", tB_admin.BILLING_ADDRESS);
+                        cmd.Parameters.AddWithValue("@SHIPPING_ADDRESS", tB_admin.SHIPPING_ADDRESS ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@STATE_ID", tB_admin.STATE_ID);
+                        cmd.Parameters.AddWithValue("@CITY_ID", tB_admin.CITY_ID);
+                        cmd.Parameters.AddWithValue("@SHIP_STATE_ID", tB_admin.SHIP_STATE_ID ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@SHIP_CITY_ID", tB_admin.SHIP_CITY_ID ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ZIP_CODE", tB_admin.ZIP_CODE);
+                        cmd.Parameters.AddWithValue("@DEGREE_OF_CUSTOMER", tB_admin.DEGREE_OF_CUSTOMER ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@PAN_NO", tB_admin.PAN_NO ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@GST_NO", tB_admin.GST_NO ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@TIN_NO", tB_admin.TIN_NO ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@PNDT_NO", tB_admin.PNDT_NO ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@PNDT_VALIDITY", tB_admin.PNDT_VALIDITY ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@UPLOAD_PNDT_CERTIFICATE", tB_admin.UPLOAD_PNDT_CERTIFICATE ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@UPLOAD_PAN_CERTIFICATE", tB_admin.UPLOAD_PAN_CERTIFICATE ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Customer_ID", tB_admin.Customer_ID);
+                        cmd.Parameters.AddWithValue("@SHIPPING_ZIP_CODE", tB_admin.SHIPPING_ZIP_CODE ?? (object)DBNull.Value);
+
+                        con.Open();
+                        int result = Convert.ToInt32(cmd.ExecuteScalar());
+                        return result;
                     }
-                }
-                else
-                {
-                    //tB_admin.UPLOAD_PAN_CERTIFICATE = "";
-                }
+                
             }
             catch (Exception ex)
             {
+                // Log exception here
+                throw new Exception("Error updating customer: " + ex.Message, ex);
             }
-
-            try
-            {
-                cmd = new SqlCommand("UpdateCustomer", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@CUSTOMER_NAME", tB_admin.CUSTOMER_NAME);
-                cmd.Parameters.AddWithValue("@FIRM_NAME", tB_admin.FIRM_NAME);
-                cmd.Parameters.AddWithValue("@CONTACT_NO", tB_admin.CONTACT_NO);
-                cmd.Parameters.AddWithValue("@ALTERNATE_CONTACT_NO", tB_admin.ALTERNATE_CONTACT_NO);
-                cmd.Parameters.AddWithValue("@EMAIL", tB_admin.EMAIL);
-                cmd.Parameters.AddWithValue("@STATE_ID", tB_admin.STATE_ID);
-                cmd.Parameters.AddWithValue("@CITY_ID", tB_admin.CITY_ID);
-                cmd.Parameters.AddWithValue("@SHIP_STATE_ID", tB_admin.SHIP_STATE_ID);
-                cmd.Parameters.AddWithValue("@SHIP_CITY_ID", tB_admin.SHIP_CITY_ID);
-                cmd.Parameters.AddWithValue("@ALTERNATE_EMAIL", tB_admin.ALTERNATE_EMAIL);
-                cmd.Parameters.AddWithValue("@BILLING_ADDRESS", tB_admin.BILLING_ADDRESS);
-                cmd.Parameters.AddWithValue("@SHIPPING_ADDRESS", tB_admin.SHIPPING_ADDRESS);
-                cmd.Parameters.AddWithValue("@ZIP_CODE", tB_admin.ZIP_CODE);
-                cmd.Parameters.AddWithValue("@DEGREE_OF_CUSTOMER", tB_admin.DEGREE_OF_CUSTOMER);
-                cmd.Parameters.AddWithValue("@PAN_NO", tB_admin.PAN_NO);
-                cmd.Parameters.AddWithValue("@GST_NO", tB_admin.GST_NO);
-                cmd.Parameters.AddWithValue("@TIN_NO", tB_admin.TIN_NO);
-                cmd.Parameters.AddWithValue("@PNDT_NO", tB_admin.PNDT_NO);
-                cmd.Parameters.AddWithValue("@PNDT_VALIDITY", tB_admin.PNDT_VALIDITY);
-                cmd.Parameters.AddWithValue("@UPLOAD_PNDT_CERTIFICATE", tB_admin.UPLOAD_PNDT_CERTIFICATE);
-                cmd.Parameters.AddWithValue("@UPLOAD_PAN_CERTIFICATE", tB_admin.UPLOAD_PAN_CERTIFICATE);
-                cmd.Parameters.AddWithValue("@Customer_ID", tB_admin.Customer_ID);
-                cmd.Parameters.AddWithValue("@SHIPPING_ZIP_CODE", tB_admin.SHIPPING_ZIP_CODE);
-                cmd.Connection = con;
-                if (con.State == System.Data.ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                con.Open();
-                int i = Convert.ToInt32(cmd.ExecuteScalar());
-                con.Close();
-                return i;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
         }
+
+
 
         public static int GetCustomersTotalRecordCount(SearchCustomersParams tb_params)
         {

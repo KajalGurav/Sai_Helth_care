@@ -144,17 +144,7 @@
         //return $http.get("/Quotation_Registration/GetCmpnyBankDetails");
     };
 
-    //this.GetCmpnyBankDetails = function () {
-    //    var response = $http({
-    //        method: "GET",
-    //        url: "/Quotation_Registration/GetCmpnyBankDetails",
-    //        params: {
-    //            bankid: 0
-    //        }
-    //    });
-    //    return response;
-    //    //return $http.get("/Quotation_Registration/GetCmpnyBankDetails");
-    //};
+
 
     this.GetMedtronicAccessories = function (id) {
         var response = $http({
@@ -790,6 +780,8 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
 
 
     $scope.getForUpdate = function (admin) {
+        debugger
+
         //document.getElementById("FIRM_ID").value = admin.FIRM_ID;
         //document.getElementById("P_ID").value = admin.P_ID;
         $scope.AMC_CMC_ID = admin.AMC_CMC_ID;
@@ -826,6 +818,9 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         $scope.PM_VISIT = admin.PM_VISIT;
         $scope.CM_VISIT = admin.CM_VISIT;
         $scope.IS_FEES_INC_GST = admin.IS_FEES_INC_GST;
+        if (companyId !== 1 || companyId !== 13) {
+            $scope.IS_FEES_INC_GST == null
+        }
         $scope.FEES = admin.FEES;
         $scope.FEES_IN_GST = admin.FEES_IN_GST;
         $scope.GST_PERCENTAGE = admin.GST_PERCENTAGE;
@@ -836,43 +831,38 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         $scope.Admin_Action = "Update AMC/CMC";
 
         $("#AMC_AddUpdate").modal({ backdrop: 'static', keyboard: false }).modal("show");
-        //let d = new Date(admin.CONTRACT_FROM);
-        //let datestring = d.getFullYear().toString().padStart(4, '0') + '-' + (d.getMonth() + 1).toString().padStart(2, '0') + '-' + d.getDate().toString().padStart(2, '0');
 
-        //document.getElementById("CONTRACT_FROM").value = "";
-        //document.getElementById("CONTRACT_TO").value = "";
         $scope.CONTRACT_DATE = admin.CONTRACT_DATE;
         //$scope.CONTRACT_DATE = new Date(admin.CONTRACT_DATE);
         //document.getElementById("CONTRACT_DATE").value = new Date(admin.CONTRACT_DATE);
         $scope.CONTRACT_FROM = admin.CONTRACT_FROM;
         $('#CONTRACT_FROM').datepicker('setDate', $scope.CONTRACT_FROM);
-        //$scope.CONTRACT_FROM = new Date(admin.CONTRACT_FROM);
 
         //document.getElementById("CONTRACT_FROM").value = new Date(admin.CONTRACT_FROM);
         $scope.CONTRACT_TO = admin.CONTRACT_TO;
         $('#CONTRACT_TO').datepicker('setDate', $scope.CONTRACT_TO);
         $scope.BANK_ID = parseInt(admin.BANK_ID);
         $scope.CONTRACT_TYPE_DETAILS = admin.CONTRACT_TYPE_DETAILS;
-        //$scope.CONTRACT_TO = new Date(admin.CONTRACT_TO);
-        //document.getElementById("CONTRACT_TO").value = new Date(admin.CONTRACT_TO);
 
-
-
-        //setTimeout(function myfunction() {
-        //    var blankSelectOptions = $('option[value$="?"]');
-        //    if (blankSelectOptions.length > 0) {
-        //        $(blankSelectOptions).remove();
-        //    }
-        //    $("#CUSTOMER_ID").val($scope.CUSTOMER_ID);
-        //    $("#FIRM_ID").val($scope.FIRM_ID);
-        //    $("#CAT_ID").val($scope.CAT_ID);
-        //    $("#P_ID").val($scope.P_ID);
-
-        //}, 900);
 
     };
 
     $scope.AddUpdateAccount = function () {
+        if ($("#CONTRACT_DATE").val() === undefined || $("#CONTRACT_DATE").val() === "" || $("#CONTRACT_DATE").val() === null) {
+            alert("Please Select Contract Date!");
+            return;
+        }
+
+        $scope.CONTRACT_DATE = $("#CONTRACT_DATE").val();
+        $scope.CONTRACT_FROM = $("#CONTRACT_FROM").val();
+        $scope.CONTRACT_TO = $("#CONTRACT_TO").val();
+
+        if ($scope.CONTRACT_TYPE !== 'CMC') {
+            $scope.CONTRACT_TYPE_DETAILS = null;
+        }
+
+
+
         // Mandatory field check for specific companies
         if ((companyId === 1 || companyId === 13) &&
             (!$scope.FEES_IN_GST || $scope.IS_FEES_INC_GST === undefined)) {
@@ -1011,26 +1001,22 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
 
             if ($scope.CONTRACT_DETAILS.CONTRACT_TYPE == "AMC") {
                 if ($scope.IS_FEES_INC_GST == true) {
-                    document.getElementById('ContractFees1').style.display = "none";
-                    document.getElementById('ContractFees2').style.display = "block";
-                    $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES_IN_GST);
+
+                    $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES);
                 }
                 else {
-                    document.getElementById('ContractFees1').style.display = "block";
-                    document.getElementById('ContractFees2').style.display = "none";
+
                     $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES);
                 }
             }
 
             else if ($scope.CONTRACT_DETAILS.CONTRACT_TYPE == "CMC") {
                 if ($scope.IS_FEES_INC_GST == true) {
-                    document.getElementById('ContractFees3').style.display = "none";
-                    document.getElementById('ContractFees4').style.display = "block";
-                    $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES_IN_GST);
+
+                    $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES);
                 }
                 else {
-                    document.getElementById('ContractFees3').style.display = "block";
-                    document.getElementById('ContractFees4').style.display = "none";
+
                     $scope.amtInwords = inWords($scope.CONTRACT_DETAILS.FEES);
                 }
             }
@@ -1132,22 +1118,24 @@ app.controller("AMCCtrl", function ($scope, CustomerService) {
         var a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
         var b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
-        if ((num = num.toString()).length > 9) return 'overflow';
-        n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-        if (!n) return; var str = '';
+        if (num === 0) return 'Zero';
+
+        num = num.toString();
+        if (num.length > 9) return 'overflow'; // Handle numbers greater than 9 digits
+
+        var n = ('000000000' + num).slice(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+        if (!n) return;
+
+        var str = '';
         str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
         str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
         str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
         str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
-        if (n[5] == 0) {
-            str += 'Only';
-        }
-        else {
-            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Only ' : '';
-        }
+        str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Only ' : 'Only';
 
-        return str;
+        return str.trim();
     }
+
 
     $scope.Print = function (id) {
 

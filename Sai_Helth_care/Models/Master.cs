@@ -36,7 +36,8 @@ namespace Sai_Helth_care.Models
         public static string text, Tokens;
         public static int K = 0;
         //public static string serverurl = @"http://admin.saihealth.wowinfotech.site/";
-        public static string serverurl = @"http://admin.saihealthcare.co/";
+        //public static string serverurl = @"http://admin.saihealthcare.co/";
+        public static string serverurl = @"https://localhost:44348/";
         //public static string pdf = @"http://admin.saihealth.wowinfotech.site/";
         public static string pdf = @"http://admin.saihealthcare.co/";
 

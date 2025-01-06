@@ -65,6 +65,12 @@
     .bold {
         font-weight: 600;
     }
+
+    @@media print {
+        svg {
+            display: inline-block;
+        }
+    }
 </style>
 <section class="content" ng-controller="CustomerDetailsController">
     <div class="row">
@@ -707,9 +713,9 @@
                                                                                 </span>
                                                                             </div>
 
-                                                                            <div class="form-group col-md-6">
+                                                                            <div class="form-group col-md-6" ng-show="companyId === 1 || companyId === 13">
                                                                                 <label class="control-label">Is Fees Including GST:</label><label style="color:red;">*</label>
-                                                                                <select name="IS_FEES_INC_GST" id="IS_FEES_INC_GST" class="form-control" ng-model="IS_FEES_INC_GST" required>
+                                                                                <select name="IS_FEES_INC_GST" id="IS_FEES_INC_GST" class="form-control" ng-change="updateFees()" ng-model="IS_FEES_INC_GST" required>
                                                                                     <option ng-value="true">Yes</option>
                                                                                     <option ng-value="false">No</option>
                                                                                 </select>
@@ -736,7 +742,7 @@
                                                                                     @* <span class="error" ng-show="AddPayment.PAID_FEES.$error.pattern">Invalid Paid Fees</span>*@
                                                                                 </span>
                                                                             </div>
-                                                                            <div class="form-group col-md-6">
+                                                                            <div class="form-group col-md-6" ng-show="companyId === 1 || companyId === 13">
                                                                                 <label class="control-label">Fees In. GST:</label>@*<label style="color:red;">*</label>*@
                                                                                 <input type="number" id="FEES_IN_GST" name="FEES_IN_GST" class="form-control" ng-model="FEES_IN_GST" step="0.01" @*min="0" ng-pattern="/^([1-9]\d*)$/" onkeyup="if (parseInt(this.value) < 0) { this.value = 0; return false; }"*@ readonly placeholder="Fees In GST" @*required*@ />
                                                                                 <span ng-show="(AddPaymentAMC.FEES_IN_GST.$invalid && (AddPaymentAMC.FEES_IN_GST.$touched || AddPaymentAMC.FEES_IN_GST.$dirty))">
@@ -759,18 +765,14 @@
                                                                             </div>
 
                                                                             <div class="form-group col-md-6">
-                                                                                <label class="control-label"> Fees Paid By:</label>@*<label style="color:red;">*</label>*@
-                                                                                <select name="FEES_PAID_BY" class="form-control" ng-model="FEES_PAID_BY" @*required*@>
+                                                                                <label class="control-label">Fees Paid By:</label>
+                                                                                <select name="FEES_PAID_BY" class="form-control" ng-model="FEES_PAID_BY" ng-change="updatePaymentMode(FEES_PAID_BY)">
                                                                                     <option value="">Select Fees Paid By</option>
-                                                                                    <option value="Cash"> Cash </option>
-                                                                                    <option value="Cheque"> Cheque </option>
-                                                                                    <option value="Online/RTGS"> Online/RTGS </option>
+                                                                                    <option value="Cash">Cash</option>
+                                                                                    <option value="Cheque">Cheque</option>
+                                                                                    <option value="Online/RTGS">Online/RTGS</option>
                                                                                 </select>
-                                                                                <span ng-show="(AddPaymentAMC.FEES_PAID_BY.$invalid && (AddPaymentAMC.FEES_PAID_BY.$touched || AddPaymentAMC.FEES_PAID_BY.$dirty))">
-                                                                                    <span class="error" ng-show="AddPaymentAMC.FEES_PAID_BY.$error.required">Fees Paid By is required</span>
-                                                                                </span>
                                                                             </div>
-
                                                                             <div class="form-group col-md-6">
                                                                                 <label class="control-label"> Comments:</label>@*<label style="color:red;">*</label>*@
                                                                                 <textarea name="COMMENTS" class="form-control" ng-model="COMMENTS" placeholder="Enter Comments" @*required*@></textarea>
@@ -806,7 +808,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <div class="form-group col-md-12">
-                                                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-disabled="AddPaymentAMC.$invalid" ng-click="AddUpdateAccountAMC()" value="{{Admin_Action_AMC}}" />
+                                                                    <input type="button" class="btn btn-sm" style="background-color:forestgreen; color: white; font-size: 14px;" ng-click="AddUpdateAccountAMC()" value="{{Admin_Action_AMC}}" />
                                                                     <input type="button" value="Cancel" ng-click="Cancel()" class="btn btn-danger btn-sm" data-dismiss="modal" />
                                                                 </div>
                                                             </div>
@@ -828,27 +830,7 @@
                                                                                     <table style="width: 100%; border:2px solid #000;">
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                @*<td>
-                                                                                                        <div align="center" class="right-logo" style="border-right: 2px solid #2B5794; padding-right: 5px;">
-                                                                                                            <img src="~/Images/sai-logo.png" style="margin: 0 0;">
-                                                                                                        </div>
-                                                                                                    </td>
-                                                                                                    <td valign="top">
-                                                                                                        <div class="left-text-logo" style="margin-left: 5px; ">
-                                                                                                            <img src="~/Images/sai-name-logo.jpg" style="width:100%">
-                                                                                                        </div>
-                                                                                                        <hr style="border-bottom:2px solid #2B5794;">
-                                                                                                        <h4 style="font-size:24px; color:#2B5794; padding:5px 0;">  Sales & Services of Refurbished -</h4>
-                                                                                                        <p style="color: #000; font-size:14px;">CT Scan // MRI // Ultra Sound & Colour Doppler // Mammography Machine // BMD Machine</p>
-                                                                                                        <hr style="border-bottom:2px solid #2B5794;">
-                                                                                                        <div style="float: left; width:45%; text-align: left; font-size: 14px; color: #2B5794;">
-                                                                                                            www.saihealthcare.co.in
-                                                                                                        </div>
-                                                                                                        <div style="float: right; width: 50%; text-align:right; font-size:14px; color:#2b6793; ">
-                                                                                                            sagar.borade@saihealthcare.co.in
-                                                                                                        </div>
 
-                                                                                                    </td>*@
                                                                                                 <td>
                                                                                                     <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
                                                                                                 </td>
@@ -864,10 +846,6 @@
                                                                                 <table style="margin-top:0px; width: 100%;">
                                                                                     <tbody>
                                                                                         <tr align="center">
-                                                                                            <td style="font-size: 16px; color: #000;">
-                                                                                                <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                                                                                                <br /><br />
-                                                                                            </td>
                                                                                         </tr>
                                                                                     </tbody>
                                                                                 </table>
@@ -887,78 +865,12 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                     </table>
-                                                                                    @*<div class="row">
-                                                                                            <div class="col-lg-6">
-                                                                                                <p style="padding:30px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000;">Date: {{CONTRACT_DETAILS.CONTRACT_DATE}} </p>
-                                                                                            </div>
-                                                                                            <div class="col-lg-6">
-                                                                                                <p style="padding:30px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000; text-align:right;">Ref No: {{CONTRACT_DETAILS.CONTRACT_DOCUMENT_NO}}</p>
-                                                                                            </div>
-                                                                                        </div>*@
+
 
                                                                                 </div>
 
                                                                             </div>
-                                                                            @*<div class="address-section">
-                                                                                    <table>
-                                                                                        <tbody>
-                                                                                            <tr>
-                                                                                                <td>
-                                                                                                    <table>
-                                                                                                        <tbody>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align header">Customer Details</td>
-                                                                                                                <td class="left-align header">Machine Details</td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align bold" style="width: 50%;">
-                                                                                                                    {{CONTRACT_DETAILS.CUSTOMER_NAME}} <br>
-                                                                                                                    {{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}
-                                                                                                                </td>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Product Name:</strong> {{CONTRACT_DETAILS.PRODUCT_NAME}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
-                                                                                                                </td>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Model:</strong> {{CONTRACT_DETAILS.MODEL_NAME}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr ng-if="CONTRACT_DETAILS.EMAIL!=''">
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td colspan="2" class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Make:</strong> {{CONTRACT_DETAILS.M_NAME}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td colspan="2" class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Sr.No:</strong> {{CONTRACT_DETAILS.MODEL_SERIAL_NO}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Mobile No:</strong> {{CONTRACT_DETAILS.CONTACT_NO}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td colspan="2" class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Access. Name</strong> Sr.No
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                        </tbody>
-                                                                                                    </table>
-                                                                                                </td>
-                                                                                            </tr>
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                </div>*@
+
 
 
                                                                             <div class="address-section">
@@ -1030,7 +942,7 @@
                                                                                                                             <b>{{CONTRACT_DETAILS.CUSTOMER_NAME}}</b> <br>
                                                                                                                             <b>{{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}</b> <br />
                                                                                                                             <div style="padding-right:10px;">
-                                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
+                                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}}  {{CONTRACT_DETAILS.ZIP_CODE}}.
                                                                                                                             </div>
                                                                                                                             <span ng-if="CONTRACT_DETAILS.EMAIL">
                                                                                                                                 <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}<br />
@@ -1072,12 +984,34 @@
                                                                                         <tr>
                                                                                             <td style="font-size: 16px;"> <strong>Yearly Visits:  PMS - {{CONTRACT_DETAILS.PM_VISIT}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B/D - {{CONTRACT_DETAILS.CM_VISIT}} </strong></td>
                                                                                         </tr>
+
                                                                                         <tr>
-                                                                                            <td style="font-size: 16px;"> <strong>Contract Fees:</strong> {{CONTRACT_DETAILS.FEES_IN_GST}}/-<span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST==true">Including GST @('@') 18 %.</span></td>
+
+                                                                                            <td style="font-size: 16px;">
+                                                                                                <strong>Contract Fees:</strong>
+                                                                                                <span ng-if="!(companyId === 1 || companyId === 13)">
+                                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                                </span>
+                                                                                                <span ng-if="companyId === 1 || companyId === 13">
+                                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == true">
+                                                                                                        Including GST @('@') 18%.
+                                                                                                    </span>
+                                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == false">
+                                                                                                        Excluding GST @('@') 18%.
+                                                                                                    </span>
+                                                                                                </span>
+                                                                                            </td>
+
+                                                                                            @*<span ng-if="companyId === 1 || companyId === 13"> Excluding GST  @('@')18 %</span>*@
+                                                                                            @*<td style="font-size: 16px;">
+                                                                                                    <strong>Contract Fees:</strong> {{CONTRACT_DETAILS.FEES_IN_GST}}/-<span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST==false">Exlcuding GST @('@') 18 %.</span>
+                                                                                                </td>*@
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td style="font-size: 16px;"> <strong>Contract Fees In Word:</strong> {{amtInwords}}.</td>
                                                                                         </tr>
+
                                                                                         <!--<tr>
                                                                                         <td style="font-size: 16px;"> <strong>Payment Details (Paid By): </strong> <input id="cheque" name="check_boxes" value="1"-->
                                                                                         @*style="visibility: visible !important;"*@ <!--ng-model="CHEQUE" ng-checked="CHEQUE" readonly onclick="return false;" type="checkbox"> Cheque  &nbsp; <input id="cash" name="check_boxes" value="1"--> @*style="visibility: visible !important;"*@
@@ -1086,33 +1020,7 @@
                                                                                         <tr>
                                                                                             <td style="font-size: 16px;">
                                                                                                 <strong>Payment Details (Paid By): </strong>
-                                                                                                @*<span>
-                                                                                                        <span ng-if="CASH === 'false' && CHEQUE === 'true'">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
-                                                                                                                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
-                                                                                                            </svg>
-                                                                                                        </span>
 
-                                                                                                        <span ng-if="(CASH === 'false' && CHEQUE === 'false') || (CASH === 'true' && CHEQUE === 'false' ) ">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
-                                                                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                                                                                                            </svg>
-                                                                                                        </span>
-                                                                                                        <label>Cheque</label>
-
-                                                                                                        <span ng-if="CASH === 'true' && CHEQUE === 'false'">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
-                                                                                                                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
-                                                                                                            </svg>
-                                                                                                        </span>
-
-                                                                                                        <span ng-if="(CASH === 'false' && CHEQUE === 'false') || (CASH === 'false' && CHEQUE === 'true' ) ">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
-                                                                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                                                                                                            </svg>
-                                                                                                        </span>
-                                                                                                        <label> Cash</label>
-                                                                                                    </span>*@
                                                                                                 <span>
                                                                                                     <span ng-if="CASH === 'true'">
                                                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
@@ -1153,7 +1061,10 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                            <td style="font-size: 16px;"> <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/- &nbsp;&nbsp; <strong>Balance Amount: </strong>{{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-  </td>
+                                                                                            <td style="font-size: 16px;">
+                                                                                                <strong>Paid Amount:</strong> {{CONTRACT_DETAILS.PAID_FEES}}/- &nbsp;&nbsp;
+                                                                                                <strong>Balance Amount:</strong> {{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-
+                                                                                            </td>
                                                                                         </tr>
                                                                                     </tbody>
                                                                                 </table>
@@ -1312,7 +1223,7 @@
                                                                                             <td style="font-size:16px; padding-top: 10px;">
                                                                                                 Not with standing all the terms & conditions framed in this contract and at once without prejudice to them it is to deep the
                                                                                                 machine in proper working condition and with the barest minimum of downtime that the client has entered into this contract
-                                                                                                Medico Imaging Equipment
+                                                                                                {{CmpDetailsList[0].COMPANY_NAME}}
                                                                                             </td>
                                                                                         </tr>
 
@@ -1399,27 +1310,7 @@
                                                                                     <table style="width: 100%; border:2px solid #000;">
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                @*<td>
-                                                                                                        <div align="center" class="right-logo" style="border-right: 2px solid #2B5794; padding-right: 5px;">
-                                                                                                            <img src="~/Images/sai-logo.png" style="margin: 0 0;">
-                                                                                                        </div>
-                                                                                                    </td>
-                                                                                                    <td valign="top">
-                                                                                                        <div class="left-text-logo" style="margin-left: 5px; ">
-                                                                                                            <img src="~/Images/sai-name-logo.jpg" style="width:100%">
-                                                                                                        </div>
-                                                                                                        <hr style="border-bottom:2px solid #2B5794;">
-                                                                                                        <h4 style="font-size:24px; color:#2B5794; padding:5px 0;">  Sales & Services of Refurbished -</h4>
-                                                                                                        <p style="color: #000; font-size:14px;">CT Scan // MRI // Ultra Sound & Colour Doppler // Mammography Machine // BMD Machine</p>
-                                                                                                        <hr style="border-bottom:2px solid #2B5794;">
-                                                                                                        <div style="float: left; width:45%; text-align: left; font-size: 14px; color: #2B5794;">
-                                                                                                            www.saihealthcare.co.in
-                                                                                                        </div>
-                                                                                                        <div style="float: right; width: 50%; text-align:right; font-size:14px; color:#2b6793; ">
-                                                                                                            sagar.borade@saihealthcare.co.in
-                                                                                                        </div>
 
-                                                                                                    </td>*@
                                                                                                 <td>
                                                                                                     <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
                                                                                                 </td>
@@ -1427,19 +1318,10 @@
                                                                                         </tbody>
                                                                                     </table>
 
-                                                                                    @*</td>
-                                                                                        </tr>
-                                                                                        </tbody>
-                                                                                        </table>*@
+
                                                                                 </div>
                                                                                 <table style="margin-top:15px; width: 100%;">
                                                                                     <tbody>
-                                                                                        <tr align="center">
-                                                                                            <td style="font-size: 16px; color: #000;">
-                                                                                                <span style="font-weight: 600; font-size:18px;">Admi. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                                                                                                <br /><br />
-                                                                                            </td>
-                                                                                        </tr>
                                                                                     </tbody>
                                                                                 </table>
 
@@ -1458,77 +1340,11 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                     </table>
-                                                                                    @*<div class="row">
-                                                                                            <div class="col-lg-6">
-                                                                                                <p style="padding:30px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000;">Date: {{CONTRACT_DETAILS.CONTRACT_DATE}} </p>
-                                                                                            </div>
-                                                                                            <div class="col-lg-6">
-                                                                                                <p style="padding:30px 0 0;  margin: 0px; text-align: left; font-size:18px; color: #000; text-align:right;">Ref No: {{CONTRACT_DETAILS.CONTRACT_DOCUMENT_NO}}</p>
-                                                                                            </div>
-                                                                                        </div>*@
+
 
                                                                                 </div>
                                                                             </div>
-                                                                            @*<div class="address-section">
-                                                                                    <table>
-                                                                                        <tbody>
-                                                                                            <tr>
-                                                                                                <td>
-                                                                                                    <table>
-                                                                                                        <tbody>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align header">Customer Details</td>
-                                                                                                                <td class="left-align header">Machine Details</td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align bold" style="width: 50%;">
-                                                                                                                    {{CONTRACT_DETAILS.CUSTOMER_NAME}} <br>
-                                                                                                                    {{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}
-                                                                                                                </td>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Product Name:</strong> {{CONTRACT_DETAILS.PRODUCT_NAME}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
-                                                                                                                </td>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Model:</strong> {{CONTRACT_DETAILS.MODEL_NAME}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr ng-if="CONTRACT_DETAILS.EMAIL!=''">
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td colspan="2" class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Make:</strong> {{CONTRACT_DETAILS.M_NAME}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td colspan="2" class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Sr.No:</strong> {{CONTRACT_DETAILS.MODEL_SERIAL_NO}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Mobile No:</strong> {{CONTRACT_DETAILS.CONTACT_NO}}
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <td colspan="2" class="left-align" style="width: 50%;">
-                                                                                                                    <strong>Access. Name</strong> Sr.No
-                                                                                                                </td>
-                                                                                                            </tr>
-                                                                                                        </tbody>
-                                                                                                    </table>
-                                                                                                </td>
-                                                                                            </tr>
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                </div>*@
+
 
                                                                             <div class="address-section">
                                                                                 <style>
@@ -1599,7 +1415,7 @@
                                                                                                                             <b>{{CONTRACT_DETAILS.CUSTOMER_NAME}}</b> <br>
                                                                                                                             <b>{{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}</b> <br />
                                                                                                                             <div style="padding-right:10px;">
-                                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
+                                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}}  {{CONTRACT_DETAILS.ZIP_CODE}}.
                                                                                                                             </div>
                                                                                                                             <span ng-if="CONTRACT_DETAILS.EMAIL">
                                                                                                                                 <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}<br />
@@ -1644,7 +1460,21 @@
                                                                                             <td style="font-size: 16px;"> <strong>Yearly Visits: PMS - {{CONTRACT_DETAILS.PM_VISIT}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B/D - {{CONTRACT_DETAILS.CM_VISIT}}</strong>  </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                            <td style="font-size: 16px;"> <strong>Contract Fees:</strong> {{CONTRACT_DETAILS.FEES_IN_GST}}/- Including GST @('@') 18 %.</td>
+                                                                                            <td style="font-size: 16px;">
+                                                                                                <strong>Contract Fees:</strong>
+                                                                                                <span ng-if="!(companyId === 1 || companyId === 13)">
+                                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                                </span>
+                                                                                                <span ng-if="companyId === 1 || companyId === 13">
+                                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == true">
+                                                                                                        Including@('@') 18%.
+                                                                                                    </span>
+                                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == false">
+                                                                                                        Excluding GST @('@') 18%.
+                                                                                                    </span>
+                                                                                                </span>
+                                                                                            </td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td style="font-size: 16px;"> <strong>Contract Fees In Word:</strong> {{amtInwords}}.</td>
@@ -1655,34 +1485,10 @@
                                                                                         <!--type="checkbox" ng-model="CASH2" ng-checked="CASH2" onclick="return false;" id="cash2"> Cash</td>
                                                                                         </tr>-->
                                                                                         <tr>
+                                                                                        <tr>
+                                                                                        <tr>
                                                                                             <td style="font-size: 16px;">
                                                                                                 <strong>Payment Details (Paid By): </strong>
-                                                                                                @*<span>
-                                                                                                        <span ng-if="CASH2 === 'false' && CHEQUE2 === 'true'">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
-                                                                                                                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
-                                                                                                            </svg>
-                                                                                                        </span>
-                                                                                                        <span ng-if="(CASH2 === 'false' && CHEQUE2 === 'false') || (CASH2 === 'true' && CHEQUE2 === 'false' )">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
-                                                                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                                                                                                            </svg>
-                                                                                                        </span>
-
-                                                                                                        <label>Cheque</label>
-
-                                                                                                        <span ng-if="CASH2 === 'true' && CHEQUE2 === 'false'">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
-                                                                                                                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
-                                                                                                            </svg>
-                                                                                                        </span>
-                                                                                                        <span ng-if="(CASH2 === 'false' && CHEQUE2 === 'false') || (CASH2 === 'false' && CHEQUE2 === 'true' ) ">
-                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
-                                                                                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                                                                                                            </svg>
-                                                                                                        </span>
-                                                                                                        <label> Cash</label>
-                                                                                                    </span>*@
                                                                                                 <span>
                                                                                                     <span ng-if="CASH2 === 'true'">
                                                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square-fill" viewBox="0 0 16 16">
@@ -1878,7 +1684,7 @@
                                                                                             <td style="font-size:16px; padding-top: 10px;">
                                                                                                 Not with standing all the terms & conditions framed in this contract and at once without prejudice to them it is to deep the
                                                                                                 machine in proper working condition and with the barest minimum of downtime that the client has entered into this contract
-                                                                                                Medico Imaging Equipment
+                                                                                                {{CmpDetailsList[0].COMPANY_NAME}}
                                                                                             </td>
                                                                                         </tr>
 
@@ -1901,27 +1707,7 @@
                                                                             <div>
                                                                                 <table style="width: 100%; border-top: 2px solid #000; padding-top: 0rem; page-break-inside: avoid;">
                                                                                     <tbody>
-                                                                                        @*<tr>
-                                                                                                <td style="text-align:left;  padding-top:10rem;">
-                                                                                                    <div style="text-align:left"></div>
-                                                                                                    <div>
-                                                                                                        <img src="~/Images/signture-stamp-img.jpg" style=" height: 100%; width:300px; max-width: 100%;" />
-                                                                                                    </div>
-                                                                                                    <div>
-                                                                                                        <strong>{{CmpDetailsList[0].COMPANY_NAME}}</strong>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <td style="text-align:right;  padding-top:10rem;">
-                                                                                                    <div style="text-align:right"></div>
-                                                                                                    <div>
-                                                                                                        &nbsp;
-                                                                                                    </div>
-                                                                                                    <div>
-                                                                                                        <strong>SEAL AND SIGNATURE OF CUSTOMER</strong>
-                                                                                                    </div>
 
-                                                                                                </td>
-                                                                                            </tr>*@
                                                                                         <tr>
                                                                                             <td style="text-align:left;  padding-top:0rem;">
                                                                                                 <div style="text-align:left"></div>
@@ -1995,32 +1781,7 @@
                                                                                                     <td>
                                                                                                         <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
                                                                                                     </td>
-                                                                                                    @*<td>
-                                                                                                            <div align="center" class="right-logo" style="border-right: 2px solid #2B5794; padding-right:0px;">
-                                                                                                                <img src="images/sai-logo.png" style="margin: 0 auto;">
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                        <td valign="top">
-                                                                                                            <div class="left-text-logo" style="margin-left:5px; ">
-                                                                                                                <img src="images/sai-imaging-logo.png">
-                                                                                                            </div>
-                                                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:20px;">
-                                                                                                            <h4 style="margin:0 0 0 20px; font-size:24px; color:#2B5794; padding:5px 0;">  Sales & Services of Refurbished -</h4>
-                                                                                                            <p style="margin:0 0 0 20px; color: #000; font-size:14px;">CT Scan // MRI // Ultra Sound & Colour Doppler // Mammography Machine // BMD Machine</p>
-                                                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:20px;">
-                                                                                                            <div style="float: left; width:40%; text-align: left; font-size: 16px; color: #2B5794; margin:0 0 0 20px;">
-                                                                                                                www.saihealthcare.co.in
-                                                                                                            </div>
-                                                                                                            <div style="float: right; width: 50%; text-align:right; font-size:16px; color:#2b6793; ">
-                                                                                                                sagar.borade@saihealthcare.co.in
-                                                                                                            </div>
 
-                                                                                                        </td>
-                                                                                                        <td valign="top">
-                                                                                                            <div align="center" class="right-logo" style=" padding-right:0px;">
-                                                                                                                <img src="images/medtronic-logo.png" style="margin: 0 auto; width: 165px;">
-                                                                                                            </div>
-                                                                                                        </td>*@
                                                                                                 </tr>
                                                                                             </tbody>
                                                                                         </table>
@@ -2099,36 +1860,7 @@
                                                                                                 <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">{{acc.SERIAL_NO}}</td>
                                                                                                 <td ng-if="$index+1==1" rowspan="{{AMCAccessories.length}}" style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: right;">{{CONTRACT_DETAILS.FEES}}/-</td>
                                                                                             </tr>
-                                                                                            @*<tr>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">01</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">IPC Console – EC300</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">NTC70309</td>
-                                                                                                    <td rowspan="5" style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">65,000</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">02</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">IPC Footswitch - EF200</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">AFC-U17879</td>
 
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">03</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">Motor EM800-A Legend EHS</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">SN19L107</td>
-
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">04</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">ATT AS09 Legend 9cm Straight 3.2mm</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">P29844072</td>
-
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">05</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">ATT AA14 Legend 14cm Angled 3.2mm</td>
-                                                                                                    <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;">P30718862</td>
-
-                                                                                                </tr>*@
                                                                                             <tr>
                                                                                                 <td style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: center;"></td>
                                                                                                 <td colspan="2" style="border:2px solid #000; font-size: 18px; padding:5px 10px; text-align: right;">GST {{CONTRACT_DETAILS.GST_PERCENTAGE}}%</td>
@@ -2150,25 +1882,7 @@
                                                                                     </p>
                                                                                 </div>
 
-                                                                                <!--<div style="clear:both; display:block;">
 
-                                                                                <div style="padding:5px 10px 0;">
-
-                                                                                    <table style="margin-top:30px; width: 100%;">
-                                                                                        <tbody>
-                                                                                            <tr align="center">
-                                                                                                <td style="font-size: 16px; color: #1f497d;">
-                                                                                                    <span style="font-weight: 600; font-size:18px;">Admi. Office:</span> 405-406 ShreejiBizzworld, Opp. Camel House, Near KatheGali Signal, Dwarka, Nashik – 422 011-->
-                                                                                @*{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}*@
-                                                                                <!--.
-                                                                                                    </td>
-                                                                                                </tr>
-                                                                                            </tbody>
-                                                                                        </table>
-
-                                                                                    </div>
-
-                                                                                </div>-->
                                                                                 <div style="page-break-before:always">&nbsp;</div>
 
                                                                                 <div style="clear:both; display:block;"></div>
@@ -2185,32 +1899,7 @@
                                                                                                     <td>
                                                                                                         <img src="{{CmpDetailsList[0].COMPANY_LETTERHEAD}}" style="width:100%; height:100%; object-fit:contain" alt="No Image" />
                                                                                                     </td>
-                                                                                                    @*<td>
-                                                                                                            <div align="center" class="right-logo" style="border-right: 2px solid #2B5794; padding-right:0px;">
-                                                                                                                <img src="images/sai-logo.png" style="margin: 0 auto;">
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                        <td valign="top">
-                                                                                                            <div class="left-text-logo" style="margin-left:5px; ">
-                                                                                                                <img src="images/sai-imaging-logo.png">
-                                                                                                            </div>
-                                                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
-                                                                                                            <h4 style="margin:0 0 0 40px; font-size:24px; color:#2B5794; padding:5px 0;">  Sales & Services of Refurbished -</h4>
-                                                                                                            <p style="margin:0 0 0 40px; color: #000; font-size:14px;">CT Scan // MRI // Ultra Sound & Colour Doppler // Mammography Machine // BMD Machine</p>
-                                                                                                            <hr style="border-bottom:2px solid #2B5794; margin-left:30px;">
-                                                                                                            <div style="float: left; width:40%; text-align: left; font-size: 16px; color: #2B5794; margin:0 0 0 40px;">
-                                                                                                                www.saihealthcare.co.in
-                                                                                                            </div>
-                                                                                                            <div style="float: right; width: 50%; text-align:right; font-size:16px; color:#2b6793; ">
-                                                                                                                sagar.borade@saihealthcare.co.in
-                                                                                                            </div>
 
-                                                                                                        </td>
-                                                                                                        <td valign="top">
-                                                                                                            <div align="center" class="right-logo" style=" padding-right:0px;">
-                                                                                                                <img src="images/medtronic-logo.png"  style="margin: 0 auto; width: 165px;">
-                                                                                                            </div>
-                                                                                                        </td>*@
                                                                                                 </tr>
                                                                                             </tbody>
                                                                                         </table>
@@ -2238,13 +1927,7 @@
                                                                                                     <td style="font-size: 18px; padding:5px 10px; font-weight:bold; text-align: left;">Bank Details:</td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    @*<td>
-                                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>	Sai Imaging Healthcare Pvt. Ltd.</strong></p>
-                                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>Kotak Mahindra Bank</strong></p>
-                                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Branch: <strong>Dwarka, Nashik.</strong></p>
-                                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">A/c No: <strong>7020201580</strong></p>
-                                                                                                            <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">IFSC Code: <strong>KKBK0001915</strong></p>
-                                                                                                        </td>*@
+
                                                                                                     <td>
                                                                                                         <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Name: <strong>{{CmpDetailsList[0].ACC_HOLDER_NAME}}</strong></p>
                                                                                                         <p style="padding: 0px; margin: 0px; font-size: 16px; line-height: 24px;">Bank: <strong>{{CmpDetailsList[0].BANK_NAME}}</strong></p>
@@ -5030,6 +4713,19 @@ margin-top: 5%;">
             $("#CONTRACT_TO").datepicker("option", "yearRange", "2000:2060");
         });
 
+    </script>
+    <script>
+    // Fetching companyId from session and binding to AngularJS
+    var companyId = @Html.Raw(Json.Encode(Session["COMPANY_ID"] ?? "null"));
+    console.log("Hello", companyId); // Debugging purpose
+
+    angular.element(document).ready(function () {
+        // Ensure AngularJS picks up the value
+        var scope = angular.element(document.querySelector('[ng-app]')).scope();
+        scope.$apply(function () {
+            scope.companyId = parseInt(companyId, 10); // Ensure it's treated as a number
+        });
+    });
     </script>
 }
 

@@ -733,38 +733,27 @@ app.controller("AddUpdateInvoiceCtrl", function ($scope, InvoiceService) {
             TYPE: receiptType,
             CUSTOMER_ID: $scope.Customer_ID,
             FIRM_ID: $scope.F_ID
-        }
+        };
+
         var getAdmin = InvoiceService.GetReferenceNoByType(tb_Admin);
 
         getAdmin.then(function (response) {
             $scope.PurchaseOrderList = response.data;
 
-            if ($scope.PO_NUMBER != undefined || $scope.PO_NUMBER != null) {
-                $scope.GetQuotationProductDetails($scope.PO_NUMBER);
+            // Automatically select the first PO or the one matching criteria
+            if ($scope.Q_ID) {
+                var QuotID = parseInt($scope.Q_ID);
+                var PO = $scope.PurchaseOrderList.find(z => z.Quot_ID === QuotID);
+                if (PO) {
+                    $scope.PO_NUMBER = PO.REF_NO_LIST;
+                }
+            } else if ($scope.PurchaseOrderList.length > 0) {
+                $scope.PO_NUMBER = $scope.PurchaseOrderList[0].REF_NO_LIST; // Auto-select the first PO Number
             }
 
-
-            if ($scope.Q_ID !== null && $scope.Q_ID !== undefined && $scope.Q_ID !== "") {
-
-                var QuotID = parseInt($scope.Q_ID);
-                var PO = $scope.PurchaseOrderList.filter(z => z.Quot_ID == QuotID)[0];
-                if (PO !== undefined) {
-                    $scope.PO_NUMBER = PO.REF_NO_LIST;
-                    if ($scope.PO_NUMBER !== "" && $scope.PO_NUMBER !== null && $scope.PO_NUMBER !== undefined) {
-                        $("#CAT_ID").prop("disabled", true);
-                        $("#M_ID").prop("disabled", true);
-                        $("#P_ID").prop("disabled", true);
-                    }
-                    else {
-                        $scope.CAT_ID = null;
-                        $scope.M_ID = null;
-                        $scope.P_ID = null;
-                        $("#CAT_ID").prop("disabled", false);
-                        $("#M_ID").prop("disabled", false);
-                        $("#P_ID").prop("disabled", false);
-                    }
-                }
-
+            // Trigger dependent function if PO_NUMBER is assigned
+            if ($scope.PO_NUMBER) {
+                $scope.GetQuotationProductDetails($scope.PO_NUMBER);
             }
 
             console.log($scope.PurchaseOrderList);

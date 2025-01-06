@@ -12,7 +12,8 @@ using System.Web.Hosting;
 using System.Web.Mvc;
 using static Sai_Helth_care.Models.QuotationDAL;
 using System.Net;
-
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 namespace Sai_Helth_care.Controllers
 {
     [VerifyUserAttribute]
@@ -504,37 +505,77 @@ namespace Sai_Helth_care.Controllers
 
         public ActionResult DownloadDocument(string FilePath)
         {
-            try 
+            try
             {
-                using (var client = new WebClient())
+                // Set the TLS version and disable SSL certificate validation for the request
+                ServicePointManager.ServerCertificateValidationCallback =
+                    new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+
+                // Create an HttpWebRequest to handle the download
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(FilePath);
+                request.Timeout = 30000; // Set timeout to 30 seconds
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
                 {
-                    byte[] fileBytes = client.DownloadData(FilePath);
-                    string fileName = FilePath.Substring(FilePath.LastIndexOf('/') + 1);
-                    string fileExtension = FilePath.Substring(FilePath.LastIndexOf('.') + 1);
-                    string contentType = string.Empty;
-                    // Setting the content disposition header
-                    Response.AddHeader("Content-Disposition", "attachment; filename=" + fileName);
-                    if (fileExtension == "pdf")
+                    // Read the file bytes using a MemoryStream for better handling
+                    using (MemoryStream memoryStream = new MemoryStream())
                     {
-                        contentType = "application/pdf";
+                        stream.CopyTo(memoryStream); // Copy the entire stream to memory
+                        byte[] fileBytes = memoryStream.ToArray();
+
+                        // Extract the file name and extension from the URL
+                        string fileName = Path.GetFileName(FilePath);
+                        string fileExtension = Path.GetExtension(FilePath)?.ToLower();
+
+                        // Determine the content type based on file extension using a traditional switch
+                        string contentType = "application/octet-stream"; // Default content type
+                        switch (fileExtension)
+                        {
+                            case ".pdf":
+                                contentType = "application/pdf";
+                                break;
+                            case ".jpeg":
+                            case ".jpg":
+                                contentType = "image/jpeg";
+                                break;
+                            case ".png":
+                                contentType = "image/png";
+                                break;
+                        }
+
+                        // Set the content disposition header for download
+                        Response.AddHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+                        // Return the file bytes with the appropriate content type
+                        return File(fileBytes, contentType);
                     }
-                    else if (fileExtension == "jpeg" || fileExtension == "jpg")
-                    {
-                        contentType = "image/jpeg";
-                    }
-                    else if (fileExtension == "png")
-                    {
-                        contentType = "image/png";
-                    }
-                    return File(fileBytes, contentType);
                 }
             }
-            catch(Exception ex)
+            catch (WebException ex)
             {
-                return null;
+                // Log the web exception
+                Console.WriteLine("Error downloading file: " + ex.Message);
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Error downloading the file.");
             }
-            
+            catch (Exception ex)
+            {
+                // Log the general exception
+                Console.WriteLine("General error: " + ex.Message);
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Error downloading the file.");
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
 
         public JsonResult GetPartSerialNoListById(long id, int? INVOICE_ACCESSORIES_ID, int? INVOICE_SPAREPART_ID, int? invoiceID, long? P_STOCK_ID, string CUSTOMER_TYPE)
         {

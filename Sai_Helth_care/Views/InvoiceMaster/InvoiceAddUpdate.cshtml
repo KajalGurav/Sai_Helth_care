@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 @{
     ViewBag.Title = "InvoiceAddUpdate";
 }
@@ -108,7 +108,7 @@
                                     <label class="control-label">PO Number:</label>@*<label style="color:red;">*</label>*@
                                     <select ng-model="PO_NUMBER" id="PO_NUMBER" name="PO_NUMBER" class="form-control"
                                             ng-options="po.REF_NO_LIST as po.REF_NO_LIST for po in PurchaseOrderList"
-                                            ng-selected="po.REF_NO_LIST == PO_NUMBER" ng-change="GetQuotationProductDetails(PO_NUMBER)">
+                                            ng-selected="po.REF_NO_LIST == PO_NUMBER" ng-change="GetQuotationProductDetails(PO_NUMBER)" disabled>
                                         <option value="">Select PO Number</option>
                                         <option value="">None of below</option>
                                     </select>
@@ -2216,7 +2216,7 @@ justify-content: center;
                         padding-left: 2%;
                         padding-right: 2%;
                         font-size: 16px;">
-                                                                                            <span>{{p.M_NAME}} {{p.PRODUCT_NAME}} {{p.CAT_NAME}}</span>
+                                                                                            <span ng-show="CUSTOMER_TYPE=='Regular'">Refurbished</span>  {{p.M_NAME}} {{p.PRODUCT_NAME}} {{p.CAT_NAME}}
                                                                                             <span ng-show="p.AccessoriesList.length>0">
                                                                                                 With Std. Accessories
                                                                                             </span>

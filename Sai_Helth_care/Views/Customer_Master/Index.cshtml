@@ -1,4 +1,4 @@
-﻿
+﻿﻿﻿
 @{
     ViewBag.Title = "Index";
 }
@@ -79,7 +79,10 @@
                             <div class="col-lg-9" style="margin-left:-50px">
                                 <h3 class="card-title"><b>{{CUSTOMER_TYPE}} Customer Master</b></h3>
                             </div>
-
+                            <div class="col-lg-2" style="text-align:center">
+                                <a href="~/Customer_Master/AddUpdateCustomer?CustType={{CUSTOMER_TYPE}}&CustId=0" class="btn btn-sm pull-left" style="background-color: green; color: white" title="Add Customer">Add Customer</a>
+                                @*<button type="button" class="btn btn-sm pull-left" style="background-color: green; color: white" data-toggle="modal" ng-click="AdminClick()">Add Customer</button>*@
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,10 +95,10 @@
                     </div>
 
                     <div class="col-lg-3 col-md-3 col-sm-3">
-                        <button type="button" class="btn btn-default" style="color: white; background-color: green; width:100px;" ng-click="Getdata()">Get Data</button>
+
 
                         <button type="button" id="exportButton" class="btn btn-default" style="color: white;background-color: green; width:100px;">
-                            Export 
+                            Export
                         </button>
 
                     </div>
@@ -469,23 +472,23 @@
 
 
 
-<script>
-    document.getElementById("exportButton").addEventListener("click", function () {
-        debugger;
-        var urlParams = new URLSearchParams(window.location.search);
-        var custType = urlParams.get('CustType');
-        var customerName = document.getElementById("CUSTOMER_NAME").value; // Capture the value from the text box
-        
-        // Encode the customerName to handle special characters in the URL
-        customerName = encodeURIComponent(customerName);
-        
-        // Construct the URL with all required parameters
-        var exportUrl = '/Customer_Master/ExportToExcel?CustType=' + custType + '&CUSTOMER_NAME=' + customerName;
-        
-        // Redirect to the constructed URL to trigger the export
-        window.location.href = exportUrl;
-    });
-</script>
+    <script>
+        document.getElementById("exportButton").addEventListener("click", function () {
+            debugger;
+            var urlParams = new URLSearchParams(window.location.search);
+            var custType = urlParams.get('CustType');
+            var customerName = document.getElementById("CUSTOMER_NAME").value; // Capture the value from the text box
+
+            // Encode the customerName to handle special characters in the URL
+            customerName = encodeURIComponent(customerName);
+
+            // Construct the URL with all required parameters
+            var exportUrl = '/Customer_Master/ExportToExcel?CustType=' + custType + '&CUSTOMER_NAME=' + customerName;
+
+            // Redirect to the constructed URL to trigger the export
+            window.location.href = exportUrl;
+        });
+    </script>
 
 
 

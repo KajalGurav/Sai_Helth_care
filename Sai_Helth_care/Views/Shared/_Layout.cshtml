@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -68,8 +67,6 @@
     </style>
 </head>
 
-
-
 <body class="hold-transition sidebar-mini layout-fixed" ng-app="Sai_Helth_care" ng-controller="MasterCtrl">
     <div id="loader"></div>
     <div class="wrapper">
@@ -123,11 +120,6 @@
 
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color:black;">
-            <!-- Brand Logo -->
-            @*<a href="index3.html" class="brand-link">
-                    <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                    <span class="brand-text font-weight-light"><b>Sai Helth Care</b></span>
-                </a>*@
 
             <!-- Sidebar -->
             <div class="sidebar">
@@ -163,10 +155,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item" ng-show="Regular_Customer!='False'">
-                                    @*<a href="~/Customer_Master/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">Regular Customer</p>
-                    </a>*@
+
                                     <a href="~/Customer_Master/Index?CustType=Regular" class="nav-link">
                                         <i class="far fa-circle nav-icon" style="color:white"></i>
                                         <p style="color:white">Regular Customer</p>
@@ -174,42 +163,33 @@
                                 </li>
 
                                 <li class="nav-item" ng-show="AERB_Customer!='False'">
-                                    @*<a href="~/AERBCustomer/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">AERB Customer</p>
-                    </a>*@
+
                                     <a href="~/Customer_Master/Index?CustType=AERB" class="nav-link">
                                         <i class="far fa-circle nav-icon" style="color:white"></i>
                                         <p style="color:white">AERB Customer</p>
                                     </a>
                                 </li>
 
-                                <li class="nav-item" ng-show="Medtronic_Customer!='False'">
-                                    @*<a href="~/MedtronicCustomer/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">Medtronic Customer</p>
-                    </a>*@
-                                    <a href="~/Customer_Master/Index?CustType=Medtronic" class="nav-link">
-                                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                                        <p style="color:white">Medtronic Customer</p>
-                                    </a>
-                                </li>
+                                @*<li class="nav-item" ng-show="Medtronic_Customer!='False'">
 
-                                <!--<li class="nav-item">-->
-                                @*<a href="~/CarestreamCustomer/Index" class="nav-link">
-                    <i class="far fa-circle nav-icon" style="color:white"></i>
-                    <p style="color:white">Carestream Customer</p>
-                </a>*@
-                                <!--<a href="~/Customer_Master/Index?CustType=Carestream" class="nav-link">
-                    <i class="far fa-circle nav-icon" style="color:white"></i>
-                    <p style="color:white">Carestream Customer</p>
-                </a>
-            </li>-->
+                                        <a href="~/Customer_Master/Index?CustType=Medtronic" class="nav-link">
+                                            <i class="far fa-circle nav-icon" style="color:white"></i>
+                                            <p style="color:white">Medtronic Customer</p>
+                                        </a>
+                                    </li>*@
+                                @if (ViewBag.UserRole != "SaiMedicalServices")
+                                {
+                                    <li class="nav-item" ng-show="Medtronic_Customer != 'False'">
+                                        <a href="~/Customer_Master/Index?CustType=Medtronic" class="nav-link">
+                                            <i class="far fa-circle nav-icon" style="color:white"></i>
+                                            <p style="color:white">Medtronic Customer</p>
+                                        </a>
+                                    </li>
+                                }
+
+
                                 <li class="nav-item" ng-show="Mindray_Customer!='False'">
-                                    @*<a href="~/MindrayCustomer/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">Mindray Customer</p>
-                    </a>*@
+
                                     <a href="~/Customer_Master/Index?CustType=Mindray" class="nav-link">
                                         <i class="far fa-circle nav-icon" style="color:white"></i>
                                         <p style="color:white">Mindray Customer</p>
@@ -262,13 +242,6 @@
                                         </li>
                                     </ul>
                                 </li>
-
-                                @*<li class="nav-item">
-                    <a href="~/Customer_Service_Master/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">Service Call Assign</p>
-                    </a>
-                </li>*@
 
                                 <li class="nav-item" ng-show="Sales_Lead!='False'">
                                     <a href="~/Sales_Lead/Index" class="nav-link">
@@ -392,9 +365,6 @@
                             </ul>
                         </li>
 
-
-
-
                         <li class="nav-item active">
                             <a href="~/SparePartMangement/Index?STOCK_NO=NULL" class="nav-link">
                                 <i class="nav-icon fas fa-copy" style="color:white"></i>
@@ -412,29 +382,9 @@
                             </a>
                         </li>
 
-                        <li class="nav-item" ng-show="Incentive!='False'">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-copy" style="color:white"></i>
-                                <p style="color:white">
-                                    Incentive
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item" ng-show="Incentive_Master!='False'">
-                                    <a href="~/IncentiveMaster/IncentiveMaster" class="nav-link">
-                                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                                        <p style="color:white">Incentive Scheme</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item" ng-show="Incentive_Scheme!='False'">
-                                    <a href="~/IncentiveMaster/IncentiveScheme" class="nav-link">
-                                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                                        <p style="color:white">Incentive Master</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+
+
+
                         <li class="nav-item" ng-show="Quotation_Master!='False'">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy" style="color:white"></i>
@@ -445,100 +395,36 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item" ng-show="Regular_Quotation!='False'">
-                                    @*<a href="~/Quotation_Registration/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">Regular Quotation</p>
-                    </a>*@
+
                                     <a href="~/Quotation_Registration/Index?CustType=Regular" class="nav-link">
                                         <i class="far fa-circle nav-icon" style="color:white"></i>
                                         <p style="color:white">Regular Quotation</p>
                                     </a>
                                 </li>
                                 <li class="nav-item" ng-show="AERB_Quotation!='False'">
-                                    @*<a href="~/AERB_Quotation/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">AERB Quotation</p>
-                    </a>*@
+
                                     <a href="~/Quotation_Registration/Index?CustType=AERB" class="nav-link">
                                         <i class="far fa-circle nav-icon" style="color:white"></i>
                                         <p style="color:white">AERB Quotation</p>
                                     </a>
                                 </li>
                                 <li class="nav-item" ng-show="Medtronic_Quotation!='False'">
-                                    @*<a href="~/MedtronicQuotation/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">Medtronic Quotation</p>
-                    </a>*@
+
                                     <a href="~/Quotation_Registration/Index?CustType=Medtronic" class="nav-link">
                                         <i class="far fa-circle nav-icon" style="color:white"></i>
                                         <p style="color:white">Medtronic Quotation</p>
                                     </a>
                                 </li>
-                                <!--<li class="nav-item">-->
-                                @*<a href="~/CarestreamQuotation/Index" class="nav-link">
-                    <i class="far fa-circle nav-icon" style="color:white"></i>
-                    <p style="color:white">Carestream Quotation</p>
-                </a>*@
-                                <!--<a href="~/Quotation_Registration/Index?CustType=Carestream" class="nav-link">
-                    <i class="far fa-circle nav-icon" style="color:white"></i>
-                    <p style="color:white">Carestream Quotation</p>
-                </a>
-            </li>-->
+
                                 <li class="nav-item" ng-show="Mindray_Quotation!='False'">
-                                    @*<a href="~/MindrayQuotation/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                        <p style="color:white">Mindray Quotation</p>
-                    </a>*@
+
                                     <a href="~/Quotation_Registration/Index?CustType=Mindray" class="nav-link">
                                         <i class="far fa-circle nav-icon" style="color:white"></i>
                                         <p style="color:white">Mindray Quotation</p>
                                     </a>
                                 </li>
-
                             </ul>
                         </li>
-                        <li class="nav-item" ng-show="Report_Master!='False'">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-cog" style="color:white"></i>
-                                <p style="color:white">
-                                    Report Master
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item" ng-show="Attendance_Report!='False'">
-                                    <a href="~/Attendance/Index" class="nav-link">
-                                        <i class="far fa-user nav-icon" style="color:white"></i>
-                                        <p style="color:white">Attendance Report</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item" ng-show="Leave_Report!='False'">
-                                    <a href="~/Live_Application/Index" class="nav-link">
-                                        <i class="far fa-user nav-icon" style="color:white"></i>
-                                        <p style="color:white">Leave Report</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item" ng-show="Monthly_Salary_Report!='False'">
-                                    <a href="~/Monthly_Salary/Index" class="nav-link">
-                                        <i class="far fa-user nav-icon" style="color:white"></i>
-                                        <p style="color:white">Monthly Salary Report</p>
-                                    </a>
-                                </li>
-                                @*<li class="nav-item active" ng-show="Daily_Activity!='False'">
-                    <a href="~/Dailly_Activity/Index" class="nav-link">
-                        <i class="nav-icon fas fa-copy" style="color:white"></i>
-                        <p style="color:white">
-                            Daily Activity
-                        </p>
-                    </a>
-                </li>*@
-
-                            </ul>
-                        </li>
-
-
-
-
 
 
                         <li class="nav-item active" ng-show="Invoice_Master!='False'">
@@ -577,14 +463,8 @@
                             </ul>
                         </li>
 
-
                         <li class="nav-item active" ng-show="Delivery_Challan!='False'">
-                            @*<a href="~/Dilivery_Challan/Index" class="nav-link">
-                <i class="nav-icon fas fa-copy" style="color:white"></i>
-                <p style="color:white">
-                    Delivery Challan
-                </p>
-            </a>*@
+
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy" style="color:white"></i>
                                 <p style="color:white">
@@ -652,16 +532,10 @@
                                         <p style="color:white">Mindray</p>
                                     </a>
                                 </li>
-
                             </ul>
                         </li>
                         <li class="nav-item active" ng-show="Payment_Receipt!='False'">
-                            @*<a href="~/PaymentReceipt/Index" class="nav-link">
-                <i class="nav-icon fas fa-copy" style="color:white"></i>
-                <p style="color:white">
-                    Payment Receipt
-                </p>
-            </a>*@
+
                             <a href="" class="nav-link">
                                 <i class="nav-icon fas fa-copy" style="color:white"></i>
                                 <p style="color:white">Payment Receipt</p>
@@ -692,17 +566,9 @@
                                         <p style="color:white">Mindray</p>
                                     </a>
                                 </li>
-
                             </ul>
                         </li>
-                        @*<li class="nav-item active">
-            <a href="~/ImportantCalls/Index" class="nav-link">
-                <i class="nav-icon fas fa-copy" style="color:white"></i>
-                <p style="color:white">
-                    Important Calls
-                </p>
-            </a>
-        </li>*@
+
                         <li class="nav-item active" ng-show="Vendor_PO_Master!='False'">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy" style="color:white"></i>
@@ -738,52 +604,154 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item" ng-show="Salary_Wages!='False'">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-copy" style="color:white"></i>
+
+
+
+
+
+
+
+
+                        @*<li class="nav-item active">
+                                <a href="~/EmployeeTask/Index" class="nav-link">
+                                    <i class="nav-icon fas fa-copy" style="color:white"></i>
+                                    <p style="color:white">
+                                        Employee Task
+                                    </p>
+                                </a>
+                            </li>*@
+
+
+
+
+
+
+                        <li class="nav-item active" ng-show="Customer_Service!='False'">
+                            <a href="" class="nav-link">
+                                <i class="nav-icon fas fa-user" style="color:white"></i>
                                 <p style="color:white">
-                                    Salary Wages
+                                    HRM Service
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item" ng-show="Salary_Increment!='False'">
-                                    <a href="~/Salary_Wayges/Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                                        <p style="color:white">Salary Increment</p>
+                                <li class="nav-item active" ng-show="Incentive!='False'">
+
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-copy" style="color:white"></i>
+                                        <p style="color:white">
+                                            Incentive
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+
+                                    <ul class="nav nav-treeview">
+
+                                        <li class="nav-item" ng-show="Incentive_Master!='False'">
+                                            <a href="~/IncentiveMaster/IncentiveMaster" class="nav-link">
+                                                <i class="far fa-circle nav-icon" style="color:white"></i>
+                                                <p style="color:white">Incentive Scheme</p>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item" ng-show="Incentive_Scheme!='False'">
+                                            <a href="~/IncentiveMaster/IncentiveScheme" class="nav-link">
+                                                <i class="far fa-circle nav-icon" style="color:white"></i>
+                                                <p style="color:white">Incentive Master</p>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+
+
+
+                                <li class="nav-item" ng-show="Salary_Wages!='False'">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-copy" style="color:white"></i>
+                                        <p style="color:white">
+                                            Salary Wages
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item" ng-show="Salary_Increment!='False'">
+                                            <a href="~/Salary_Wayges/Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon" style="color:white"></i>
+                                                <p style="color:white">Salary Increment</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" ng-show="Advance_Salary!='False'">
+                                            <a href="~/Advance_Salary/Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon" style="color:white"></i>
+                                                <p style="color:white">Advance Salary</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" ng-show="Employee_Loan!='False'">
+                                            <a href="~/Employee_Loan/Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon" style="color:white"></i>
+                                                <p style="color:white">Employee Loan </p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
+
+                                <li ng-show="Employee_Expense_Master!='False'" class="nav-item">
+                                    <a href="~/EmployeeExpense/Index" class="nav-link">
+                                        <i class="nav-icon fas fa-copy" style="color:white"></i>
+                                        <p style="color:white">
+                                            Employee Expense
+                                        </p>
                                     </a>
                                 </li>
-                                <li class="nav-item" ng-show="Advance_Salary!='False'">
-                                    <a href="~/Advance_Salary/Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                                        <p style="color:white">Advance Salary</p>
+
+                                <li class="nav-item active">
+                                    <a href="~/EmployeeTask/Index" class="nav-link">
+                                        <i class="nav-icon fas fa-copy" style="color:white"></i>
+                                        <p style="color:white">
+                                            Employee Task
+                                        </p>
                                     </a>
                                 </li>
-                                <li class="nav-item" ng-show="Employee_Loan!='False'">
-                                    <a href="~/Employee_Loan/Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon" style="color:white"></i>
-                                        <p style="color:white">Employee Loan </p>
+
+
+                                <li class="nav-item" ng-show="Report_Master!='False'">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-cog" style="color:white"></i>
+                                        <p style="color:white">
+                                            Report Master
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item" ng-show="Attendance_Report!='False'">
+                                            <a href="~/Attendance/Index" class="nav-link">
+                                                <i class="far fa-user nav-icon" style="color:white"></i>
+                                                <p style="color:white">Attendance Report</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" ng-show="Leave_Report!='False'">
+                                            <a href="~/Live_Application/Index" class="nav-link">
+                                                <i class="far fa-user nav-icon" style="color:white"></i>
+                                                <p style="color:white">Leave Report</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" ng-show="Monthly_Salary_Report!='False'">
+                                            <a href="~/Monthly_Salary/Index" class="nav-link">
+                                                <i class="far fa-user nav-icon" style="color:white"></i>
+                                                <p style="color:white">Monthly Salary Report</p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
+
+
+
+
+
                             </ul>
-                        </li>
-
-                        <li ng-show="Employee_Expense_Master!='False'" class="nav-item">
-                            <a href="~/EmployeeExpense/Index" class="nav-link">
-                                <i class="nav-icon fas fa-copy" style="color:white"></i>
-                                <p style="color:white">
-                                    Employee Expense
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item active">
-                            <a href="~/EmployeeTask/Index" class="nav-link">
-                                <i class="nav-icon fas fa-copy" style="color:white"></i>
-                                <p style="color:white">
-                                    Employee Task
-                                </p>
-                            </a>
                         </li>
 
                         <li class="nav-item" ng-show="Setting!='False'">
@@ -838,74 +806,15 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                    <a href="~/RegularServiceReport/RegularService" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">Regular Service Report</p>
-                    </a>
-                </li>
-                                @*<li class="nav-item">
-                                    <a href="~/RegularServiceReport/MedicalService" class="nav-link">
+                                    <a href="~/RegularServiceReport/RegularService" class="nav-link">
                                         <i class="far fa-user nav-icon" style="color:white"></i>
                                         <p style="color:white">Regular Service Report</p>
                                     </a>
-                                </li>*@
-                                @*<li class="nav-item">
-                    <a href="~/RegularServiceReport/MindrayService" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">Regular Service Report</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="~/RegularServiceReport/SaiHealthService" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">Regular Service Report</p>
-                    </a>
-                </li>*@
-                                @*<li class="nav-item">
-                    <a href="~/MindrayServiceReport/Index" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">Mindray Service Report</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="~/MedicalServiceReport/Index" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">Medical Service Report</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="~/SaiHealthCareService/Index" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">Sai Health Care Services</p>
-                    </a>
-                </li>*@
+                                </li>
                             </ul>
                         </li>
-                        @*<li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-cog" style="color:white"></i>
-                <p style="color:white">
-                    Address Master
-                    <i class="fas fa-angle-left right"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li>
-                    <a href="~/StateMaster/Index" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">State Master </p>
-                    </a>
-                </li>
-                <li>
-                    <a href="~/CityMaster/Index" class="nav-link">
-                        <i class="far fa-user nav-icon" style="color:white"></i>
-                        <p style="color:white">City Master </p>
-                    </a>
-                </li>
-
-            </ul>
-        </li>*@
                     </ul>
+
                 </nav>
             </div>
         </aside>
@@ -921,8 +830,7 @@
             <!-- Control sidebar content goes here -->
         </aside>
     </div>
-    
-    
+
     <script src="~/Scripts/angular.min.js"></script>
 
     @*<script src="https://cdn.rawgit.com/a8m/angular-filter/v0.5.16/dist/angular-filter.js"></script>*@
@@ -957,17 +865,6 @@
     <script src="~/dist/js/demo.js"></script>-->
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="~/dist/js/pages/dashboard.js"></script>
-    @*<script>
-        //session end
-        var sessionTimeoutWarning = @Session.Timeout- 1;
-
-        var sTimeout = parseInt(sessionTimeoutWarning) * 60 * 1000;
-        setTimeout('SessionEnd()', sTimeout);
-
-        function SessionEnd() {
-            window.location.href = "/Home/Logout";
-        }
-        </script>*@
 
     <script>
      var sessionTimeoutWarning = @Session.Timeout- 1;
@@ -981,7 +878,7 @@
 
     <script>
         app.controller("MasterCtrl", function ($scope, $http) {
-          /*  $("#loader").css("display", '');*/
+            /*  $("#loader").css("display", '');*/
 
             DataHere();
             /*    AdminStatus();*/
@@ -989,7 +886,7 @@
                 $http.post("/Home/AccessListTest").then(function (d) {
                     $scope.List1 = d.data;
                     console.log($scope.List1);
-                   /* $("#loader").css("display", 'none');*/
+                    /* $("#loader").css("display", 'none');*/
                     $scope.Customer_Master = $scope.List1.Customer_Master;
                     $scope.Regular_Customer = $scope.List1.Regular_Customer;
                     $scope.AERB_Customer = $scope.List1.AERB_Customer;
@@ -1044,7 +941,6 @@
                     $scope.AMC_CMC_Medtronic = $scope.List1.AMC_CMC_Medtronic;
                     $scope.AMC_CMC_Mindray = $scope.List1.AMC_CMC_Mindray;
 
-
                     $scope.Payment_Receipt = $scope.List1.Payment_Receipt;
                     $scope.Payment_Receipt_Regular = $scope.List1.Payment_Receipt_Regular;
                     $scope.Payment_Receipt_AERB = $scope.List1.Payment_Receipt_AERB;
@@ -1080,7 +976,6 @@
 
                     $scope.Employee_Expense_Master = $scope.List1.Employee_Expense_Master;
 
-
                 }, function () {
 
                 });
@@ -1094,7 +989,6 @@
                     $("#loader").css("display", 'none');
                     $scope.ROLL = $scope.List1.ROLL;
 
-
                 }, function () {
 
                 });
@@ -1107,4 +1001,3 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
-

@@ -136,6 +136,8 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
     $scope.CUSTOMER_ID = parseInt(PARAM[2].split('=').pop());
     var CUSTOMER_TYPE = $scope.CUSTOMER_TYPE;
     var CUSTOMER_ID = $scope.CUSTOMER_ID;
+    $scope.IS_WITH_PROBE_ACC = false;  // Default to false
+    $scope.ProbepartList = []; 
 
     if (splitted.join('/') === "/MindrayQuotation/ViewQuote") {
         GetQuotation();
@@ -475,16 +477,17 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
     }
 
     $scope.ShowHideStdAcc = function () {
-        if (document.getElementById("STDACCESSORIES").checked === true) {
+     
+        if ($scope.IS_WITH_PROBE_ACC === true) { // If checkbox is checked
             if (!$scope.ProbepartList || $scope.ProbepartList.length < 1) {
-                $scope.IS_WITH_PROBE_ACC = "No";
+                $scope.IS_WITH_PROBE_ACC = "No";  // Set to "No" if no accessories are available
                 document.getElementById("StdAccTB").style.display = "none";
                 alert("No Probe Accessories available for this product!");
                 return;
             }
-            $scope.IS_WITH_PROBE_ACC = "Yes";
+            $scope.IS_WITH_PROBE_ACC = "Yes"; // Set to "Yes" if accessories are available
             document.getElementById("StdAccTB").style.display = "block";
-        } else {
+        } else { // If checkbox is unchecked
             $scope.IS_WITH_PROBE_ACC = "No";
             document.getElementById("StdAccTB").style.display = "none";
         }
@@ -877,6 +880,10 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
             }
         }
         $scope.Action = "Add";
+        $scope.IS_WITH_STANDARD_ACC = "No";
+        //Spare Parts Id
+        var ArrIndex = new Array();
+        var chkidsarr = [];
         var chkidsarrstd = [];
         $.each($(".checkbox_std input[type='checkbox']:checked"), function () {
             var input = { Id: $(this).val().toString(), IsChecked: 1 };
@@ -997,6 +1004,8 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
 
     function AddproductRecord(tb_Admin) {
         debugger
+        tb_Admin.IS_WITH_STANDARD_ACC = $scope.IS_WITH_STANDARD_ACC;
+        console.log($scope.IS_WITH_STANDARD_ACC);
         var datalist = QuotationService.AddProductDetails(tb_Admin);
         datalist.then(function (d) {
             if (d.data.success === true) {
@@ -1006,15 +1015,15 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
                 }
                 else if ($scope.Action == "Update") {
                     alert("Product updateded successfully.");
-                    $("#AddProductAccessories").modal("hide");
-                    $("#loader").css("display", 'none');
+                    //$("#AddProductAccessories").modal("hide");
+                    //$("#loader").css("display", 'none');
                 }
                 clearTax();
                 //Clear();
                 GetProductQuotationDetails();
                 GetallProductQuotDetails();
                 //GetRecordbyPaging();
-                alert("Product added successfully.");
+                //alert("Product added successfully.");
                 $("#AddProductAccessories").modal("hide");
                 $("#loader").css("display", 'none');
                 //window.location.href = "/MindrayQuotation/ViewQuote/" + window.location.pathname.split("/").pop().toString();
@@ -1024,34 +1033,58 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
                 $("#loader").css("display", 'none');
             }
             else {
-                //alert("Error.");
+                alert("Error.");
                 $("#loader").css("display", 'none');
             }
         },
             function () {
-                //alert("Error.");
+                alert("Error.");
                 $("#loader").css("display", 'none');
             });
     }
 
 
     function UpdateProductRecord(tb_Admin) {
-        var datalist = QuotationService.UpdateProductDetails1(tb_Admin);
-        datalist.then(function (d) {
-            if (d.data.success === true) {
-                alert("Product updated successfully.");
-                $("#AddProductAccessories").modal("hide");
+        debugger;
+        tb_Admin.IS_WITH_STANDARD_ACC = $scope.IS_WITH_STANDARD_ACC; // Bind additional property
+        console.log($scope.IS_WITH_STANDARD_ACC);
 
-                // Refresh product details
-                GetProductQuotationDetails();
-                GetallProductQuotDetails();
-            } else {
-                alert("Product update failed. Please try again.");
+        // Call the service to update product details
+        var datalist = QuotationService.UpdateProductDetails1(tb_Admin);
+        datalist.then(function (response) {
+            console.log("Response received: ", response);  // Log the entire response for debugging
+
+            if (response.data && response.data.success === true) {
+                alert("Product updated successfully.");
+                clearTax(); // Clear Tax fields (if any)
+                GetProductQuotationDetails(); // Refresh product quotation details
+                GetallProductQuotDetails();   // Refresh all product details
+
+                // Close modal and hide loader
+                $("#AddProductAccessories").modal("hide");
+                $("#loader").css("display", 'none');
             }
-        }, function () {
-            alert("An error occurred while updating the product.");
-        });
+            else if (response.data && response.data.errorCode === 'PRODUCT_EXISTS') {
+                alert("Product already added. Please remove the existing product and add again.");
+                $("#loader").css("display", 'none');
+            }
+            else {
+                console.error("Error details: ", response.data); // Log the error details
+                alert("Error occurred while updating product. Please try again.");
+                $("#loader").css("display", 'none');
+            }
+        },
+            function (error) {
+                // Log the error for debugging
+                console.error("Service error:", error);
+                alert("Error occurred while communicating with the server.");
+                $("#loader").css("display", 'none');
+            });
     }
+
+
+
+
 
 
 
@@ -1160,7 +1193,7 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
         $scope.AItax = "";
         $scope.FinalAmount = "";
         $scope.IsDisabled = true;
-        //$scope.ProductQuotList = "";
+        $scope.ProductQuotList = "";
     }
 
     $("input[name=contact]:radio").click(function () { // attack a click event on all radio buttons with name 'radiogroup'
@@ -1455,21 +1488,26 @@ app.controller("MindrayQuotationCtrl", function ($scope, QuotationService) {
         );
     }
     $scope.GetSpareForUpdate = function (Product) {
+        debugger;
         $scope.ACTION_STATUS = "UPDATE";
         $scope.Action = "Update";
         $scope.P_ID = Product.P_ID;
         $scope.QUOTATION_ID = Product.QUOTATION_ID;
-
+      
         // Fetch and assign data to scope variables
         var getProductDetails = QuotationService.GetProductDetails($scope.P_ID); // Replace with API fetching specific product
         getProductDetails.then(function (response) {
             const updatedProduct = response.data; // Assume server sends the latest product details
             $scope.PRODUCT_QUANTITY = updatedProduct.QUANTITY;
-            $scope.PROCUCT_PRICE = updatedProduct.PRODUCTPRICE;
-            $scope.IS_WITH_PROBE_ACC = updatedProduct.IS_WITH_PROBE_ACC;
+            $scope.PRODUCT_PRICE = updatedProduct.PRODUCTPRICE;
+            $scope.IS_WITH_PROBE_ACC = updatedProduct.IS_WITH_PROBE_ACC; // Correct the scope property
             $scope.Std_Acc = updatedProduct.CheckSTDACC;
+
+            // Call ShowHideStdAcc after the data is loaded
+            $scope.ShowHideStdAcc();
         });
     };
+
 
     function GetAllCategory() {
         var getAdmin = QuotationService.GetCategory();

@@ -830,28 +830,33 @@ app.controller("UrdproductEditCtrl", function ($scope, UrdproductService) {
 
 
     $scope.DownloadDoc = function (fileURL, type) {
-        if (type === "UPLOD_GOV_PERMISSION_LATER") {
-            if (fileURL === null || fileURL === "" || fileURL === undefined) {
+        if (!fileURL) {
+            alert(type + " not uploaded.");
+            return;
+        }
+
+        if (type === "UPLOAD_GOV_PERMISSION_LATER") {
+            if (!fileURL) {
                 alert("Gov. Permission Letter not uploaded.");
                 return;
             }
-        }
-        else if (type === "UPLOAD_PNDT_CERTIFICATE") {
-            if (fileURL === null || fileURL === "" || fileURL === undefined) {
+        } else if (type === "UPLOAD_PNDT_CERTIFICATE") {
+            if (!fileURL) {
                 alert("Supplier PNDT Certificate not uploaded.");
                 return;
             }
-        }
-        else if (type === "COMPANY_PNDT_CERTIFICATE") {
-            if (fileURL === null || fileURL === "" || fileURL === undefined) {
+        } else if (type === "COMPANY_PNDT_CERTIFICATE") {
+            if (!fileURL) {
                 alert("Company PNDT Certificate not uploaded.");
                 return;
             }
         }
 
-        var downloadUrl = '/InvoiceMaster/DownloadDocument?FilePath=' + encodeURIComponent(fileURL);
+        // Assuming the base64 string is stored in `fileURL`
+        var downloadUrl = '/InvoiceMaster/DownloadDocument?filePath=' + encodeURIComponent(fileURL);
         window.location.href = downloadUrl;
-    }
+    };
+
 
 
 

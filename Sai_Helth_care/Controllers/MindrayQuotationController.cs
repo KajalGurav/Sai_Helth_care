@@ -237,17 +237,16 @@ namespace Sai_Helth_care.Controllers
 
             try
             {
-                using (var con = new SqlConnection(ConfigurationManager.ConnectionStrings["YourConnectionString"].ConnectionString))
+                using (var con = new SqlConnection(connectionString))
                 {
                     using (var cmd = new SqlCommand("Update_MQuotationProductDetails", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-
                         cmd.Parameters.AddWithValue("@MP_ID", tB_Admin.MP_ID);
                         cmd.Parameters.AddWithValue("@MQ_ID", Convert.ToInt64(Session["Q_ID"]));
                         cmd.Parameters.AddWithValue("@CUSTOMER_ID", tB_Admin.CUSTOMER_ID);
-                        cmd.Parameters.AddWithValue("@PRODUCT_QUANTITY", tB_Admin.PRODUCT_QUANTITY);
-                        cmd.Parameters.AddWithValue("@PROCUCT_PRICE", tB_Admin.PROCUCT_PRICE);
+                        cmd.Parameters.AddWithValue("@PRODUCT_QUANTITY", tB_Admin.PRODUCT_QUANTITY ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@PROCUCT_PRICE", tB_Admin.PROCUCT_PRICE ?? string.Empty);
                         cmd.Parameters.AddWithValue("@PS_ID", tB_Admin.PS_ID ?? string.Empty);
                         cmd.Parameters.AddWithValue("@IS_WITH_PROBE_ACC", IsSTDAcc);
                         cmd.Parameters.AddWithValue("@PSQ_ID", tB_Admin.PSQ_ID ?? string.Empty);
@@ -258,16 +257,27 @@ namespace Sai_Helth_care.Controllers
                         result = rowsAffected > 0;
                     }
                 }
+
+                if (result)
+                {
+                    return Json(new { success = true, message = "Product updated successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, errorCode = "PRODUCT_NOT_FOUND", message = "Product not found to update." });
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                System.Diagnostics.Debug.WriteLine("SQL Error: " + sqlEx.Message);
+                return Json(new { success = false, message = "Database error occurred." });
             }
             catch (Exception ex)
             {
-                // Log the exception details here
                 System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
+                return Json(new { success = false, message = "An unexpected error occurred." });
             }
-
-            return Json(new { success = result });
         }
-
 
 
 

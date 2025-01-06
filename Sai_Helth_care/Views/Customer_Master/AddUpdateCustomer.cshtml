@@ -272,11 +272,12 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Upload PNDT Certificate:</label>
-                                    <input type="file" ng-model="UPLOAD_PNDT_CERTIFICATE" class="form-control" accept="image/*" style="height:38px;" id="UPLOAD_PNDT_CERTIFICATE">
+                                    <input type="file" class="form-control" accept="image/*" style="height:38px;" id="UPLOAD_PNDT_CERTIFICATE" onchange="angular.element(this).scope().fileChanged(this)">
                                     <span>
-                                        <img id="UPLOAD_PNDT_CERTIFICATE_PREVIEW" src="{{UPLOAD_PNDT_CERTIFICATE}}" height="200" width="300" style="color:red" alt="Image size should be less than 500 kb and Dimension: 512 * 220 pixels." />
+                                        <img id="UPLOAD_PNDT_CERTIFICATE_PREVIEW" ng-src="{{UPLOAD_PNDT_CERTIFICATE}}" height="200" width="300" style="color:red" alt="Image size should be less than 500 kb and Dimension: 512 * 220 pixels." />
                                     </span>
                                 </div>
+
 
                                 <div class="form-group col-md-6">
                                     <label class="control-label"> PAN Card:</label>

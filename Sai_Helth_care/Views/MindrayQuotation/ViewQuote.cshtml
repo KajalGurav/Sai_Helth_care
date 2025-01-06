@@ -367,7 +367,7 @@
                                             ng-if="Quotation.PROBE_NAME!='' && Quotation.ACCPRICE!=0">
                                             <td colspan="5"><b>Probe Part Name:</b> {{Quotation.PROBE_NAME}}&nbsp;<b>Probe Part Price:</b>{{Quotation.ACCPRICE}}&nbsp; <b>Quantity:</b>{{Quotation.PROBE_QUANTITY}}&nbsp;</td>
                                             <td>
-                                                <a ng-click="getFordelete(Quotation)" title="Remove" class="btn btn-xs btn-success">Remove </a>
+                                                @*<a ng-click="getFordelete(Quotation)" title="Remove" class="btn btn-xs btn-success">Remove </a>*@
                                             </td>
                                             @*<td>{{Quotation.PROBE_NAME}} </td>
                                                 <td>{{Quotation.ACCPRICE}} </td>
@@ -479,8 +479,11 @@
 
                                             <div class="col-12">
                                                 <div class="row">
+                                                    <input id="STDACCESSORIES" type="checkbox" class="STD_ACC"
+                                                           ng-model="IS_WITH_PROBE_ACC"
+                                                           ng-change="ShowHideStdAcc()" value="Std_Acc" />
 
-                                                    <input id="STDACCESSORIES" type="checkbox" class="STD_ACC" ng-model="IS_WITH_PROBE_ACC" ng-click="ShowHideStdAcc()" value="Std_Acc" style="margin-bottom: 8px;" />
+
 
                                                     <div class="col-8" @*style="margin-bottom:4px;"*@>
                                                         <label>With Probe(Std) Accessories</label>

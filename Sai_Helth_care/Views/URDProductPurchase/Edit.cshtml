@@ -317,8 +317,19 @@
 
                                                 <div ng-show="URD_STATUS === 'Issue'" class="col-md-6" style="margin-top:0px">
                                                     <label class="control-label">Upload Govt. Permission Letter :</label><label style="color:red;">*</label>
-                                                    <input class="form-control" ng-model="UPLOD_GOV_PERMISSION_LATER" type="file" accept="image/jpg, image/jpeg, image/png, application/pdf" id="Profile_photo" />
+                                                    <input class="form-control"
+                                                           ng-model="UPLOD_GOV_PERMISSION_LATER"
+                                                           type="file"
+                                                           accept="image/jpg, image/jpeg, image/png, application/pdf"
+                                                           id="Profile_photo"
+                                                           ng-change="showFileName()"
+                                                           onchange="angular.element(this).scope().updateFileName(this)" />
+                                                    <!-- Display the file name -->
+                                                    <p style="margin-top: 5px; color: green;" ng-show="uploadedFileName">
+                                                        Uploaded File: {{uploadedFileName}}
+                                                    </p>
                                                 </div>
+
                                                 <div class="col-md-6" style="margin-top:0px">
                                                     <label class="control-label">Supplier Address :</label><label style="color:red;">*</label>
                                                     <textarea class="form-control" ng-model="FIRM_ADDRESS" readonly placeholder="Supplier Address"></textarea>
@@ -833,13 +844,13 @@
                                                                 <style>
 
                                                                     .page-header, .page-header-space {
-                                                                        height: 250px;
+                                                                        height: 150px;
                                                                     }
 
-                                                                    .page {
-                                                                        page-break-after: always;
-                                                                        padding-bottom: 55px;
-                                                                    }
+                                                                    /*.page {*/
+                                                                   /*     page-break-after: always;*/
+                                                                        /*padding-bottom: 40px;
+                                                                    }*/
 
                                                                     @@page {
                                                                         margin: 10mm
@@ -850,7 +861,7 @@
                                                                             position: fixed;
                                                                             top: 0mm;
                                                                             width: 100%;
-                                                                            height: 250px;
+                                                                            height: 200px;
                                                                         }
 
                                                                         thead {
@@ -859,6 +870,9 @@
 
                                                                         body {
                                                                             margin: 0;
+                                                                        }
+                                                                        p {
+                                                                            page-break-inside: avoid;
                                                                         }
                                                                     }
                                                                 </style>
@@ -896,45 +910,19 @@
                                                                     <tbody>
                                                                         <tr>
                                                                             <td>
-                                                                                <div style="color: black !important; font-size: 24px;">
+                                                                                <div style="color: black !important; font-size: 20px;">
                                                                                     <p style="margin-left:auto; text-align: end; margin-bottom: 24px; display: block;">
-                                                                                        <b><small style="font-size: 24px;">Date: {{LETTER_DATE}}</small></b>
+                                                                                        <b><small style="font-size: 18px;">Date: {{LETTER_DATE}}</small></b>
                                                                                     </p>
                                                                                     <p>
                                                                                         <b>
-                                                                                            <small style="font-size: 24px;">
+                                                                                            <small style="font-size: 18px;">
                                                                                                 <span style="text-align:start; margin: 0; line-height: 24px;">To,</span>
                                                                                             </small>
                                                                                         </b>
-                                                                                        @*<br />*@
-                                                                                        @*<b>
-                                                                                                <small style="font-size: 24px;">
-                                                                                                    <span style="text-align:start; margin: 0; line-height: 26px;">
-                                                                                                        The
-                                                                                                        Appropriate Authority,
-                                                                                                    </span>
-                                                                                                </small>
-                                                                                            </b>
-                                                                                            <br />
-                                                                                            <b>
-                                                                                                <small style="font-size: 24px;">
-                                                                                                    <span style="text-align:start; margin: 0; line-height: 26px;">
-                                                                                                        Medical
-                                                                                                        Officer of Health
-                                                                                                    </span>
-                                                                                                </small>
-                                                                                            </b>
-                                                                                            <br />
-                                                                                            <b>
-                                                                                                <small style="font-size: 24px;">
-                                                                                                    <span style="text-align: start; margin: 0; line-height: 26px; width: 100%; float: left; padding-right: 70%">
-                                                                                                        {{PNDT_CELL}}
-                                                                                                    </span>
-                                                                                                </small>
-
-                                                                                            </b>*@
+                                                                                       
                                                                                         <b>
-                                                                                            <small style="font-size: 24px;">
+                                                                                            <small style="font-size: 18px;">
                                                                                                 <span id="PNDT_CELL3" style="text-align: start; margin: 0; line-height: 26px; width: 100%; float: left; padding-right: 70%">
 
                                                                                                 </span>
@@ -944,65 +932,56 @@
                                                                                         @*<br />*@
                                                                                     </p>
 
-                                                                                    <p style="text-align: center; margin: 0;">
+                                                                                    <p style="text-align: center; margin: 0; font-size: 18px;">
                                                                                         <b>
-                                                                                            <small style="font-size: 24px;">Subject:</small>
+                                                                                            <small style="font-size: 18px;">Subject:</small>
                                                                                         </b> Regarding Confirmation
                                                                                         of Old {{CAT_NAME}} Sale.
                                                                                     </p>
                                                                                     <br />
-                                                                                    <p style="margin: 0;"> Respected Sir/Madam,</p>
-                                                                                    <p style="line-height: 26px;">
+                                                                                    <p style="margin: 0; font-size: 18px"> Respected Sir/Madam,</p>
+                                                                                    <p style="line-height: 20px; font-size:18px">
                                                                                         &nbsp;&nbsp;&nbsp;&nbsp;We <b>
-                                                                                            <small style="font-size: 24px;">
+                                                                                            <small style="font-size: 18px;">
                                                                                                 {{CUSTOMER_NAME}}, {{FIRM_NAME}}, {{FIRM_ADDRESS}}.
                                                                                             </small>
                                                                                         </b>
-                                                                                        here by to declare that we have sold our Old {{CAT_NAME}} {{M_NAME}} <b>{{PRODUCT_NAME}} </b><span ng-if="IS_US_MC == true"><b>With All Probes</b> </span> <span ng-if="IS_US_MC == false"><b>With Std Accessories</b></span>
+                                                                                        here by to declare that we have sold our Old {{CAT_NAME}} {{M_NAME}} <b>{{PRODUCT_NAME}} </b><span ng-if="IS_US_MC == true"><b>With All Probes</b> </span> <span ng-if="IS_US_MC == false"><b style="font-size:18px">With Std Accessories</b></span>
                                                                                         Holding a valid PC-PNDT Certificate No –
                                                                                         {{PNDT_CIRTIFICATE_NO}},<b>
-                                                                                            <small style="font-size: 24px;">
+                                                                                            <small style="font-size: 18px;">
                                                                                                 @*Valid {{VALIDITY_DATE}}*@ to {{COMPANYNAME}}, {{COMPANYREGADDRESS}}
                                                                                             </small>
                                                                                         </b>Holding a valid PC-PNDT Certificate No – <b>
-                                                                                            <small style="font-size: 24px;">{{COMPANY_PNDT_NO}} </small>
+                                                                                            <small style="font-size: 18px;">{{COMPANY_PNDT_NO}} </small>
                                                                                         </b>in as an were condition.
                                                                                     </p>
 
-                                                                                    <p style="margin: 0;">Equipment details are as follows.</p>
-                                                                                    <p style="margin: 0; margin-bottom:5px;">
+                                                                                    <p style="margin: 0; font-size: 18px">Equipment details are as follows.</p>
+                                                                                    <p style="margin: 0; margin-bottom: 5px; font-size: 18px;">
                                                                                         Model Description: <b>
-                                                                                            <small style="font-size: 24px;">{{PRODUCT_NAME}}</small>
+                                                                                            <small style="font-size: 18px;">{{PRODUCT_NAME}}</small>
                                                                                         </b>
                                                                                     </p>
-                                                                                    <p style="margin: 0; line-height: 15px;">
+                                                                                    <p style="margin: 0; line-height: 15px; font-size: 18px">
                                                                                         Serial No: <b>
-                                                                                            <small style="font-size: 24px;">{{SERIAL_NO}}</small>
+                                                                                            <small style="font-size: 18px;">{{SERIAL_NO}}</small>
                                                                                         </b>
                                                                                     </p>
-                                                                                    @*<p style="line-height: 26px;">
-                                                                                                                                                                        The Serial No. & Model No. of equipment as follows.
-
-
-                                                                                                                                                                    </p>
-                                                                                                                                                                   <p style="line-height: 0px; margin-bottom: 24px;">
-                                                                                            <b>
-                                                                                                <small style=""> 1. {{PRODUCT_NAME}} (Sr. No: {{SERIAL_NO}})</small>
-                                                                                            </b>
-                                                                                        </p>*@
+         
                                                                                     <br />
-                                                                                    <p style="margin: 0;">Permission for sale of said equipment and valid PC-PNDT Certificate is attached.</p>
+                                                                                    <p style="margin: 0; font-size:18px">Permission for sale of said equipment and valid PC-PNDT Certificate is attached.</p>
 
-                                                                                    <p style="margin: 0;">Attached:</p>
+                                                                                    <p style="margin: 0;font-size:18px ">Attached:</p>
 
-                                                                                    <p style="margin: 0;">&nbsp;&nbsp;1)	Valid PC-PNDT Certificate.</p>
+                                                                                    <p style="margin: 0; font-size:18px">&nbsp;&nbsp;1)	Valid PC-PNDT Certificate.</p>
                                                                                     <br />
-                                                                                    <p style="margin: 0; line-height: 26px;">Thanking You,</p>
+                                                                                    <p style="margin: 0; line-height: 20px; font-size: 18px;">Thanking You,</p>
                                                                                     <br />
-                                                                                    <p style="margin: 0; margin-top:200px;">
+                                                                                    <p style="margin: 0; font-size: 18px; margin-top:200px; ">
 
-                                                                                        <b>
-                                                                                            <small style="font-size: 24px;">{{FIRM_NAME}}</small>
+                                                                                        <b sstyle="font-size: 18px; page-break-inside: avoid;">
+                                                                                            <small style="font-size: 18px; page-break-inside: avoid; ">{{FIRM_NAME}}</small>
                                                                                         </b>
                                                                                     </p>
                                                                                 </div>

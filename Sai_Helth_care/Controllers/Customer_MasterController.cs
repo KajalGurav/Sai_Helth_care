@@ -150,21 +150,16 @@ namespace Sai_Helth_care.Controllers
         {
             try
             {
-                int i = CustomerDAL.UpdateCustomer(tB_admin);
-                if (i == -1)
-                {
-                    return Json(new { success = false });
-                }
-                else
-                {
-                    return Json(new { success = true });
-                }
+                int result = CustomerDAL.UpdateCustomer(tB_admin);
+                return Json(new { success = result != -1 });
             }
             catch (Exception ex)
             {
-                throw ex;
+                // Log the exception here if needed
+                return Json(new { success = false, error = ex.Message });
             }
         }
+
 
         [NonAction]
         public int EditFirm(CustomerMaster tB_admin)

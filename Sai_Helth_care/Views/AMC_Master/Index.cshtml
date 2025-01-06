@@ -272,10 +272,7 @@
                                             <div class="form-group col-md-6">
                                                 <label class="control-label">Contract Date : </label><label style="color:red;">*</label>
                                                 <input type="text" id="CONTRACT_DATE" name="CONTRACT_DATE" ng-model="CONTRACT_DATE" class="form-control" maxlength="10" @*readonly*@ placeholder="Contract Date" />
-                                                @*<span ng-show="(AddPayment.CONTRACT_DATE.$invalid && (AddPayment.CONTRACT_DATE.$touched || AddPayment.CONTRACT_DATE.$dirty))">
-                                                        <span class="error" ng-show="AddPayment.CONTRACT_DATE.$error.required">Contract Date is required</span>
-                                                        <span class="error" ng-show="AddPayment.CONTRACT_DATE.$error.date">Invalid Contract Date</span>
-                                                    </span>*@
+
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label class="control-label">Select Customer Name: </label><label style="color:red;">*</label>
@@ -307,10 +304,7 @@
                                                         ng-selected="Category.CAT_ID == CAT_ID" ng-change="GetCategoryChange()" ng-required="CUSTOMER_TYPE_NAME!='Medtronic'">
                                                     <option value="">Select Product</option>
                                                 </select>
-                                                @*<select name="CAT_ID" id="CAT_ID" class="form-control" ng-model="CAT_ID" ng-change="GetCategoryChange()" required>
-                                                        <option value="">Select Product</option>
-                                                        <option ng-repeat="Category in CategoryList" value="{{Category.CAT_ID}}">{{Category.CAT_NAME}}</option>
-                                                    </select>*@
+
                                                 <span ng-show="(AddPayment.CAT_ID.$invalid && (AddPayment.CAT_ID.$touched || AddPayment.CAT_ID.$dirty))">
                                                     <span class="error" ng-show="AddPayment.CAT_ID.$error.required">Product is required</span>
                                                 </span>
@@ -329,17 +323,7 @@
                                                     <span class="error" ng-show="AddPayment.P_ID.$error.required">Model is required</span>
                                                 </span>
                                             </div>
-                                            @*<div ng-show="CAT_ID==7" class="form-group col-md-6">
-                                                    <label class="control-label">Select Model:</label><label style="color:red;">*</label>
-                                                    <select name="P_ID" id="P_ID" class="form-control" ng-model="P_ID"
-                                                            ng-options="Product.MP_ID as Product.PRODUCT_NAME for Product in ProductList"
-                                                            ng-selected="Product.MP_ID == P_ID" ng-change="GetModelChange()" required>
-                                                        <option value="">Select Model</option>
-                                                    </select>
-                                                    <span ng-show="(AddPayment.P_ID.$invalid && (AddPayment.P_ID.$touched || AddPayment.P_ID.$dirty))">
-                                                        <span class="error" ng-show="AddPayment.P_ID.$error.required">Model is required</span>
-                                                    </span>
-                                                </div>*@
+
                                             <div class="form-group col-md-6" ng-show="CUSTOMER_TYPE_NAME!='Medtronic' && CONTRACT_TYPE == 'CMC' && (CAT_ID == 1 || CAT_ID == 3 || CAT_ID == 5)">
                                                 <label class="control-label"> Select Contract Type Details:</label><label ng-show="CUSTOMER_TYPE_NAME!='Medtronic' && CONTRACT_TYPE == 'CMC' && (CAT_ID == 1 || CAT_ID == 3 || CAT_ID == 5)" style="color:red;">*</label>
                                                 <select name="CONTRACT_TYPE_DETAILS" class="form-control" ng-selected="{{CONTRACT_TYPE_DETAILS}}" ng-model="CONTRACT_TYPE_DETAILS" ng-required="CUSTOMER_TYPE_NAME!='Medtronic' && CONTRACT_TYPE == 'CMC' && (CAT_ID == 1 || CAT_ID == 3 || CAT_ID == 5)">
@@ -475,7 +459,7 @@
                                                 <input type="text" name="CONTRACT_TO" ng-model="CONTRACT_TO" id="CONTRACT_TO" maxlength="10" class="form-control" placeholder="Enter Contract To date" />
                                                 <span ng-show="(AddPayment.CONTRACT_TO.$invalid && (AddPayment.CONTRACT_TO.$touched || AddPayment.CONTRACT_TO.$dirty))">
                                                     <span class="error" ng-show="AddPayment.CONTRACT_TO.$error.required">Contract To date is required</span>
-
+                                                    @* <span class="error" ng-show="AddPayment.CONTRACT_TO.$error.date">Invalid Contract To date</span>*@
                                                 </span>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -671,10 +655,7 @@
                                             @*<table style="margin-top:0px; width: 100%;">
                                                     <tbody>
                                                         <tr align="center">
-                                                            <td style="font-size: 16px; color: #000;">
-                                                                <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                                                                <br /><br />
-                                                            </td>
+
                                                         </tr>
                                                     </tbody>
                                                 </table>*@
@@ -682,17 +663,10 @@
                                             <table>
                                                 <thead>
                                                     <tr>
-                                                        <td>
-                                                            <div class="page-header-space"></div>
-                                                        </td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr align="center">
-                                                        <td style="font-size: 16px; color: #000;">
-                                                            <span style="font-weight: 600; font-size:18px;">Admin. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                                                            <br /><br />
-                                                        </td>
                                                     </tr>
                                                 </tbody>
                                                 <tbody>
@@ -789,7 +763,7 @@
                                                                                                             <b> {{CONTRACT_DETAILS.CUSTOMER_NAME}}</b> <br>
                                                                                                             <b>{{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}</b> <br />
                                                                                                             <div style="padding-right:10px;">
-                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
+                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}}  {{CONTRACT_DETAILS.ZIP_CODE}}.
                                                                                                             </div>
                                                                                                             <span ng-if="CONTRACT_DETAILS.EMAIL!=''"> <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}<br /></span>
                                                                                                             <span ng-if="CONTRACT_DETAILS.CONTACT_NO!=''"><strong>Mobile No:</strong>{{CONTRACT_DETAILS.CONTACT_NO}}</span>
@@ -831,11 +805,23 @@
                                                                         </tr>
                                                                         <tr>
                                                                             <td style="font-size: 16px;">
-                                                                                <strong style="float: left">Contract Fees:</strong>
-                                                                                <span id="ContractFees1" style="display:none;">{{CONTRACT_DETAILS.FEES}}/- Excluding GST  @('@')18 %</span>
-                                                                                <span id="ContractFees2" style="display:none;">{{CONTRACT_DETAILS.FEES_IN_GST}}/- Including GST @('@') 18 %.</span>
+                                                                                <strong>Contract Fees:</strong>
+                                                                                <span ng-if="!(companyId === 1 || companyId === 13)">
+                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                </span>
+                                                                                <span ng-if="companyId === 1 || companyId === 13">
+                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == true">
+                                                                                        Including GST @('@') 18%.
+                                                                                    </span>
+                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == false">
+                                                                                        Excluding GST @('@') 18%.
+                                                                                    </span>
+                                                                                </span>
                                                                             </td>
                                                                         </tr>
+
+
 
                                                                         <tr>
                                                                             <td style="font-size: 16px;"> <strong>Contract Fees In Word :</strong> {{amtInwords}}.</td>
@@ -1030,7 +1016,7 @@
                                                                             <td style="font-size:16px; padding-top: 10px;">
                                                                                 Not with standing all the terms & conditions framed in this contract and at once without prejudice to them it is to deep the
                                                                                 machine in proper working condition and with the barest minimum of downtime that the client has entered into this contract
-                                                                                Medico Imaging Equipment
+                                                                                {{CmpDetailsList[0].COMPANY_NAME}}
                                                                             </td>
                                                                         </tr>
 
@@ -1154,23 +1140,21 @@
                                                 }
                                             </style>
 
-                                            <div class="page-header" style="text-align: center">
-                                                <div class="header-section">
-                                                    <div class="table-responsive">
-                                                        <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td valign="top">
-                                                                        <div class="header-section" style="object-fit:contain;">
-                                                                            <img src="~/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg" style="width:100%; max-height:200px;">
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
+
+                                            <div class="table-responsive">
+                                                <table style="width: 100%; border:1px solid #000; margin: 0px 0;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                <div class="header-section" style="object-fit:contain;">
+                                                                    <img src="~/Images/Quotation/HeaderImages/RegularQuotationHeaderImg.jpg" style="width:100%; max-height:200px;">
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
+
 
                                             <!--<div class="header-section" style=" padding:10px 10px 0;">
                                             <div class="table">
@@ -1188,10 +1172,7 @@
                                             @*<table style="margin-top:0px; width: 100%;">
                                                     <tbody>
                                                         <tr align="center">
-                                                            <td style="font-size: 16px; color: #000;">
-                                                                <span style="font-weight: 600; font-size:18px;">Admi. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                                                                <br /><br />
-                                                            </td>
+
                                                         </tr>
                                                     </tbody>
                                                 </table>*@
@@ -1208,9 +1189,7 @@
                                                 <tbody>
                                                     <tr align="center">
                                                         <td style="font-size: 16px; color: #000;">
-                                                            <span style="font-weight: 600; font-size:18px;">Admi. Office:</span>{{CmpDetailsList[0].COMPANY_REG_ADDRESS}}- {{CmpDetailsList[0].ZIP_CODE}}.<br> Mail Id: {{CmpDetailsList[0].EMAIL_ID}} Contact No: {{CmpDetailsList[0].MOBILE_NO}}
-                                                            <br /><br />
-                                                        </td>
+
                                                     </tr>
                                                 </tbody>
                                                 <tbody>
@@ -1303,7 +1282,7 @@
                                                                                                             <b>{{CONTRACT_DETAILS.CUSTOMER_NAME}}</b> <br>
                                                                                                             <b>{{CONTRACT_DETAILS.CUSTOMER_FIRM_NAME}}</b> <br />
                                                                                                             <div style="padding-right:10px;">
-                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} – {{CONTRACT_DETAILS.ZIP_CODE}}.
+                                                                                                                {{CONTRACT_DETAILS.BILLING_ADDRESS}}, {{CONTRACT_DETAILS.CITY_NAME}} {{CONTRACT_DETAILS.ZIP_CODE}}.
                                                                                                             </div>
                                                                                                             <span ng-if="CONTRACT_DETAILS.EMAIL">
                                                                                                                 <strong>Email Id: </strong> {{CONTRACT_DETAILS.EMAIL}}<br />
@@ -1349,9 +1328,19 @@
                                                                         </tr>
                                                                         <tr>
                                                                             <td style="font-size: 16px;">
-                                                                                <strong style="float: left">Contract Fees:</strong>
-                                                                                <span id="ContractFees3" style="display:none;">{{CONTRACT_DETAILS.FEES}}/- </span>
-                                                                                <span id="ContractFees4" style="display:none;">{{CONTRACT_DETAILS.FEES_IN_GST}}/- Including GST @('@') 18 %.</span>
+                                                                                <strong>Contract Fees:</strong>
+                                                                                <span ng-if="!(companyId === 1 || companyId === 13)">
+                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                </span>
+                                                                                <span ng-if="companyId === 1 || companyId === 13">
+                                                                                    {{CONTRACT_DETAILS.FEES}}/-
+                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == true">
+                                                                                        Including GST @('@') 18%.
+                                                                                    </span>
+                                                                                    <span ng-if="CONTRACT_DETAILS.IS_FEES_INC_GST == false">
+                                                                                        Excluding GST @('@') 18%.
+                                                                                    </span>
+                                                                                </span>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -1401,8 +1390,16 @@
                                                                                 </span>
                                                                                 @*<br />*@
                                                                                 <p>
-                                                                                    <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/-  <strong>Balance Amount: </strong>{{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-
+                                                                                    <strong>Paid Amount: </strong>{{CONTRACT_DETAILS.PAID_FEES}}/-
+                                                                                    <strong>Balance Amount: </strong>
+                                                                                    <span ng-if="CONTRACT_DETAILS.companyId != 1 && CONTRACT_DETAILS.companyId != 13">
+                                                                                        {{CONTRACT_DETAILS.FEES - CONTRACT_DETAILS.PAID_FEES}}/-
+                                                                                    </span>
+                                                                                    <span ng-if="CONTRACT_DETAILS.companyId == 1 || CONTRACT_DETAILS.companyId == 13">
+                                                                                        {{CONTRACT_DETAILS.BALANCE_AMOUNT}}/-
+                                                                                    </span>
                                                                                 </p>
+
 
                                                                             </td>
                                                                         </tr>
@@ -1559,7 +1556,7 @@
                                                                             <td style="font-size:16px; padding-top: 10px;">
                                                                                 Not with standing all the terms & conditions framed in this contract and at once without prejudice to them it is to deep the
                                                                                 machine in proper working condition and with the barest minimum of downtime that the client has entered into this contract
-                                                                                Medico Imaging Equipment
+                                                                                {{CmpDetailsList[0].COMPANY_NAME}}
                                                                             </td>
                                                                         </tr>
 
@@ -1849,6 +1846,8 @@
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
 
     <script>
         // Fetching companyId from session and binding to AngularJS

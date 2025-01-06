@@ -50,11 +50,13 @@
     }
 
         #PAN::placeholder {
-            text-transform: none; 
+            text-transform: none;
         }
+
     #GSTN {
         text-transform: uppercase;
     }
+
         #GSTN::placeholder {
             text-transform: none;
         }
@@ -62,6 +64,7 @@
     #TIN {
         text-transform: uppercase;
     }
+
         #TIN::placeholder {
             text-transform: none;
         }
@@ -305,7 +308,7 @@
                                                     <span class="error" ng-show="AddPayment.COMPANY_SEAL.$error.required">Company Stamp is required</span>
                                                 </span>
                                                 <span>
-                                                    <img id="COMPANY_SEAL_PREVIEW" src="{{COMPANY_SEAL}}" height="200" width="300"style=" color:red" alt="Upload Company Stamp Only In Jpeg,Png,Jpg Format.  Size Should Be Less Than 2 MB" />
+                                                    <img id="COMPANY_SEAL_PREVIEW" src="{{COMPANY_SEAL}}" height="200" width="300" style=" color:red" alt="Upload Company Stamp Only In Jpeg,Png,Jpg Format.  Size Should Be Less Than 2 MB" />
                                                 </span>
                                             </div>
 
@@ -314,7 +317,7 @@
                                                 <input class="form-control" ng-model="COMPANY_PNDT_CERTIFICATE" type="file" accept="image/*" style="height:38px;" id="COMPANY_PNDT_CERTIFICATE" />
                                                 <span ng-show="(AddPayment.COMPANY_PNDT_CERTIFICATE.$invalid && (AddPayment.COMPANY_PNDT_CERTIFICATE.$touched || AddPayment.COMPANY_PNDT_CERTIFICATE.$dirty))">
                                                     <span class="error" ng-show="AddPayment.COMPANY_PNDT_CERTIFICATE.$error.required">Company Company P.N.D.T Certificate</span>
-                                                   
+
                                                 </span>
                                                 <span>
                                                     <img id="COMPANY_PNDT_CERTIFICATE_PREVIEW" src="{{COMPANY_PNDT_CERTIFICATE}}" height="200" width="300" style="color:red" alt="Upload PNDT Certificate Only In Jpeg,Png,Jpg Format.  Size Should Be Less Than 2 MB" />
